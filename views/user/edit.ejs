@@ -1,0 +1,120 @@
+<script type="text/javascript">
+  var langsLen = <%- user.lang_info.langs.length %>;
+ 
+ </script>
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1> <%= __('user.index.users') %> </h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active"><a href="/"><i class="fa fa-home"></i>Home</a></li>
+            <li class="breadcrumb-item"> <a href="/user">users</a></li>
+            <li class="breadcrumb-item"> edit</li>
+        </ol>
+    </section>
+
+  <section class="content">
+  <div class="row">
+
+  <div class="offset-md-2 col-md-8">
+      <div class="card">
+      <div class="card-header" style="background: #cce4f9;">
+        <h3 class="card-title"><%= __('user.edit.editUser') %>  <%= user.email %></h3>
+      </div>
+
+      <div class="card-body">
+
+        <form action="/user/update" method="POST" id="update-user-form" >
+
+          <input type="hidden" name="id" value="<%= user.id %>" />
+          <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+          <input type="hidden" name="referer" value="<%= referer %>" />
+
+          <div class="form-group">
+            <label for="firstName"> <%= __('user.edit.firstname') %> </label>
+            <input type="text" name="firstName" class="form-control" value="<%= user.firstName %>" required>
+          </div>
+          <div class="form-group">
+            <label for="lastName"> <%= __('user.edit.lastname') %> </label>
+            <input type="text" name="lastName" class="form-control" value="<%= user.lastName %>" required>
+          </div>
+
+          <div class="form-group">
+            <label for="email"> <%= __('user.edit.email') %> </label>
+            <input type="text" name="email" class="form-control" value="<%= user.email %>" required>
+          </div>
+
+          <div class="form-group">
+              <label for="description"> Description </label>
+              <textarea id="description" name="description" class="textarea" placeholder="few words about your experience">
+                  <% if (user.description) { %>
+                    <%= user.description %>
+                    <% } else { %>
+                      <h4 style='font-size:12px;font-style: oblique;'> <%= __('user.edit.notAbout') %>  </h4>
+                    <% } %>              
+                </textarea>
+          </div>
+
+          <% if (session.authenticated && session.User.access==="superadmin") { %>
+          <div class="form-group">
+            <label for="userOrganisation"> <%= __('user.edit.organisation') %> </label>
+            <select class="form-control" name="userOrganisation" id="userOrganisation" required>
+            <% _.each(organisations, function(org){
+              var selected = false;
+              if (typeof user.userOrganisation != "undefined")
+                if (org.id === user.userOrganisation.id)
+                  selected = true;
+              %>
+              <option value="<%= org.id %>" <%= selected ? 'selected' : '' %> ><%= org.name %></option>
+            <% }); %>
+            </select>
+          </div>
+          <% } %>
+          <div class="form-group">
+            <label for="password"> <%= __('user.edit.passw') %></label>
+            <input type="password" class="form-control" placeholder="password" name="password" id="password">
+          </div>
+
+          <div class="form-group">
+            <label for="confirmation"> <%= __('user.edit.retypepassw') %></label>
+            <input type="password" class="form-control" placeholder="password confirmation" name="confirmation">
+          </div>
+
+          <br>
+          <%- include edit-userlang %>
+
+            <% if (session.authenticated && session.User.access==="superadmin") { %>
+              <div class="form-group">
+                <label> <%= __('user.edit.role') %> 
+                    <% if (user.request_mod && user.request_mod === "reviewer") { %>
+                      <div style='color:rgb(190, 78, 26);font-size:13px'> <i> *This user has requested "evaluator" role  </i> </div>
+                    <% } %>
+                  </label> 
+                <br />
+                <div class="btn-group" data-toggle="buttons">
+                  <label class="btn btn-default <%= (user.access==="admin")? "active":"" %>"><input type="radio" name="access" <%= (user.access==="admin")? "checked=\"checked\"":"" %> value="admin"> <%= __('user.edit.admin') %></label>
+                  <label class="btn btn-default <%= (user.access==="reviewer")? "active":"" %>"><input type="radio" name="access" <%= (user.access==="reviewer")? "checked=\"checked\"":"" %> value="reviewer"> <%= __('user.edit.producer') %></label>
+                  <label class="btn btn-default <%= (user.access==="editor")? "active":"" %>"><input type="radio" name="access" <%= (user.access==="editor")? "checked=\"checked\"":"" %> value="editor"> <%= __('user.edit.participant') %></label>
+                </div>
+              </div>
+              <% } %>
+              
+          <input type="submit" class="pull-right btn btn-flat btn-sm btn-primary" value="UPDATE"/>
+          
+       </form>
+     </div>
+
+      </div>
+    </div>
+
+  </div>
+  </section>
+</div>
+
+
+<!-- load extra .js plugins only for this view -->
+<% block('localScripts', '<script src="/plugins/bootbox.min.js"></script>') %>
+<% block('localScripts', '<link href="/plugins/summernote/summernote.css" rel="stylesheet"><link>') %>
+<% block('localScripts', '<script src="/plugins/summernote/summernote.min.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/wysihtml5.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/register-page.js"></script>') %>

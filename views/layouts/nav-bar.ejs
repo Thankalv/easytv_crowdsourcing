@@ -1,0 +1,77 @@
+<nav class="main-header navbar navbar-expand bg-white navbar-light border-bottom" style="background: #bad4ef !important">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <% if (!session.authenticated)  {%>
+      <li class="nav-item">
+            <a href="/" class="nav-link">
+              <img src="/images/easytvlogo-main.png"
+                   alt="EasyTV Logo"
+                   class="brand-image img-circle"
+                   style="opacity: .8; max-height: 38px;">
+            </a>
+       </li>
+      <% } %>
+      
+      <li class="nav-item">        
+       <% if (session.authenticated)  {%>
+        <a class="nav-link" data-widget="pushmenu" href="#"><i class="fa fa-bars"></i></a>
+        <% } else { %>
+        <a class="nav-link" href="/about"><i class="fa fa-info-circle" style="font-size: 22px"></i></a>
+        <% } %>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+          <% if (session.authenticated)  {%>
+         <a href="/" class="nav-link">Home</a>
+         <% } else { %>
+          <a href="/session/new" class="nav-link">Sign In</a>
+          <% } %>
+      </li>
+
+      <!-- <li class="nav-item d-none d-sm-inline-block">
+        <a href="/task/work" class="nav-link">Work</a>
+      </li>-->
+    </ul>
+
+    <!-- SEARCH FORM -->
+    <form class="form-inline ml-3">
+      <div class="input-group input-group-sm">
+        <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+        <div class="input-group-append">
+          <button class="btn btn-navbar" type="submit">
+            <i class="fa fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+      <!-- Notifications Dropdown Menu -->
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#">
+          <i class="fa fa-bell-o"></i>
+          <span class="badge badge-warning navbar-badge">1</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+          <span class="dropdown-item dropdown-header">1 Notification(s)</span>
+          <div class="dropdown-divider"></div>
+
+          <a href="#" class="dropdown-item">
+            <i class="fa fa-users mr-2"></i> Welcome 
+            <span class="float-right text-muted text-sm">12 hours</span>
+          </a>
+          <div class="dropdown-divider"></div>
+
+          <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <% if (session.authenticated)  {%>
+        <a class="nav-link"  href="/session/destroy">
+            <i class="fa fa-sign-out" style="font-size: 18px;" aria-hidden="true"></i>
+        </a>
+        <% } %>
+
+      </li>
+    </ul>
+  </nav>

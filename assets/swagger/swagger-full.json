@@ -1,0 +1,186 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "v1",
+        "title": "EasyTV SPM-Crowdsourcing",
+        "description": "API for Interaction of SPM-Crowdsourcing ",
+        "contact": {
+            "name": "Thanassis Kalv",
+            "url": "https://easytvproject.eu/",
+            "email": "tkalv@iti.gr"
+        }
+    },
+    "host": "http://localhost:1337",
+    "basePath": "/api",
+    "paths": {
+        "/available/subt": {
+            "post": {
+                "tags": [
+                    "available"
+                ],
+                "summary": "Content owner registers a new job on the crowdsourcing, indicating the editor or review action associated",
+                "operationId": "NewJobPost",
+                "consumes": [
+                    "application/json-patch+json",
+                    "application/json",
+                    "text/json",
+                    "application/*+json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "job_id",
+                        "in": "body",
+                        "description": "The id of the job created",
+                        "required": true,
+                        "type": "integer"
+                    },		  
+                    {
+                        "name": "action",
+                        "in": "body",
+                        "description": "Indicating 'edition' or 'review'",
+                        "required": true,
+                        "type": "string",
+			   "enum": [
+				"edition",
+				"review"
+			   ]
+                    },
+                    {
+                        "name": "status",
+                        "in": "body",
+                        "description": "A job status description defined by the content owner business logic",
+                        "required": true,
+                        "type": "string",
+                        "enum": [
+                                "AwaitingForAutomaticTranslation",
+                                "OnAutoTranslation",
+                                "AutoTranslated",
+                                "AwaitingForEdition",
+                                "OnEdition",
+                                "OnEditionSaved",
+                                "Edited",
+                                "AwaitingForRevision",
+                                "OnRevision",
+                                "OnRevisionSaved",
+                                "Revised",
+                                "CrwEndNotified",
+                                "Finished",
+                                "Rejected",
+                                "CancelRequested",
+                                "Cancelled"
+                            ]
+                    },
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "description": "PostJobData object",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/PostJobData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The job was registered successfully"
+                    },
+                    "400": {
+                        "description": "Input parameter count name or type is incorrect"
+                    },
+                    "401": {
+                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key"
+                    },
+                    "409": {
+                        "description": "A job with that name and status already exists"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ]
+            }
+        }    
+    },
+    "definitions": {
+        "PostJobData": {
+            "type": "object",
+            "description": "data-fields required for posting a job into Crowdsourcing",
+            "required": [
+                "content_owner",
+		  "publication_date",
+		  "expiration_date",
+		  "language_source",
+		  "language_target",
+		  "confidence_level",
+		  "original_title",
+		  "asset_duration",
+		  "link",
+		  "validated_percent"
+            ],
+            "properties": {
+		  "content_owner": {
+                    "description": "Identifier for the job's content owner",
+                    "type": "string"
+                },
+                "publication_date": {
+                    "description": "The date that the job should be completed. The value is a unix timestamp",
+                    "type": "integer"
+                },
+                "expiration_date": {
+                    "description": "The date that every asset stored regarding this job will be deleted. The value is a unix timestamp.",
+                    "type": "integer"
+                },
+		  "language_source": {
+                    "description": "ISO 639-2 code language",
+                    "type": "string"
+                },
+		  "language_target": {
+                    "description": "ISO 639-2 code language",
+                    "type": "string"
+                },
+		  "confidence_level": {
+                    "description": "Confidence level requirement by content owner",
+                    "type": "string",
+                    "enum": [
+					"low",
+					"intermediate",
+					"high"
+				]
+		  },
+		  "asset_duration": {
+                    "description": "hh:mm:ss",
+                    "type": "string"
+                },
+		  "original_title": {
+                    "description": "The name of the content asset",
+                    "type": "string"
+                },
+		  "link": {
+                    "description": "Access URL for editor/reviewer tool",
+                    "type": "string"
+                },
+		  "validated_percent": {
+                    "description": "validated_percent of the editor/reviewer work done",
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 100
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "apikey": {
+            "name": "X-EasyTV-Key",
+            "in": "header",
+            "type": "apiKey",
+            "description": "sha256 hash of the Api-Key for protected endpoints"
+        }
+    }
+}

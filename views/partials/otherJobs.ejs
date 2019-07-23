@@ -1,0 +1,75 @@
+
+<div class="row">
+  <div class="col-md-10 offset-md-1" style="opacity: 0.8;">
+  <div class="card">
+    <div class="card-header border-transparent" style="background-color: #ffc107">
+      <h3 class="card-title"> <b>Tasks from other broadcasters </b> </h3>
+      <div class="card-tools">
+        <button type="button" class="btn btn-tool" data-widget="collapse">
+          <i class="fa fa-minus"></i>
+        </button>
+      </div>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table" data-toggle="table" data-pagination="true" data-page-size="10" data-page-list="[2,10,25,50]"
+              data-filter-control="true" data-filter-show-clear="false">
+          <thead>
+          <tr>
+            <th> Action</th>
+            <th> Lang from/to</th>
+            <th data-field="status" data-sortable="true" data-filter-control="select"> Status</th>
+            <th> Progress%</th>
+            <th> Publication Date/<br> Expiration Date</th>
+            <th data-field="title" data-sortable="true" data-filter-control="input"> Original Title</th>
+          </tr>
+          </thead>
+          <tbody>
+              <% _.each(otherSubz, function(sub) { %>
+                <tr data-id="<%= sub.id %>" data-model="sub">
+                  <td>
+                      <button class="bg-danger"> 
+                          <i id='taskIcon<%= sub.job_id %>' class="material-icons" style='vertical-align: middle !important;' 
+                            href='#' onclick="requestJob('<%= JSON.stringify(sub) %>', '<%= session.User.id %>' )"> 
+                            <% if (session.User.jobList.indexOf(sub.job_id)>-1) { %> lock_outline  <% }else{ %>  launch  <% } %>  
+                          </i> 
+                      </button>
+                   </td>
+                  <td>
+                  <b><%= sub.language_source %> </b> / <b > <%= sub.language_target %> </b>
+                  </td>
+                  <td> <% if (sub.status=='new') { %> <span class="badge badge-success" >  
+                       <% }else{ %>  
+                        <span class="badge badge-warning" > 
+                      <% } %>  <%= sub.status %> </span> 
+                  </td>
+                  <td>      
+                      <div class="progress-group">
+                          <b><%= sub.validated_percent %></b>%
+                          <div class="progress progress-sm">
+                            <div class="progress-bar bg-primary" style="width: <%= sub.validated_percent_editor %>%"></div>
+                          </div>
+                        </div>
+                    </td>                            
+                    <td> <span style="font-size:12px"> <%= UtilService.to_hhmmss_ddmmyyyy(sub.publication_date*1000) %> </span> / <br>
+                      <span style="font-size:12px"> <%= UtilService.to_hhmmss_ddmmyyyy(sub.expiration_date*1000) %> </span> 
+                    </td>
+                  <td>  
+                     <%= sub.original_title %> 
+                  </td>
+                </tr>
+              <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer clearfix">
+      <a href="javascript:void(0)" class="btn btn-sm btn-secondary float-left">Show all details</a>
+    </div>
+    <!-- /.card-footer -->
+  </div>
+  </div>
+</div>
+

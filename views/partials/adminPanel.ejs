@@ -1,0 +1,130 @@
+
+
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+    <div class="card">
+      <div class="card-header border-transparent" style="background-color: #7cb4be">
+        <h3 class="card-title"> Users collaborating with your organisation </h3>
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-widget="collapse">
+            <i class="fa fa-minus"></i>
+          </button>
+        </div>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body p-0" style="padding: 15px!important">
+
+        <div class="tab-pane" id="timeline">
+                <!-- editor users list -->
+                <ul class="timeline timeline-inverse">
+                 <br>
+                      <!-- item label -->
+                      <li class="time-label">
+                        <span class="bg-info">
+                          Reviewers
+                        </span>
+                      </li>
+                      <% _.each(editorUsers, function(user) { %>
+                      <!-- user item -->
+                      <li>
+                        <i class="fa fa-users bg-info"></i>
+                        <div class="timeline-item" >
+                            <button class="time badge badge-danger" style="margin-top: 6px; color: darkblue" onclick="blockUser('<%= session.User.userOrganisation.id %>', '<%= user.id %>' )">
+                              <i class="fa fa-hand-paper-o" aria-hidden="true"></i> block 
+                            </button>        
+                            <h3 class="timeline-header no-border">
+                                <a href="#" data-toggle="dropdown">  <%= User.fullName( user ) %> </a> has been assigned : X tasks
+                                <%- include userInfo %>
+                                
+                              <div class="input-group-prepend" style="display: inline-flex;">
+                                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    Modify Role
+                                  </button>
+                                  <div class="dropdown-menu">
+                                      <button class="btn dropdown-item" onclick="updateRole('<%= session.User.userOrganisation.id %>', '<%= user.id %>', 'editor' )"> Reviewer </button>
+                                      <button class="btn dropdown-item" onclick="updateRole('<%= session.User.userOrganisation.id %>', '<%= user.id %>', 'reviewer' )"> Evaluator</button>
+                                  </div>
+                                </div>
+                              </h3>
+                        </div>
+                      </li>
+                      <% }) %>
+                      <!-- / user item -->
+                 </ul>
+         </div>
+      </div>
+
+      <div class="card-body p-0" style="padding: 15px!important">
+            <div class="tab-pane" id="timeline">
+                      <!-- reviewer users list -->
+                      <ul class="timeline timeline-inverse" id="accordion">
+                     <br>
+                            <!-- item label -->
+                            <li class="time-label">
+                            <span class="bg-primary">
+                              Evaluators
+                            </span>
+                          </li>
+                          <% _.each(reviewerUsers, function(user) { %>
+                            <!-- user item -->
+                            <li>
+                              <i class="fa fa-users bg-primary"></i>
+                              <div class="timeline-item" >
+                                  <button class="time badge badge-danger" style="margin-top: 6px;color: darkblue" onclick="blockUser('<%= session.User.userOrganisation.id %>', '<%= user.id %>' )">
+                                    <i class="fa fa-hand-paper-o" aria-hidden="true"></i> block 
+                                  </button>        
+                                  <h3 class="timeline-header no-border">
+                                    <a href="#" data-toggle="dropdown">  <%= User.fullName( user ) %> </a> has been assigned : X tasks
+                                    <%- include userInfo %>
+
+                                    <div class="input-group-prepend" style="display: inline-flex;">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                          Modify Role
+                                        </button>
+                                        <div class="dropdown-menu">
+                                          <button class="btn dropdown-item" onclick="updateRole('<%= session.User.userOrganisation.id %>', '<%= user.id %>', 'editor' )"> Reviewer</button>
+                                          <button class="btn dropdown-item" onclick="updateRole('<%= session.User.userOrganisation.id %>', '<%= user.id %>', 'reviewer' )"> Evaluator</button>
+                                        </div>
+                                      </div>
+                                    </h3>
+                              </div>
+                            </li>
+                            <% }) %>
+                        <!-- / user item -->
+                     </ul>
+             </div>
+          </div>
+
+        <div class="card-body p-0" style="padding: 15px!important">
+              <div class="tab-pane" id="timeline">
+                      <!-- blocked users list -->
+                   <ul class="timeline timeline-inverse" id="accordion">
+                       <br>
+                            <!-- item label -->
+                            <li class="time-label">
+                              <span class="bg-danger">
+                              Blocked
+                              </span>
+                            </li>
+                            <% _.each(blockedUsers, function(user) { %>
+                              <!-- user item -->
+                              <li>
+                                <i class="fa fa-user bg-info"></i>
+                                <div class="timeline-item" >
+                                    <button class="time badge badge-info" style="color:blue" onclick="unblockUser('<%= session.User.userOrganisation.id %>', '<%= user.id %>' )">
+                                      <i class="fa fa-thumbs-up" aria-hidden="true"></i> unblock 
+                                    </button>
+                                  <h3 class="timeline-header no-border"><a href="/user/edit?id=<%= user.id %>">  <%= User.fullName( user ) %> </a> has been assigned : X tasks
+                                  </h3>
+                                </div>
+                              </li>
+                              <% }) %>
+                          <!--/ user item -->
+                       </ul>
+               </div>
+            </div>
+
+    </div>
+  </div>
+</div>
+

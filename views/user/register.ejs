@@ -1,0 +1,241 @@
+<%
+  var show_warrant = false, show_personal_code = false, show_age = false, show_gender = false, consent_required=false, token_required = false;
+  var lastName = '', firstName='', email = '', email2='', warrant = '', warrant2 = '', personal_code='', personal_code2='', age ='', consent_form_text = '';
+
+  // keep fields between refreshs
+if(user) 
+{
+  if( typeof user !== 'undefined') {
+    if(user.lastName)
+      lastName = user.lastName;
+
+    if(user.firstName)
+      firstName = user.firstName;
+
+    if(user.email)
+      email = user.email;
+
+    if(user.email2)
+      email2 = user.email2;
+
+    if(user.warrant)
+      warrant = user.warrant;
+
+    if(user.warrant2)
+      warrant2 = user.warrant2;
+  }
+}
+%>
+
+<script type="text/javascript">
+ var langs = <%- JSON.stringify(langs) %>;
+ var langsISO = <%- JSON.stringify(langsISO) %>;
+
+</script>
+  
+
+<div class="content-wrapper">
+
+  <section class="content">
+
+    <div class="col-md-10  offset-md-1">
+      <div class="box box-primary box-solid" style="margin-top: 60px; margin-bottom: 60px">
+        <div class="box-header with-border">
+          <h3 class="box-title"> <%= __('user.register.createAccount') %> </h3>
+        </div>
+        <!-- /.box-header -->
+        <!-- form start -->
+        <form action="/user/signup" method="POST" id="sign-up-form" role="form">
+          <div class="box-body">
+
+            <div class="form-group has-feedback">
+              <label for="userOrganisation"> <%= __('user.register.selectOrganisationMsg') %></label>
+              <select class="form-control" name="userOrganisation" id="userOrganisation" required onChange="orgChanged()">
+                <option class="placeholder" selected disabled value=""> <%= __('user.register.selectOrganisation') %> </option> <%
+                _.each(organisations, function(org) {
+                  var ct = '';
+                  if(org.id === orgid) {
+                    ct = ' selected';
+                    consent_form_text = org.consent_form;
+                    show_warrant = org.warrant;
+                    show_personal_code = org.personal_code;
+                    show_age = org.age;
+                    show_gender = org.gender;
+                    show_ethnicity = org.ethnicity;
+                    consent_required = org.consent_required;
+                    token_required = org.token_required;
+                  } %>
+                  <option <%=ct%> value="<%= org.id %>">
+                    <%= org.name %>
+                  </option>
+                <% }); %>
+              </select>
+            </div>
+
+
+      <% if (!session.authenticated) { %>
+
+        <% if (consent_required && consent_required === true) { %>
+          <div class="form-group">
+            <label class="control-label"> <%=__('user.register.termsOfUser') %> </label>
+            <div id="license" style="border: 1px solid #e5e5e5; height: 300px; overflow: auto; padding: 10px;">
+              <%- consent_form_text %>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xs-10">
+              <div class="form-group">
+                <div class="checkbox">
+                  <label><input type="checkbox" name="agree" value="agree" required/> <%= __('user.register.agreement') %> </label>
+                </div>
+              </div>
+            </div>
+            <div class="col-xs-2">
+              <button type="button" class="btn btn-default pull-right" onclick="printTextArea()"> <%= __('user.register.printtag') %>  </button>
+            </div>
+          </div>
+          <script type="text/javascript">
+              function printTextArea() {
+                childWindow = window.open('','childWindow','location=yes, menubar=yes, toolbar=yes');
+                childWindow.document.open();
+                childWindow.document.write('<html><head></head><body>');
+                childWindow.document.write(document.getElementById('license').innerHTML);
+                childWindow.document.write('</body></html>');
+                childWindow.print();
+                childWindow.document.close();
+                childWindow.close();
+              }
+            </script>
+
+        <% } %>
+      <% } %>
+
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group has-feedback">
+            <label for="firstName"> <%= __('user.register.firstname') %> </label>
+            <input type="text" class="form-control" placeholder="<%= __('user.register.yourfirstname') %>" name="firstName" value="<%= firstName %>" required>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group has-feedback">
+            <label for="lastName"> <%= __('user.register.lastname') %> </label>
+            <input type="text" class="form-control" placeholder="<%= __('user.register.yourlastname') %>" name="lastName" value="<%= lastName %>" required>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="email"> <%= __('user.register.email') %> </label>
+            <input type="email" class="form-control" placeholder="<%= __('user.register.youremail') %>" name="email" value="<%= email %>" required>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="email2"> <%= __('user.register.emailconfirmation') %> </label>
+            <input type="email" class="form-control" placeholder="<%= __('user.register.youremailagain') %>" name="email2" value="<%= email2 %>" required>
+          </div>
+        </div>
+      </div>
+
+          <!-- ./custom fields -->
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="password"> <%= __('user.register.passw') %></label>
+                <input type="password" class="form-control" placeholder="<%= __('user.register.passw') %>" name="password" id="password" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="confirmation"> <%= __('user.register.passwConfirmation') %> </label>
+                <input type="password" class="form-control" placeholder="<%= __('user.register.passwConfirmation') %>" name="confirmation" required>
+              </div>
+            </div>
+          </div>
+
+          <% if (allow_mods && allow_mods === true) { %>
+            <div class="form-group">
+              <label for="mod"><%= __('user.register.mods') %></label>
+              <select class="form-control" placeholder="<%= __('user.register.mods') %>" name="mod" required>
+                <option value='editor'> <%= __('user.register.editor') %></option>
+                <option value='reviewer'> <%= __('user.register.moderator') %> </option>
+              </select>
+            </div>
+            <% } %>
+            
+
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                <div class="card">
+                  <div class="card-header border-transparent" style="background: #5f9ea070;">
+                    <h3 class="card-title">Your language skills</h3>
+                  </div>
+                  <div class="card-body p-0">
+                    <table class="table lang-list">
+                        <thead>
+                            <tr> 
+                              <td></td>
+                              <td>Language</td> 
+                              <td>Level</td> 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="tr_clone">
+                                <td colspan="1" style="text-align: left;">
+                                    <input id="addrow" type="button" class="btn btn-sm btn-block btn-success fa fa-input" style="background-color: cadetblue; font-weight: bold" value="&#xf067" />
+                                </td>
+                                <td> 
+                                  <select class="form-control llang" name="lang0" > 
+                                      <% _.each(langs, function(lang) { %>
+                                        <option value="<%= langsISO[langs.indexOf(lang)] %>">
+                                          <%= lang %>
+                                        </option>
+                                      <% }); %>
+                                    </select>
+                                </td>
+                                 <td> 
+                                    <select class="form-control llevel" name="level0" > 
+                                      <% _.each(levels, function(level) { %>
+                                        <option value="<%= level.num %>">
+                                            <%= level.description %>
+                                        </option>
+                                      <% }); %>
+                                    </select>                                   
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                  </div>
+                </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="box-footer">
+          <% if (!session.authenticated) { %>
+          <div>
+            <a href="/session/new" class="text-center"> <%= __('user.register.alreadyMember') %></a>
+          </div>
+          <% } %>
+          <input type="submit" class="btn btn-flat btn-sm btn-success pull-right" value="REGISTER" />
+        </div>
+      </form>
+    </div>
+  </div>
+ </section>
+</div>
+
+<script>
+  function orgChanged() {
+    window.location.href = "/user/register?orgid=" + $("#userOrganisation").val();
+  }
+</script>
+
+<% block('localScripts', '<script src="/plugins/register-page.js"></script>') %>

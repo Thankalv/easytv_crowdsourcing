@@ -1,0 +1,42 @@
+
+  <div class="col-md-10 offset-md-1">
+        <!-- Widget: user widget style -->
+        <div class="card">
+          <!-- Add the bg color to the header using any of the bg-* classes -->
+          <div class="card-header border-transparent" style="background-color: #bad4ef !important" >
+          <div class="widget-user-header " >
+            <h5 class="widget-user-desc" style="margin-left:10px"> <i class="fa fa-bar-chart"></i> Summary Job Statistics</h5>
+          </div>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-widget="collapse">
+              <i class="fa fa-minus"></i>
+            </button>
+          </div>
+        </div>
+
+          <div class="card-footer p-0">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <div  class="nav-link"  style="color: #007bff">
+                  Projects <span class="float-right badge bg-primary"> <%= userStats.projects %> </span>
+                </div>
+              </li>
+              <li class="nav-item">
+                  <div class="nav-link" style="color: #007bff">
+                    Total Time Viewed <span class="float-right badge bg-info"> <%= userStats.viewTime %> </span>
+                  </div>
+                </li>
+              <li class="nav-item">
+                <div class="nav-link" style="color: #007bff">
+                  Total Time Edited <span class="float-right badge bg-info"> <%= userStats.editTime %> </span>
+                </div>
+              </li>
+              <li class="nav-item">
+                <div class="nav-link" style="color: #ff0707da">
+                  Total Rejected Contributions <span class="float-right"> <b> <%= userStats.rejected %> </b> </span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+  </div>

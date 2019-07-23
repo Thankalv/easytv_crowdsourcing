@@ -1,0 +1,160 @@
+<div class="content-wrapper">
+
+     <section class="content-header offset-md-1">
+        <h2>Organisation: <%= organisation.name %></h2>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i>Home</a></li>
+                <li class="breadcrumb-item active">  <%= __('organisation.show.title') %> </li>
+            </ol>
+      </section>
+      
+
+      <section class="content">
+          <div class="offset-md-2 col-md-8">
+
+           <div class="card">
+              <div class="card-header" style="background: #cce4f9;">
+                  <h3 class="card-title"> Registration requirements </h3>
+             </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <form role="form">
+
+                  <h5> <%= __('organisation.show.regtoken') %> </h5>
+                  <div class="form-group">
+                      <div class="checkbox">
+                        <label style='background-color: rgb(188, 235, 236)'>
+                          <input type="checkbox" value="token_required" <%= organisation.token_required ? 'checked': '' %>>
+                          <%= __('organisation.show.securitytoken') %>
+                        </label>
+                        <div class="row">
+                          <div class="col-md-3">
+                            <input id='orgToken' class="form-control" readonly type="text" value="<%= organisation.token %>">
+                          </div> 
+                          <div class="col-md-3">
+                            <a href="#" class="btn btn-sm btn-flat btn-warning" onclick="refreshToken()"> <%= __('organisation.show.refresh') %> </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+
+                    <h5> <%= __('organisation.show.consentform') %> </h5>
+                    <div class="form-group">
+                        <div class="checkbox">
+                          <label style='background-color: rgb(188, 235, 236)'>
+                            <input type="checkbox" value="consent_required" <%= organisation.consent_required ? 'checked': '' %>>
+                            <%= __('organisation.show.displayconsent') %>
+                          </label>
+                        </div>
+                        <textarea id="description" name="consent_form" class="textarea">
+                          <%- organisation.consent_form %>
+                        </textarea>
+                      </div>
+                      <a href="#" class="btn btn-sm btn-flat btn-primary pull-left" onclick="updateConsent()"> <%= __('organisation.show.savesettings') %> </a>
+                </form>
+                
+              </div>
+            </div>
+            </div>
+
+            <br>
+
+            <div class="offset-md-2 col-md-8">
+    
+                <form action="/user/settings" method="POST" role="form">
+
+                    <!-- Dashboard Settings  -->
+                    <div class="card">
+                    <div class="card-header" style="background: #cce4f9;">
+                        <h3 class="card-title">API Connection Definitions </h3>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="form-group">
+                          Current  <div class="badge badge-success"> GET endpoint </div> for listing Broadcasters' jobs
+                           <input id='APIgetJobs' type="text" class="form-control" value="<%= organisation.api_info.getJobsURL %>" disabled>
+                        </div>
+
+                        <div class="input-group">
+                            <input id="APIgetJobsNEW" type="text" class="form-control" value="Enter new endpoint..." >
+                            <div class="input-group-append">
+                              <span class="input-group-text btn" id="" onclick="updateAPIpoint('APIgetJobs')" style="background: #ffc107">Save </span>
+                            </div>
+                        </div>
+
+                        <br><br>
+
+                        <div class="form-group">
+                          Current  <div class="badge badge-primary"> POST endpoint </div> for user-job assignment
+                         <input id='APIpostUserJob' type="text" class="form-control" value="<%= organisation.api_info.getJobsURL %>" disabled>
+                        </div>
+
+                        <div class="input-group">
+                            <input id="APIpostUserJobNEW" type="text" class="form-control" value="Enter new endpoint..." >
+                            <div class="input-group-append">
+                              <span class="input-group-text btn" id="" onclick="updateAPIpoint('APIpostUserJob')" style="background: #ffc107">Save </span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer">
+                        <input type="submit" class="btn btn-flat btn-sm btn-success pull-left" value="UPDATE" />
+                    </div>
+                    </div>
+                </form>
+    
+             </div>
+        
+      </section>
+</div>
+
+<script>
+  
+     function updateAPIpoint(endpointID) 
+     {
+        console.log( document.getElementById(endpointID+"NEW").value );
+        var newAPIpoint = document.getElementById(endpointID+"NEW").value;
+        $('#'+endpointID).attr('value', newAPIpoint);
+     }
+
+     function updateConsent() 
+     {
+          var data = {
+            consent_form: $('#description').summernote('code'),
+            consent_required: $("input[type='checkbox'][value=consent_required]").prop("checked"),
+            token_required: $("input[type='checkbox'][value=token_required]").prop("checked"),
+          };
+          // add CSRF, check if needed
+          $.post("/organisation/update/"+'<%=organisation.id%>', data, function(status) {
+            location.reload();
+          });
+      }
+
+  
+      function refreshToken() 
+      { // warning bootbox
+          bootbox.confirm({
+            title: "<%= __('organisation.show.warning') %> ",
+            message: "<%= __('organisation.show.warningmsg') %>",
+            buttons: {
+              confirm: { label: "<%= __('organisation.show.yestag') %>", className: 'btn-danger' },
+              cancel: { label: "<%= __('organisation.show.canceltag') %>" }
+            },
+            callback: function(result) {
+              if (result) {
+                // add CSRF, check if needed
+                $.post("/organisation/refreshtoken?id="+'<%=organisation.id%>', {}, function(status) {
+                  $('#orgToken').attr('value', status.description)
+                });
+              }
+            }
+          });
+        }
+</script>
+
+<% block('localScripts', '<link href="/plugins/summernote/summernote.css" rel="stylesheet"><link>') %>
+<% block('localScripts', '<script src="/plugins/summernote/summernote.min.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/wysihtml5.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/bootbox.min.js"></script>') %>
+      

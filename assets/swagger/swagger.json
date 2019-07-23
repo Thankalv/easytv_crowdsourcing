@@ -1,0 +1,656 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "0.5.0",
+    "title": "Integration API for SPM-Crowdsourcing EasyTV Platform",
+    "description": "Integration API for SPM-Crowdsourcing EasyTV Platform",
+    "contact": {
+            "name": "Thanassis Kalv",
+            "url": "http://easytvproject.eu",
+            "email": "tkalv@iti.gr"
+        }
+  },
+  "host": "localhost:1337",
+  "basePath": "/api",
+  "tags": [
+    {
+      "name": "subtitles",
+      "description": "Subtitles-jobs testing"
+    },
+     {
+      "name": "Version",
+      "description": "query the current api-version"
+    }
+  ],
+  "schemes": [
+    "http",
+    "https",
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api-version": {
+      "get": {
+        "tags": [
+          "Version"
+        ],
+        "summary": "Query the current api-version",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ApiVersion"
+            }
+          }
+        }
+      }
+    },
+    "/confirm/subt": {
+      "get": {
+        "tags": [
+          "subtitles"
+        ],
+        "summary": "Confirm a job is posted and get its latest-updated status",
+        "produces": [
+           "application/json"
+        ],
+        "parameters": [
+          {
+          "name": "job_id",
+          "in": "query",
+          "description": "Job id",
+          "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Latest status update related to this job",
+          },
+          "400": {
+            "description": "A Bad request"
+          },
+          "404": {
+            "description": "Job_id not found in database"
+          },
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/cancel/subt": {
+      "get": {
+        "tags": [
+          "subtitles"
+        ],
+        "summary": "Set an existing job's status to cancelled",
+        "produces": [
+           "application/json"
+        ],
+        "parameters": [
+          {
+          "name": "job_id",
+          "in": "query",
+          "description": "Job id",
+          "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Job with job_id is cancelled",
+          },
+          "208": {
+            "description": "Job with job_id has been already cancelled",
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Job_id not found in database"
+          },
+          "500": {
+            "description": "A server-error occurred"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/finished/subt": {
+      "get": {
+        "tags": [
+          "subtitles"
+        ],
+        "summary": "Set an existing job's status to finished",
+        "produces": [
+           "application/json"
+        ],
+        "parameters": [
+          {
+          "name": "job_id",
+          "in": "query",
+          "description": "Job id",
+          "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Job with job_id is finished",
+          },
+          "208": {
+            "description": "Job with job_id has been already been set as finished",
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Job_id not found in database"
+          },
+          "500": {
+            "description": "A server-error occurred"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+     "/available/subt": {
+          "post": {
+               "tags": [
+                    "subtitles"
+                ],
+                "summary": "Content owner registers a new job on the crowdsourcing, indicating the editor or review action associated",
+		 "consumes": [
+		   "application/json"
+		 ],
+		 "produces": [
+		   "application/json"
+		 ],
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "description": "PostJobData object",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/PostJobData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The job was registered successfully"
+                    },
+                    "400": {
+                        "description": "Input parameter count name or type is incorrect"
+                    },
+                    "401": {
+                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key"
+                    },
+                    "409": {
+                        "description": "The provided job_id is already in use"
+                    },
+                    "500": {
+                        "description": "Details of an Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ]
+            }
+        },
+    "/reject/subt": {
+      "post": {
+        "tags": [
+          "subtitles"
+        ],
+        "summary": "Reject a user progress on a subtitle job",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "User that we want to create",
+            "schema": {
+              "$ref": "#/definitions/RejectData"
+            }
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "The job/task status was changed to rejected in CP's database",
+          },
+	   "401" :{
+	      "description": "Unauthorized. Invalid API Key header X-EasyTV-Key",
+	   },
+          "404": {
+            "description": "No job with given job_id was found",
+            },
+	   "500": {
+            "description": "Details of an Internal Server Error.",
+
+            }
+        },
+        "security": [
+           {
+              "apikey": []
+            }
+        ]
+      }
+    },
+    "/editorstats/subt": {
+      "put": {
+        "tags": [
+          "subtitles"
+        ],
+        "summary": "Updates editor-user stats after job progress done",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "description": "Job progress stats",
+            "schema": {
+              "$ref": "#/definitions/EditorStatsData"
+            }
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "The user/job editor-stats was recorded",
+          },
+	   "401" :{
+	      "description": "Unauthorized. Invalid API Key header X-EasyTV-Key",
+	   },
+          "400": {
+            "description": "Error detected in parameters",
+            },
+          "404": {
+            "description": "The job_id is not under edition (no stats record found)",
+            },
+	   "500": {
+            "description": "Details of an Internal Server Error.",
+
+            }
+        },
+        "security": [
+           {
+              "apikey": []
+            }
+        ]
+      }
+    },
+    "/reviewerstats/subt": {
+      "put": {
+        "tags": [
+          "subtitles"
+        ],
+        "summary": "Updates reviewer-user stats after job progress done",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "description": "Job progress stats",
+            "schema": {
+              "$ref": "#/definitions/ReviewerStatsData"
+            }
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "The user/job editor-stats was recorded",
+          },
+	   "401" :{
+	      "description": "Unauthorized. Invalid API Key header X-EasyTV-Key",
+	   },
+          "400": {
+            "description": "Error detected in parameters",
+            },
+          "404": {
+            "description": "The job_id is not under edition (no stats record found)",
+            },
+	   "500": {
+            "description": "Details of an Internal Server Error.",
+
+            }
+        },
+        "security": [
+           {
+              "apikey": []
+            }
+        ]
+      }
+    },
+     "/update/subt": {
+          "put": {
+               "tags": [
+                    "subtitles"
+                ],
+                "summary": "Content owner updates an existing job's data attributes",
+		 "consumes": [
+		   "application/json"
+		 ],
+		 "produces": [
+		   "application/json"
+		 ],
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "description": "UpdateJobData object",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UpdateJobData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The job was updated successfully"
+                    },
+                    "400": {
+                        "description": "Input parameter count name or type is incorrect"
+                    },
+                    "401": {
+                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key"
+                    },
+                    "404": {
+                        "description": "Νο job with given job_id was found",
+                    },
+                    "500": {
+                        "description": "Details of an Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ]
+            }
+        },
+  },
+  "definitions": {
+    "ApiVersion": {
+      "type": "object",
+      "required": [
+        "version",
+        "date"
+      ],
+      "properties": {
+        "version": {
+          "type": "string",
+        },
+        "date": {
+          "type": "string",
+        }
+      }
+    },
+
+     "PostJobData": {
+            "type": "object",
+            "description": "data-fields required for posting a job into Crowdsourcing",
+            "required": [
+                "job_id",
+		  "action",
+		  "status",
+		  "data"
+            ],
+            "properties": {
+		  "job_id": {
+                    "description": "Identifier for the job's content owner",
+                    "type": "integer"
+                },
+                "action": {
+                    "description": "The date that the job should be completed. The value is a unix timestamp",
+                    "type": "string",
+		      "enum": [
+			    "edition",
+			    "review"
+			  ]
+                },
+                "testmode": {
+                    "description": "Force the Crowdsourcing to automatically assign the posted job after few seconds",
+                    "type": "boolean",
+		      "default":false
+                },
+                "status": {
+                    "description": "The date that every asset stored regarding this job will be deleted. The value is a unix timestamp.",
+                    "type": "string",
+                    "enum": [
+                                "AwaitingForAutomaticTranslation",
+                                "OnAutoTranslation",
+                                "AutoTranslated",
+                                "AwaitingForEdition",
+                                "OnEdition",
+                                "OnEditionSaved",
+                                "Edited",
+                                "AwaitingForRevision",
+                                "OnRevision",
+                                "OnRevisionSaved",
+                                "Revised",
+                                "CrwEndNotified",
+                                "Finished",
+                                "Rejected",
+                                "CancelRequested",
+                                "Cancelled"
+                            ]
+                },
+                "data": {
+                    "$ref": "#/definitions/JobData",
+                    "description": "Input parameters"
+                }
+            }
+        },
+     "UpdateJobData": {
+            "type": "object",
+            "description": "data-fields required for updating a job into Crowdsourcing",
+            "required": [
+                "job_id",
+		  "data"
+            ],
+            "properties": {
+		  "job_id": {
+                    "description": "Identifier for the job's content owner",
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/JobData",
+                    "description": "Input parameters"
+                }
+            }
+        },
+     "JobData": {
+            "type": "object",
+            "description": "data-fields required for posting a job into Crowdsourcing",
+            "required": [
+                "content_owner",
+		  "publication_date",
+		  "expiration_date",
+		  "language_source",
+		  "language_target",
+		  "original_title",
+		  "confidence_level",
+		  "asset_duration",
+		  "link",
+		  "validated_percent"
+            ],
+            "properties": {
+		  "content_owner": {
+                    "description": "Identifier for the job's content owner",
+                    "type": "string"
+                },
+                "publication_date": {
+                    "description": "The date that the job should be completed. The value is a unix timestamp",
+                    "type": "integer"
+                },
+                "expiration_date": {
+                    "description": "The date that every asset stored regarding this job will be deleted. The value is a unix timestamp.",
+                    "type": "integer"
+                },
+		  "language_source": {
+                    "description": "ISO 639-2 code language",
+                    "type": "string"
+                },
+		  "language_target": {
+                    "description": "ISO 639-2 code language",
+                    "type": "string"
+                },
+		  "confidence_level": {
+                    "description": "Confidence level for this task",
+                    "type": "string",
+		      "enum": [
+                              "low",
+                              "intermediate",
+                              "high"
+				 ]
+                },
+		  "original_title": {
+                    "description": "Original asset title by content_owner",
+                    "type": "string"
+                },
+		  "asset_duration": {
+                    "description": "Asset duration in hh:mm:ss",
+                    "type": "string"
+                },
+		  "link": {
+                    "description": "Asset url base_path ",
+                    "type": "string"
+                },
+		  "validated_percent": {
+                    "description": "validated_percent of the editor/reviewer work done",
+                    "type": "number",
+		      "format": "float",
+                    "minimum": 0.0,
+                    "maximum": 100.0
+                }
+            }
+        },
+        "EditorStatsData": {
+            "description": "Editor-stats data fields",
+            "required": [
+                "job_id",
+		  "asset_duration",
+                "viewed_percent_editor",
+		  "edited_percent_editor",
+		  "validated_percent_editor"
+            ],
+            "type": "object",
+            "properties": {
+		  "job_id": {
+                    "description": "Identifier for the job's content owner",
+                    "type": "integer"
+                },
+		  "asset_duration": {
+                    "description": "Asset duration in hh:mm:ss",
+                    "type": "string"
+                },
+                "viewed_percent_editor": {
+                    "format": "double",
+                    "description": "When on edition status, the percent of text lines viewed",
+                    "type": "number"
+                },
+                "edited_percent_editor": {
+                    "format": "double",
+                    "description": "When on edition status, the percent of text lines edited",
+                    "type": "number"
+                },
+                "validated_percent_editor": {
+                    "format": "double",
+                    "description": "When on edition status, the percent of text lines validated",
+                    "type": "number"
+                },
+            }
+        },
+        "ReviewerStatsData": {
+            "description": "Reviewer-stats data fields",
+            "required": [
+                "job_id",
+		  "asset_duration",
+                "viewed_percent_reviewer",
+		  "edited_percent_reviewer",
+		  "validated_percent_reviewer"
+            ],
+            "type": "object",
+            "properties": {
+		  "job_id": {
+                    "description": "Identifier for the job's content owner",
+                    "type": "integer"
+                },
+		  "asset_duration": {
+                    "description": "Asset duration in hh:mm:ss",
+                    "type": "string"
+                },
+                "viewed_percent_reviewer": {
+                    "format": "double",
+                    "description": "When on review status, the percent of text lines viewed",
+                    "type": "number"
+                },
+                "edited_percent_reviewer": {
+                    "format": "double",
+                    "description": "When on review status, the percent of text lines edited",
+                    "type": "number"
+                },
+                "validated_percent_reviewer": {
+                    "format": "double",
+                    "description": "When on review status, the percent of text lines validated",
+                    "type": "number"
+                },
+            }
+        },
+    "RejectData": {
+         "description": "Describes the reason for rejecting a job",
+         "required": [
+                "job_id"
+          ],
+          "type": "object",
+          "properties": {
+           "job_id": {
+            "description": "Job identificator",
+            "type": "integer"
+           },
+           "reason": {
+              "description": "Reason why the job is rejected",
+              "type": "string"
+             }
+           }
+     }
+  },
+  "securityDefinitions": {
+        "apikey": {
+            "name": "X-EasyTV-Key",
+            "in": "header",
+            "type": "apiKey",
+            "description": "Api key needed to acces protected endpoints"
+        }
+    }
+}

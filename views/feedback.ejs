@@ -1,0 +1,47 @@
+<div class="content-wrapper">
+  
+  <section class="content-header offset-md-1">
+    <h2> <%= __('feedback.index.yourFeedback') %>  </h2>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i>Home</a></li>
+        <li class="breadcrumb-item active"> feedback </li>
+    </ol>
+</section>
+
+
+  <section class="content">
+          <div class="col-md-10 offset-md-1">
+              <p> <%= __('feedback.prompt') %></p>
+  
+            <div class="box box-primary box-solid">
+              <div class="box-header with-border">
+                <h3 class="box-title"> <%= __('feedback.provide') %> </h3>
+              </div>
+        
+              <div class="box-body">
+              <form action="/feedback/submit" method="POST" id="update-organisation-form">
+                  <div class="form-group">
+                    <label for="theme"> <%= __('feedback.theme') %> </label>
+                    <input type="text" class="form-control" placeholder="Your comment's theme" name="theme"  required >
+                  </div>
+                           
+                 <div class="form-group">
+                  <label for="comment"> <%= __('feedback.comment') %> </label>
+                  <textarea id="feedback" name="comment" class="textarea" placeholder="few words about your experience">
+                    </textarea>
+                  </div>
+
+                  <button type="submit" class="btn btn-flat btn-sm btn-success pull-right"> <%= __('feedback.submit') %> </button>
+                  <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+              </form>
+              </div>
+        
+              </form>
+            </div>
+          </div>
+    </section>
+</div>
+
+<% block('localScripts', '<link href="/plugins/summernote/summernote.css" rel="stylesheet"><link>') %>
+<% block('localScripts', '<script src="/plugins/summernote/summernote.min.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/wysihtml5.js"></script>') %>

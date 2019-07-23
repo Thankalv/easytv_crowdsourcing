@@ -1,0 +1,131 @@
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1> <%= __('user.index.users') %> </h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active"><a href="/"><i class="fa fa-home"></i>Home</a></li>
+            <li class="breadcrumb-item">users</li>
+        </ol>
+    </section>
+    
+    <section class="content">
+        <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+            <div class="box-header with-border">
+            <!-- <h3 class="box-title"></h3> -->
+                <% if (req.session.User.access === "superadmin" || req.session.User.access === "reviewer" ) { %>
+                <a class="pull-right btn btn-sm btn-flat btn-success" href="/user/add" role="button"> <%= __('user.index.createtag') %> </a>
+                <a class="pull-right btn btn-primary btn-sm btn-flat" href="/user/exportfile" ><%= __('user.index.exporttag') %></a>
+                <% } %>
+                <p>  
+                <div class="pull-left alert alert-info alert-dismissible fade in">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <%= __('user.index.message1') %> 
+                </div> 
+                </p>
+            </div>
+    
+            <div class="box-body">
+            <table class="table table-hover table-condensed display"  data-toggle="table" data-pagination="true" data-page-size="10" data-page-list="[2,10,25,50]"
+              data-pagination-first-text="First" data-pagination-pre-text="Previous" data-pagination-next-text="Next" data-pagination-last-text="Last" data-filter-control="true" data-filter-show-clear="false">
+                <thead>
+                    <tr>
+                    <th width="3%"></th>
+                    <th data-field="name" data-sortable="true" data-filter-control="input"> <%= __('user.index.fullname') %> </th>
+                    <th data-field="email" data-sortable="true" data-filter-control="input"> <%= __('user.index.email') %></th>
+                    <th data-field="organisation" data-sortable="true" data-filter-control="select"> <%= __('user.index.organisation') %> </th>
+                    <th data-field="login" data-sortable="true"> <%= __('user.index.lastlogin') %> </th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% _.each(users, function(user){ %>
+                    <tr data-id="<%= user.id %>" data-model="user">
+        
+                    <td>
+                        <span class="gravatar"><img src="<%- user.gravatarImage %>" onerror="this.style.display='none'"/></span>
+                    </td>
+        
+                    <td><%- user.firstName %> <%- user.lastName %> </td>
+        
+                    <td><a href="/user/show/<%= user.id %>"><%= user.email %></a></td>
+        
+                    <td>
+                        <% if (user.userOrganisation) { %>
+                        <%= user.userOrganisation.name %>
+                        <% } else { %>
+                        Unknown
+                        <% } %>
+                    </td>
+        
+                    <td><%= user.lastLogged %></td>
+                    
+                    <td>
+                    <% if (user.access === "superadmin") { %>
+                        <img src="/images/admin.png" title="<%= __('user.index.administrator') %>">
+                    <% } else if (user.access === "producer") { %>
+                        <img src="/images/prod.png" title="<%= __('user.index.producer') %>">
+                    <% } else { %>
+                        <img src="/images/user.png" title="<%= __('user.index.participant') %>">
+                    <% } %>
+                    </td>
+        
+                    <!-- via post method through form instead of plain get as above-->
+                    <td>
+                        <div class="pull-right">
+                        <a href="/user/edit?id=<%= user.id %>" class="" title="<%= __('user.index.editUser') %>">
+                            <i class="fa fa-edit fa-2x "></i>
+                        </a>
+                        </div>
+                    </td>      
+                    <td>
+                       <a href="#" onClick="deleteUser('<%= user.id %>')" class="" title="<%= __('user.index.deleteUser') %>" >
+                            <i class="fa fa-trash fa-2x"></i>
+                          </a>
+                    </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+    
+        </div>
+    
+        </div>
+        </div>
+    </div>
+    
+    
+    </section>
+</div>
+
+
+<script>
+  
+  function deleteUser(user_id) 
+  {
+    bootbox.confirm({
+      title: "<%= __('user.index.warning') %>",
+      message: "<%= __('user.index.warningMsg') %>",
+      buttons: {
+        confirm: { label: "<%= __('user.index.deletetag') %>", className: 'btn-flat btn-danger' },
+        cancel: { label: "<%= __('user.index.canceltag') %>", className: 'btn-flat'}
+      },
+      callback: function(result) {
+        if (result) {
+          // add CSRF, check if used in judgements/tasks
+          $.post("/user/destroy?id="+user_id, function(data, status){
+             location.reload();
+           });
+        }
+      }
+    });
+  }
+  
+</script>
+  
+<% block('localScripts', '<script src="/plugins/bootstrap-table-filter-control.min.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/bootbox.min.js"></script>') %>
+  

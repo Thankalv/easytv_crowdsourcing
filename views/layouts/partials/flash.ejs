@@ -1,0 +1,32 @@
+<% if (typeof messages !== 'undefined') { %>
+
+    <% if (messages && messages['error'].length > 0) { %>
+      <div  class="alert alert-danger alert-dismissible MyFlashBox">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+      <% messages['error'].forEach(function(message) { %>
+        <%= message %>
+  
+      <% }); %>
+      </div>
+    <% } %>
+  
+    <% if (messages && messages['warning'].length > 0) { %>
+      <div  class="alert alert-warning alert-dismissible MyFlashBox">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+      <% messages['warning'].forEach(function(message) { %>
+        <%= message %>
+  
+      <% }); %>
+      </div>
+    <% } %>
+  
+    <% if (messages && messages['success'].length > 0) { %>
+      <div  class="alert alert-success alert-dismissible MyFlashBox">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+      <% messages['success'].forEach(function(message) { %>
+        <%= message %>
+      <% }); %>
+      </div>
+    <% } %>
+  
+  <% } %>

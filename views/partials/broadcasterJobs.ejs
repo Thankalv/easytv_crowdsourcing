@@ -1,0 +1,82 @@
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+    <div class="card">
+      <div class="card-header border-transparent" style="background-color: #3270daba">
+        <h3 class="card-title"> <b>Pending from your collaborative broadcaster </b> </h3>
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-widget="collapse">
+            <i class="fa fa-minus"></i>
+          </button>
+        </div>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table w-auto" data-toggle="table" data-pagination="true" data-page-size="10" data-page-list="[2,10,25,50]"
+                data-filter-control="true" data-filter-show-clear="false">
+            <thead>
+            <tr>
+              <th>ID</th>
+              <th class="w-10"> Action</th>
+              <th class="w-9"> Lang from/to</th>
+              <th class="w-10"> Duration</th>
+              <th class="w-10"> Progress%</th>
+              <th class="w-20" data-field="date"> Airing Date/<br> Expiration Date</th>
+              <th data-field="title" data-sortable="true" data-filter-control="input"> Original Title</th>
+            </tr>
+            </thead>
+            <tbody>
+                <% _.each(subz, function(sub) { %>
+                  <tr data-id="<%= sub.id %>" data-model="sub">
+                    <td> <%= sub.job_id %> </td>
+                    <td>
+                        <i id='taskIcon<%= sub.job_id %>' class="btn btn-danger bg-danger material-icons" style='vertical-align: middle !important; font-size: 24px' 
+                              href='#' onclick="requestJob('<%= JSON.stringify(sub) %>', '<%= session.User.id %>', '<%= assignedJobs %>' )" > 
+                              launch
+                         </i> 
+                     </td>
+                     <td class="w-9">
+                        <b><%= sub.language_source %> </b> / <b > <%= sub.language_target %> </b>
+                     </td>
+                     <td class="w-10">
+                       <span class="badge badge-success" >
+                           <%= sub.asset_duration %>
+                       </span> 
+                     </td>
+                    <td>      
+                        <div class="progress-group">
+                          <% if (["OnEdition","AwaitingForEdition", "OnEditionSaved"].indexOf(sub.status)>-1) { %> 
+                            <b><%= sub.validated_percent_editor %></b>%
+                            <div class="progress progress-sm">
+                              <div class="progress-bar bg-primary" style="width: <%= sub.validated_percent_editor %>%"></div>
+                            </div>
+                            <% } else { %> 
+                              <b><%= sub.validated_percent_reviewer %></b>% 
+                              <div class="progress progress-sm">
+                                <div class="progress-bar bg-primary" style="width: <%= sub.validated_percent_reviewer %>%"></div>
+                              </div>
+                              <% } %>
+                          </div>
+                      </td>                            
+                      <td> 
+                        <b> <span style="font-size:12.5px;font-weight: 700"> <%= UtilService.to_hhmmss_ddmmyyyy(sub.publication_date*1000) %> </span> </b>/ <br>
+                        <span style="font-size:12px"> <%= UtilService.to_hhmmss_ddmmyyyy(sub.expiration_date*1000) %> </span> 
+                      </td>
+                    <td class="w-40">  
+                       <%- UtilService.truncStripTags( sub.asset_name , 60) %>
+                    </td>
+                  </tr>
+                <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- /.card-body -->
+      <div class="card-footer clearfix">
+        <a href="javascript:void(0)" class="btn btn-sm btn-secondary float-left">Show all details</a>
+      </div>
+      <!-- /.card-footer -->
+    </div>
+    </div>
+</div>
+

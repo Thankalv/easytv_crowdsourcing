@@ -1,0 +1,24 @@
+
+        <div class="modal modal-primary fade" id="modal-<%= sub.job_id %>"> 
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                   <h4 class="modal-title"> Preview  <%= sub.job_id %> </h4>
+                    <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                
+                </div>
+                <div class="modal-body">
+                    <div class="box-body">
+                        <div class="embed-responsive embed-responsive-16by9">
+                            <iframe class="embed-responsive-item" src="<%= sub.link %>" allowfullscreen></iframe>
+                        </div>
+                    </div>    
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+            </div>
+        </div>
+    

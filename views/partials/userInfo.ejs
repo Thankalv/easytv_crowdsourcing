@@ -1,0 +1,32 @@
+<div class="dropdown-menu dropdown-menu-lg dropdown-menu-left">
+
+        <div class="card card-widget widget-user-2">
+          <!-- Add the bg color to the header using any of the bg-* classes -->
+          <div class="widget-user-header bg-primary">
+            <div class="widget-user-image">
+              <img class="img-circle elevation-2" src="<%- user.gravatarImage %>" alt="User Avatar">
+            </div>
+            <!-- /.widget-user-image -->
+            <h3 class="widget-user-username">  <%= _.capitalize(  User.fullName( user ) ) %> </h3>
+            <h5 class="widget-user-desc">  <%= _.capitalize(  user.access ) %></h5>
+          </div>
+
+          <span class="dropdown-item dropdown-header"> member since: <%= UtilService.fromNow(user.createdAt) %> <br> email: <%= user.email %>  </span>
+
+          <div class="card-footer p-0">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  Tasks <span class="float-right badge bg-info"> <%= user.accesslinks.length %> </span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  Completed Tasks <span class="float-right badge bg-success">??</span>
+                </a>
+              </li>
+
+            </ul>
+          </div>
+        </div>
+</div>

@@ -1,0 +1,82 @@
+<div class="content-wrapper">
+    <section class="content-header">
+            <h1> <%= __('user.index.users') %> </h1>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active"><a href="/"><i class="fa fa-home"></i>Home</a></li>
+                <li class="breadcrumb-item"> <a href="/user">users</a></li>
+                <li class="breadcrumb-item"> settings</li>
+            </ol>
+    </section>
+    
+    <section class="content">
+      <div class="row">
+    
+    
+      <div class="offset-md-2 col-md-8">
+    
+            <form action="/user/settings" method="POST" role="form">
+                <!-- Email Notification Settings Checkboxes -->
+                <div class="card">
+                <div class="card-header" style="background: #cce4f9;">
+                    <h3 class="card-title">Your Notification Settings</h3>
+                </div>
+                <div class="card-body">
+
+                    <!-- checkbox -->
+                    <div class="form-group">
+                    <label>
+                        <input id="emailNewJob" type="checkbox" class="minimal" name="emailNewJob" value="yes"  <% if (user.settings.emailNewJob =='yes') { %> checked <% } %> >
+                        <input id="emailNewJobHidden" type='hidden' value='no' name='emailNewJob' >
+                    </label>
+                    <label> Receive email notification when new job is posted </label>
+                    </div>
+
+                    <div class="form-group">
+                    <label>
+                        <input id="emailRejectJob" type="checkbox" class="minimal" name="emailRejectJob" value="yes"  <% if (user.settings.emailRejectJob =='yes') { %> checked <% } %>  >
+                        <input id="emailRejectJobHidden" type='hidden' value='no' name='emailRejectJob'>
+                    </label>
+                    <label> Receive email notification when your progress is rejected </label>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                    <small>*Change your account's email <a href="/user/edit?id=<%= user.id %>">here</a> </small>
+                </div>
+                </div>
+
+                <br>
+                <!-- Dashboard Settings  -->
+                <div class="card">
+                <div class="card-header" style="background: #cce4f9;">
+                    <h3 class="card-title">Your Dashboard Settings</h3>
+                </div>
+                <div class="card-body">
+
+                    <!-- checkbox -->
+                    <div class="form-group">
+                    <label>
+                        <input id="showOtherJobs" type="checkbox" class="minimal" name="showOtherJobs" value="yes"  <% if (user.settings.showOtherJobs =='yes') { %> checked <% } %> >
+                        <input id="showOtherJobsHidden" type='hidden' value='no' name='showOtherJobs' >
+                    </label>
+                    <label> Show available jobs from other broadcasters </label>
+                    </div>
+
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                    <input type="submit" class="btn btn-flat btn-sm btn-success pull-left" value="UPDATE" />
+                </div>
+                </div>
+            </form>
+
+         </div>
+    
+     </div>
+ </section>
+</div>
+
+
+<% block('localScripts', '<link href="/plugins/icheck/skins/all.css" rel="stylesheet"><link>') %>
+<% block('localScripts', '<script src="/plugins/icheck/icheck.min.js"></script>') %>
+<% block('localScripts', '<script src="/js/icheck-start.js"></script>') %>

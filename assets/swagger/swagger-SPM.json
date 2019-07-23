@@ -1,0 +1,1932 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "v1",
+        "title": "EasyTV SPM API",
+        "description": "API for EasyTV Subtitles Program Manager",
+        "contact": {
+            "name": "Daniel Trullén",
+            "url": "http://www.ccma.cat",
+            "email": "dtrullen.z@ccma.cat"
+        }
+    },
+    "paths": {
+        "/api/Credentials": {
+            "post": {
+                "tags": [
+                    "Credentials"
+                ],
+                "summary": "Registers an authorized user for a job",
+                "description": "Sample Request:\r\n\r\n<code>\r\nPOST api/credentials\r\n  {\r\n    \"user\": \"user_id\",\r\n    \"job_id\": 123,\r\n    \"token\": \"123456789\"\r\n  }\r\n</code>",
+                "operationId": "CreateCredential",
+                "consumes": [
+                    "application/json-patch+json",
+                    "application/json",
+                    "text/json",
+                    "application/*+json"
+                ],
+                "produces": [
+                    "text/plain",
+                    "application/json",
+                    "text/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "credential",
+                        "in": "body",
+                        "description": "CredentialsData object",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/CredentialData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. The newly created credential is stored in the database.",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data. There are missing required fields in the input JSON data.",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key.",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "409": {
+                        "description": "Credential with the same data already exists.",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ]
+            }
+        },
+        "/api/Credentials/login": {
+            "post": {
+                "tags": [
+                    "Credentials"
+                ],
+                "summary": "Check user credentials for a job",
+                "description": "Sample Request:\r\n\r\n\r\n<code>\r\nPOST api/credentials/login\r\n  {\r\n    \"user\": \"user_id\",\r\n    \"job_id\": 123,\r\n    \"token\": \"123456789\"\r\n  }\r\n</code>",
+                "operationId": "CheckCredential",
+                "consumes": [
+                    "application/json-patch+json",
+                    "application/json",
+                    "text/json",
+                    "application/*+json"
+                ],
+                "produces": [
+                    "text/plain",
+                    "application/json",
+                    "text/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "credential",
+                        "in": "body",
+                        "description": "CredentialsData object",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/CredentialData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. The newly created credential is stored in the database.",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data. There are missing required fields in the input JSON data.",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key.",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "404": {
+                        "description": "Credential not found.",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ]
+            }
+        },
+        "/api/Jobs": {
+            "get": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Returns jobs in database",
+                "description": "<code>\r\n            Example: GET api/jobs?pageSize=10&amp;page=0\r\n            </code>",
+                "operationId": "GetJobs",
+                "consumes": [],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "description": "Number of elements per page. If 0 all jobs will be returned",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32",
+                        "default": 0
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32",
+                        "default": 0
+                    },
+                    {
+                        "name": "excludefields",
+                        "in": "query",
+                        "description": "Exclude original_text and translation fields in the response to save bandwidth and improve performance",
+                        "required": false,
+                        "type": "string",
+                        "default": "ExcludeNone",
+                        "enum": [
+                            "ExcludeNone",
+                            "ExcludeTranslationFields",
+                            "ExcludeAllSubtitleFields",
+                            "ExcludeAutoFields"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the array of jobs",
+                        "schema": {
+                            "$ref": "#/definitions/JobResponseData"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key. Result code=401",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. Result code=500",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Creates a translation job",
+                "description": "Sample Request:\r\n\r\n<code>\r\nPOST api/jobs\r\n{\r\n  \"job_id\": 5015,\r\n  \"publication_date\": 1551398400,\r\n  \"expiration_date\": 1551398400,\r\n  \"content_owner\": \"ccma\",\r\n  \"input\": {\r\n    \"language_source\": \"ca\",\r\n    \"language_target\": \"es\",\r\n    \"confidence_level\": \"low\",\r\n    \"video_path\": \"Videoname.mp4\",\r\n    \"original_title\": \"Asset Title – S01E01\",\r\n    \"asset_duration\": \"10:01:00\",\t\t\t\r\n    \"asset_name\": \"Game of thrones-chapter 01-12\",\t\t\t\r\n    \"original_text\": \"EBU-TTD subtitles\"\r\n    \"original_synopsis\": \"synopsis text\"\r\n  }\r\n}  \r\n</code>",
+                "operationId": "CreateJob",
+                "consumes": [
+                    "application/json-patch+json",
+                    "application/json",
+                    "text/json",
+                    "application/*+json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "jobdata",
+                        "in": "body",
+                        "description": "JobCreateRequestData object",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/JobCreateRequestData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted. The newly created job is stored in the database. Result code=202",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "400": {
+                        "description": "If the item is null or has missing fields\r\n                Result code= -13 : Input parameter count name or type is incorrect\r\n                Result code= -14 : Invalid publication date. It souldn't be in the past.\r\n                Result code= -15 : Invalid expiration date. It souldn't be in the past.\r\n                Result code= -400: Invalid input data. There are missing required fields in the input JSON data",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key. Result code=-401",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "409": {
+                        "description": "Job with the same id already exists. Result code=-409",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. Result code=-500",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ]
+            }
+        },
+        "/api/Jobs/{id}": {
+            "get": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Returns job with a job_id",
+                "description": "<code>\r\n             Example: GET api/jobs/5 \r\n            </code>",
+                "operationId": "GetJob",
+                "consumes": [],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Job ID",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "excludefields",
+                        "in": "query",
+                        "description": "Exclude original_text and translation fields in the response to save bandwidth and improve performance",
+                        "required": false,
+                        "type": "string",
+                        "default": "ExcludeNone",
+                        "enum": [
+                            "ExcludeNone",
+                            "ExcludeTranslationFields",
+                            "ExcludeAllSubtitleFields",
+                            "ExcludeAutoFields"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Returns the job data",
+                        "schema": {
+                            "$ref": "#/definitions/JobResponseData"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. Job ID null, 0 or negative. Result code=400",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key. Result code=401",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. Job doesn't exists. Result code=404",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. Result code=500",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Marks a job for deletion\r\nIf current status is AwaitingForAutomaticTranslation, job is deleted. Else Job status is set to CancelRequested.",
+                "description": "<code>\r\n            Example: DELETE api/jobs/1000\r\n            </code>",
+                "operationId": "DeleteJob",
+                "consumes": [],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "job identifier",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. The job has been deleted. Result code=200",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "202": {
+                        "description": "Accepted. The job has been marked for deletion. Result code=202",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. \r\n                Result code= -3 : Job already cancelled\r\n                Result code= -4 : You can't cancel a completed job\r\n                Result code= -400: Job identifier less or equal to 0.",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key. Result code=401",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. Job doesn't exists. Result code=-404",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. Result code=-500",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ]
+            }
+        },
+        "/api/Jobs/editors": {
+            "get": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Returns jobs with status=AwaitingForEdition or OnEdition or OnEditionSaved",
+                "description": "<code>\r\n             Example: GET api/jobs/editors?pageSize=10&amp;page=10\r\n            </code>",
+                "operationId": "GetJobsForEditors",
+                "consumes": [],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "description": "Number of elements per page. If 0 all jobs will be returned",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "excludefields",
+                        "in": "query",
+                        "description": "Exclude original_text and translation fields in the response to save bandwidth and improve performance",
+                        "required": false,
+                        "type": "string",
+                        "default": "ExcludeNone",
+                        "enum": [
+                            "ExcludeNone",
+                            "ExcludeTranslationFields",
+                            "ExcludeAllSubtitleFields",
+                            "ExcludeAutoFields"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the array of jobs",
+                        "schema": {
+                            "$ref": "#/definitions/JobResponseData"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key. Result code=401",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. Result code=500",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ]
+            }
+        },
+        "/api/Jobs/reviewers": {
+            "get": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Returns jobs with status=AwaitingForRevision or OnRevision or OnRevisionSaved",
+                "description": "<code>\r\n              Example: GET api/jobs/reviewers?pageSize=10&amp;page=1\r\n             </code>",
+                "operationId": "GetJobsForReview",
+                "consumes": [],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "description": "Number of elements per page. If 0 all jobs will be returned",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "excludefields",
+                        "in": "query",
+                        "description": "Exclude original_text and translation fields in the response to save bandwidth and improve performance",
+                        "required": false,
+                        "type": "string",
+                        "default": "ExcludeNone",
+                        "enum": [
+                            "ExcludeNone",
+                            "ExcludeTranslationFields",
+                            "ExcludeAllSubtitleFields",
+                            "ExcludeAutoFields"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the array of jobs",
+                        "schema": {
+                            "$ref": "#/definitions/JobResponseData"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key. Result code=401",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. Result code=500",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ]
+            }
+        },
+        "/api/Jobs/engine": {
+            "get": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Returns jobs that requires attention by the state engine",
+                "description": "<code>\r\n              Example: GET api/jobs/engine?pageSize=10&amp;page=1\r\n             </code>\r\n             Returns all the the jobs excluding the ones that have the following status\r\n               -AwaitingForEdition,\r\n               -OnEdition,\r\n               -AwaitingForRevision,\r\n               -OnRevision,\r\n               -Finished,\r\n               -Cancelled",
+                "operationId": "GetJobsForEngine",
+                "consumes": [],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "description": "Number of elements per page. If 0 all jobs will be returned",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "excludefields",
+                        "in": "query",
+                        "description": "Exclude original_text and translation fields in the response to save bandwidth and improve performance",
+                        "required": false,
+                        "type": "string",
+                        "default": "ExcludeNone",
+                        "enum": [
+                            "ExcludeNone",
+                            "ExcludeTranslationFields",
+                            "ExcludeAllSubtitleFields",
+                            "ExcludeAutoFields"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the array of jobs",
+                        "schema": {
+                            "$ref": "#/definitions/JobResponseData"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key. Result code=401",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. Result code=500",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ]
+            }
+        },
+        "/api/Jobs/{id}/status": {
+            "get": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Returns job status",
+                "description": "<code>\r\n              Example: GET api/jobs/5/status \r\n             </code>",
+                "operationId": "GetJobStatus",
+                "consumes": [],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Job ID",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Returns the job status string",
+                        "schema": {
+                            "enum": [
+                                "AwaitingForAutomaticTranslation",
+                                "OnAutoTranslation",
+                                "AutoTranslated",
+                                "AwaitingForEdition",
+                                "OnEdition",
+                                "OnEditionSaved",
+                                "Edited",
+                                "AwaitingForRevision",
+                                "OnRevision",
+                                "OnRevisionSaved",
+                                "Revised",
+                                "CrwEndNotified",
+                                "Finished",
+                                "Rejected",
+                                "CancelRequested",
+                                "Cancelled"
+                            ],
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. Job ID null, 0 or negative. Result code=400",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key. Result code=401",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. Job doesn't exists. Result code=404",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. Result code=500",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ]
+            }
+        },
+        "/api/Jobs/{id}/status/{newStatus}": {
+            "put": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Set job status",
+                "description": "<code>\r\n              Example: PUT api/jobs/5/status/Cancelled  \r\n             </code>",
+                "operationId": "SetJobStatus",
+                "consumes": [],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Job ID",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "newStatus",
+                        "in": "path",
+                        "description": "One of the values of enum JobStatus",
+                        "required": true,
+                        "type": "string",
+                        "enum": [
+                            "AwaitingForAutomaticTranslation",
+                            "OnAutoTranslation",
+                            "AutoTranslated",
+                            "AwaitingForEdition",
+                            "OnEdition",
+                            "OnEditionSaved",
+                            "Edited",
+                            "AwaitingForRevision",
+                            "OnRevision",
+                            "OnRevisionSaved",
+                            "Revised",
+                            "CrwEndNotified",
+                            "Finished",
+                            "Rejected",
+                            "CancelRequested",
+                            "Cancelled"
+                        ]
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Result code=200",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. Job ID null, 0 or negative, or sNewStatus value cannot be parsed. Result code=400",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key. Result code=401",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. Job doesn't exists. Result code=404",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. Result code=500",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ]
+            }
+        },
+        "/api/Jobs/{id}/editor_data": {
+            "put": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Set editor estatistics data and status",
+                "description": "<code>\r\n              Example: \r\n             PUT api/jobs/5/editor_data \r\n             {\r\n            \"job_id\": 4000,\r\n            \"action\": \"finish\",\r\n            \"data\":{\r\n            \t   \"translated_text\": \"ebu-ttd subtitles\",\r\n            \t   \"translated_title\": \"string\",\r\n            \t   \"translated_synopsis\": \"string\",\r\n            \t   \"viewed_percent_editor\": \"1.0\",\r\n            \t   \"edited_percent_editor\": \"2.0\",\r\n            \t   \"validated_percent_editor\": \"3.0\"\r\n               }\r\n             }\r\n             </code>\r\n              \r\n             If action = save, job status is changed to OnEditionSaved. \r\n             If action = finish, job status is changed to Edited",
+                "operationId": "SaveEditorData",
+                "consumes": [
+                    "application/json-patch+json",
+                    "application/json",
+                    "text/json",
+                    "application/*+json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Job ID",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "editordata",
+                        "in": "body",
+                        "description": "EditorData Object",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/EditorSaveData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Result code=200",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. id parameter null, 0, negative, or not equal to job_id field. Result code=400",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key. Result code=401",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. Job doesn't exists. Result code=404",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. Result code=500",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ]
+            }
+        },
+        "/api/Jobs/{id}/reviewer_data": {
+            "put": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Set reviewer estatistics data and status",
+                "description": " Example: \r\n \r\n <code>\r\n PUT api/jobs/5/reviewer_data\r\n{\r\n  \"job_id\": 0,\r\n  \"action\": \"save\",\r\n  \"data\": {\r\n    \"viewed_percent_reviewer\": 0,\r\n    \"edited_percent_reviewer\": 0,\r\n    \"validated_percent_reviewer\": 0,\r\n    \"translated_text\": \"string\",\r\n    \"translated_title\": \"string\",\r\n    \"translated_synopsis\": \"string\"\r\n  }\r\n}\r\n </code>\r\n \r\n If action = save, job status is changed to OnRevisionSaved. \r\n If action = finish, job status is changed to Revised",
+                "operationId": "SaveReviewerData",
+                "consumes": [
+                    "application/json-patch+json",
+                    "application/json",
+                    "text/json",
+                    "application/*+json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Job ID",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "reviewerdata",
+                        "in": "body",
+                        "description": "ReviewerData Object",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/ReviewerSaveData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Result code=200",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. id parameter null, 0, negative, or not equal to job_id field. Result code=400",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key. Result code=401",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. Job doesn't exists. Result code=404",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. Result code=500",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ]
+            }
+        },
+        "/api/Jobs/{id}/auto_data": {
+            "put": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Set auto-translation data and status",
+                "description": "<code>\r\n              Example: \r\n             PUT api/jobs/5/auto_data\r\n             {\r\n              \"job_id\": 5,\r\n              \"action\": \"save\",\r\n              \"data\": {\r\n                \"auto_text\": \"string\",\r\n                \"auto_title\": \"string\",\r\n                \"auto_synopsis\": \"string\"\r\n              }\r\n            }\r\n             </code>\r\n             If action is set to 'finish', changes job status to AutoTranslated\r\n             If action is set to 'save', changes job status to OnAutoTranslation",
+                "operationId": "SaveAutoTransData",
+                "consumes": [
+                    "application/json-patch+json",
+                    "application/json",
+                    "text/json",
+                    "application/*+json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Job ID",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "autoTransData",
+                        "in": "body",
+                        "description": "AutoTransData Object",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/AutoTransSaveData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Result code=200",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. id parameter null, 0, negative, or not equal to job_id field. Result code=400",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key. Result code=401",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. Job doesn't exists. Result code=404",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. Result code=500",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ]
+            }
+        },
+        "/api/Jobs/{id}/reject": {
+            "put": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Rejects a Job. Job Status is set to rejected.",
+                "description": "Example: \r\n\r\n<code>\r\nPUT api/jobs/5/reject\r\n{\r\n  \"job_id\": 5010,\r\n  \"reason\": \"Too bad translation\"\r\n}\r\n</code>",
+                "operationId": "RejectJob",
+                "consumes": [
+                    "application/json-patch+json",
+                    "application/json",
+                    "text/json",
+                    "application/*+json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "job id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "rejectdata",
+                        "in": "body",
+                        "description": "RejectData Object",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/RejectData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Result code=200",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. id parameter null, 0, negative, or not equal to job_id field. Result code=400",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key. Result code=401",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. Job doesn't exists. Result code=404",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. Result code=500",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ]
+            }
+        },
+        "/api/Settings": {
+            "get": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Returns all settings and its corresponding values",
+                "description": "Sample Request:\r\n\r\n<code>\r\nGET: api/Settings\r\n</code>\r\nRemarks: Settings are case insensitive. key parameter is always converted to upper case\r\nIf the function succeeds, data field will have a SettingData[] Object. Otherwise the data field will be null.",
+                "operationId": "GetAllSettings",
+                "consumes": [],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK. Success.",
+                        "schema": {
+                            "$ref": "#/definitions/ResultT[SettingData[]]"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key.",
+                        "schema": {
+                            "$ref": "#/definitions/ResultT[SettingData[]]"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/ResultT[SettingData[]]"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Creates or updates a setting",
+                "description": "Sample Request:\r\n\r\n<code>\r\nPOST: api/Settings\r\n  {\r\n    \"key\": \"Setting Key\",\r\n    \"value\": \"setting value\",\r\n  }\r\n</code>\r\nRemarks: Settings are case insensitive. key parameter is always converted to upper case",
+                "operationId": "SaveSetting",
+                "consumes": [
+                    "application/json-patch+json",
+                    "application/json",
+                    "text/json",
+                    "application/*+json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "setting",
+                        "in": "body",
+                        "description": "SettingData object",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SettingData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. The setting is stored in the database.",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data. There are missing or empty required fields in the input JSON data.",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key.",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ]
+            }
+        },
+        "/api/Settings/{key}": {
+            "get": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Returns setting value given its key",
+                "description": "Sample Request:\r\n\r\n<code>\r\nGET: api/Settings/Setting_key\r\n</code>\r\nRemarks: Settings are case insensitive. key parameter is always converted to upper case\r\nIf the function succeeds, data field will have a SettingData Object. Otherwise the data field will be null.",
+                "operationId": "GetSetting",
+                "consumes": [],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "key",
+                        "in": "path",
+                        "description": "Setting name key",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Success. data field has a SettingData Object",
+                        "schema": {
+                            "$ref": "#/definitions/ResultT[SettingData]"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. Invalid input data. Key field cannot be empty.",
+                        "schema": {
+                            "$ref": "#/definitions/ResultT[SettingData]"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key.",
+                        "schema": {
+                            "$ref": "#/definitions/ResultT[SettingData]"
+                        }
+                    },
+                    "404": {
+                        "description": "Not found. Setting not found in db",
+                        "schema": {
+                            "$ref": "#/definitions/ResultT[SettingData]"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/ResultT[SettingData]"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Deletes a Setting given its key",
+                "description": "Sample Request:\r\n\r\n<code>\r\nDELETE: api/Settings/setting_key\r\n</code>\r\nRemarks: Settings are case insensitive. key parameter is always converted to upper case",
+                "operationId": "DeleteSetting",
+                "consumes": [],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "key",
+                        "in": "path",
+                        "description": "Setting key to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. The setting has been deleted.",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. Invalid input data. Key field cannot be empty.",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key.",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "404": {
+                        "description": "Not found. Setting not found in db",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/Result"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apikey": []
+                    }
+                ]
+            }
+        },
+        "/api/Version": {
+            "get": {
+                "tags": [
+                    "Version"
+                ],
+                "summary": "Returns assembly version",
+                "description": "Sample Request:\r\n<code>\r\nGET: api/Version\r\n</code>\r\nRemarks: If the function succeeds (code=200), data field will have a version number. Otherwise the data field will be null.",
+                "operationId": "Version",
+                "consumes": [],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK. Success. The version value will be found in the 'data' field of the ResultT object",
+                        "schema": {
+                            "$ref": "#/definitions/ResultT[String]"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/ResultT[String]"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "CredentialData": {
+            "description": "credential object for JSON serializing",
+            "required": [
+                "user",
+                "token",
+                "job_id"
+            ],
+            "type": "object",
+            "properties": {
+                "user": {
+                    "description": "User Name",
+                    "type": "string"
+                },
+                "token": {
+                    "description": "Token",
+                    "type": "string"
+                },
+                "job_id": {
+                    "format": "int64",
+                    "description": "Job identifier",
+                    "type": "integer"
+                }
+            }
+        },
+        "Result": {
+            "description": "Describes the result of an operation",
+            "required": [
+                "code",
+                "description"
+            ],
+            "type": "object",
+            "properties": {
+                "code": {
+                    "format": "int32",
+                    "description": "status return code",
+                    "type": "integer"
+                },
+                "description": {
+                    "description": "Error description",
+                    "type": "string"
+                }
+            }
+        },
+        "JobCreateRequestData": {
+            "description": "Object to be used as JSON data in creating a Job (POST api/jobs)",
+            "required": [
+                "job_id",
+                "publication_date",
+                "expiration_date",
+                "content_owner",
+                "input"
+            ],
+            "type": "object",
+            "properties": {
+                "job_id": {
+                    "format": "int64",
+                    "description": "Job idntifier",
+                    "type": "integer"
+                },
+                "publication_date": {
+                    "format": "int64",
+                    "description": "publication date as unix timestamp",
+                    "type": "integer"
+                },
+                "expiration_date": {
+                    "format": "int64",
+                    "description": "Expiration date as unix timestamp",
+                    "type": "integer"
+                },
+                "content_owner": {
+                    "description": "The name of the user that creates the job",
+                    "type": "string"
+                },
+                "input": {
+                    "$ref": "#/definitions/JobInputData",
+                    "description": "Input parameters"
+                }
+            }
+        },
+        "JobInputData": {
+            "description": "Job Input Data",
+            "required": [
+                "language_source",
+                "language_target",
+                "video_path",
+                "original_title",
+                "asset_duration",
+                "asset_name",
+                "original_text"
+            ],
+            "type": "object",
+            "properties": {
+                "language_source": {
+                    "description": "ISO639-1 2char source language code",
+                    "type": "string"
+                },
+                "language_target": {
+                    "description": "ISO639-1 2char target language code",
+                    "type": "string"
+                },
+                "confidence_level": {
+                    "description": "Confidence level",
+                    "default": "low",
+                    "type": "string"
+                },
+                "video_path": {
+                    "description": "video file name (without url path)",
+                    "type": "string"
+                },
+                "original_title": {
+                    "description": "Original asset title",
+                    "type": "string"
+                },
+                "asset_duration": {
+                    "description": "Asset duration. format hh:mm:ss",
+                    "type": "string"
+                },
+                "asset_name": {
+                    "description": "Asset name.",
+                    "type": "string"
+                },
+                "original_text": {
+                    "description": "EBU TT-D xml text with original subtitles",
+                    "type": "string"
+                },
+                "original_synopsis": {
+                    "description": "Original asset synopsis",
+                    "type": "string"
+                }
+            }
+        },
+        "JobResponseData": {
+            "description": "Job Object",
+            "type": "object",
+            "properties": {
+                "status": {
+                    "description": "job status",
+                    "enum": [
+                        "AwaitingForAutomaticTranslation",
+                        "OnAutoTranslation",
+                        "AutoTranslated",
+                        "AwaitingForEdition",
+                        "OnEdition",
+                        "OnEditionSaved",
+                        "Edited",
+                        "AwaitingForRevision",
+                        "OnRevision",
+                        "OnRevisionSaved",
+                        "Revised",
+                        "CrwEndNotified",
+                        "Finished",
+                        "Rejected",
+                        "CancelRequested",
+                        "Cancelled"
+                    ],
+                    "type": "string"
+                },
+                "job_id": {
+                    "format": "int64",
+                    "description": "Job identifier",
+                    "type": "integer"
+                },
+                "publication_date": {
+                    "format": "int64",
+                    "description": "publication date as unix timestamp",
+                    "type": "integer"
+                },
+                "expiration_date": {
+                    "format": "int64",
+                    "description": "Expiration date as unix timestamp",
+                    "type": "integer"
+                },
+                "content_owner": {
+                    "description": "The name of the user that creates the job",
+                    "type": "string"
+                },
+                "edit_link_editor": {
+                    "description": "url of titling editing app",
+                    "type": "string"
+                },
+                "edit_link_reviewer": {
+                    "description": "url of titling review app",
+                    "type": "string"
+                },
+                "language_source": {
+                    "description": "ISO639-1 2chars source language code",
+                    "type": "string"
+                },
+                "language_target": {
+                    "description": "ISO639-1 2chars target language code",
+                    "type": "string"
+                },
+                "confidence_level": {
+                    "description": "Confidence level",
+                    "type": "string"
+                },
+                "video_path": {
+                    "description": "video file name (without url path)",
+                    "type": "string"
+                },
+                "original_title": {
+                    "description": "Asset name",
+                    "type": "string"
+                },
+                "auto_title": {
+                    "description": "Auto-translated title",
+                    "type": "string"
+                },
+                "translated_title": {
+                    "description": "Edited-Revised translated title",
+                    "type": "string"
+                },
+                "original_synopsis": {
+                    "description": "Asset Synopsis",
+                    "type": "string"
+                },
+                "auto_synopsis": {
+                    "description": "Auto-translated synopsis",
+                    "type": "string"
+                },
+                "translated_synopsis": {
+                    "description": "Auto-translated sinopsys",
+                    "type": "string"
+                },
+                "asset_duration": {
+                    "description": "Asset length. Format hh:mm:ss",
+                    "type": "string"
+                },
+                "asset_name": {
+                    "description": "Asset name",
+                    "type": "string"
+                },
+                "original_text": {
+                    "description": "EBU TT-D xml text with original subtitles",
+                    "type": "string"
+                },
+                "auto_text": {
+                    "description": "EBU TT-D xml text with auto-translated subtitles",
+                    "type": "string"
+                },
+                "translated_text": {
+                    "description": "EBU TT-D xml text with user-edited translated subtitles",
+                    "type": "string"
+                },
+                "viewed_percent_editor": {
+                    "format": "double",
+                    "description": "When in edition status, the percent of text lines viewed",
+                    "type": "number"
+                },
+                "edited_percent_editor": {
+                    "format": "double",
+                    "description": "When in edition status, the percent of text lines edited",
+                    "type": "number"
+                },
+                "validated_percent_editor": {
+                    "format": "double",
+                    "description": "When in edition status, the percent of text lines validated",
+                    "type": "number"
+                },
+                "viewed_percent_reviewer": {
+                    "format": "double",
+                    "description": "When in review status, the percent of text lines viewed",
+                    "type": "number"
+                },
+                "edited_percent_reviewer": {
+                    "format": "double",
+                    "description": "When in review status, the percent of text lines edited",
+                    "type": "number"
+                },
+                "validated_percent_reviewer": {
+                    "format": "double",
+                    "description": "When in review status, the percent of text lines validated",
+                    "type": "number"
+                },
+                "reject_reason": {
+                    "description": "Reason for rejecting a translation job",
+                    "type": "string"
+                }
+            }
+        },
+        "EditorSaveData": {
+            "description": "Data structure for JSON serializing when saving data from the editor",
+            "required": [
+                "job_id",
+                "action"
+            ],
+            "type": "object",
+            "properties": {
+                "job_id": {
+                    "format": "int64",
+                    "description": "Job identifier",
+                    "type": "integer"
+                },
+                "action": {
+                    "description": "If set to finish, changes status to edited",
+                    "enum": [
+                        "save",
+                        "finish"
+                    ],
+                    "type": "string"
+                },
+                "data": {
+                    "$ref": "#/definitions/EditorInnerData",
+                    "description": "Inner data"
+                }
+            }
+        },
+        "EditorInnerData": {
+            "description": "Editor save inner data",
+            "required": [
+                "translated_text",
+                "translated_title"
+            ],
+            "type": "object",
+            "properties": {
+                "viewed_percent_editor": {
+                    "format": "double",
+                    "description": "When in edition status, the percent of text lines viewed",
+                    "type": "number"
+                },
+                "edited_percent_editor": {
+                    "format": "double",
+                    "description": "When in edition status, the percent of text lines edited",
+                    "type": "number"
+                },
+                "validated_percent_editor": {
+                    "format": "double",
+                    "description": "When in edition status, the percent of text lines validated",
+                    "type": "number"
+                },
+                "translated_text": {
+                    "description": "EBU TT-D xml text with user-edited translated subtitles",
+                    "type": "string"
+                },
+                "translated_title": {
+                    "description": "Translated title",
+                    "type": "string"
+                },
+                "translated_synopsis": {
+                    "description": "Translated synopsis",
+                    "type": "string"
+                }
+            }
+        },
+        "ReviewerSaveData": {
+            "description": "Data structure for JSON serializing when saving data from the reviewer",
+            "required": [
+                "job_id",
+                "action"
+            ],
+            "type": "object",
+            "properties": {
+                "job_id": {
+                    "format": "int64",
+                    "description": "Job identifier",
+                    "type": "integer"
+                },
+                "action": {
+                    "description": "Action to execute. If finish, status changes ti finished",
+                    "enum": [
+                        "save",
+                        "finish"
+                    ],
+                    "type": "string"
+                },
+                "data": {
+                    "$ref": "#/definitions/ReviewerInnerData",
+                    "description": "Innner data"
+                }
+            }
+        },
+        "ReviewerInnerData": {
+            "description": "Reviewer data fields",
+            "required": [
+                "translated_text",
+                "translated_title"
+            ],
+            "type": "object",
+            "properties": {
+                "viewed_percent_reviewer": {
+                    "format": "double",
+                    "description": "When on review status, the percent of text lines viewed",
+                    "type": "number"
+                },
+                "edited_percent_reviewer": {
+                    "format": "double",
+                    "description": "When on review status, the percent of text lines edited",
+                    "type": "number"
+                },
+                "validated_percent_reviewer": {
+                    "format": "double",
+                    "description": "When on review status, the percent of text lines validated",
+                    "type": "number"
+                },
+                "translated_text": {
+                    "description": "EBU TT-D xml text with user-edited translated subtitles",
+                    "type": "string"
+                },
+                "translated_title": {
+                    "description": "Translated title",
+                    "type": "string"
+                },
+                "translated_synopsis": {
+                    "description": "Translated synopsis",
+                    "type": "string"
+                }
+            }
+        },
+        "AutoTransSaveData": {
+            "description": "Data structure for JSON serializing when saving data from the editor",
+            "required": [
+                "job_id",
+                "action"
+            ],
+            "type": "object",
+            "properties": {
+                "job_id": {
+                    "format": "int64",
+                    "description": "Job identifier",
+                    "type": "integer"
+                },
+                "action": {
+                    "description": "If set to 'finish', changes status to AutoTranslated\r\nIf set to 'save', changes status to OnAutoTranslation",
+                    "enum": [
+                        "save",
+                        "finish"
+                    ],
+                    "type": "string"
+                },
+                "data": {
+                    "$ref": "#/definitions/AutoTransInnerData",
+                    "description": "Inner data"
+                }
+            }
+        },
+        "AutoTransInnerData": {
+            "description": "AutoTranslation save inner data",
+            "required": [
+                "auto_text",
+                "auto_title"
+            ],
+            "type": "object",
+            "properties": {
+                "auto_text": {
+                    "description": "EBU TT-D xml text with auto translated subtitles",
+                    "type": "string"
+                },
+                "auto_title": {
+                    "description": "Auto Translated title",
+                    "type": "string"
+                },
+                "auto_synopsis": {
+                    "description": "Auto Translated synopsis",
+                    "type": "string"
+                }
+            }
+        },
+        "RejectData": {
+            "description": "Describes the reason for rejecting a job",
+            "required": [
+                "job_id"
+            ],
+            "type": "object",
+            "properties": {
+                "job_id": {
+                    "format": "int64",
+                    "description": "Job identificator",
+                    "type": "integer"
+                },
+                "reason": {
+                    "description": "Reason why the job is rejected",
+                    "type": "string"
+                }
+            }
+        },
+        "SettingData": {
+            "required": [
+                "key",
+                "value"
+            ],
+            "type": "object",
+            "properties": {
+                "key": {
+                    "description": "name of the setting variable",
+                    "type": "string",
+                    "example": "\"Variable\""
+                },
+                "value": {
+                    "description": "value of the setting variable",
+                    "type": "string",
+                    "example": "\"Variable Value\""
+                }
+            }
+        },
+        "ResultT[SettingData[]]": {
+            "description": "Describes the result of an operation",
+            "required": [
+                "code",
+                "description"
+            ],
+            "type": "object",
+            "properties": {
+                "code": {
+                    "format": "int32",
+                    "description": "status return code",
+                    "type": "integer"
+                },
+                "description": {
+                    "description": "Error description",
+                    "type": "string"
+                },
+                "data": {
+                    "description": "additional data",
+                    "uniqueItems": false,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/SettingData"
+                    }
+                }
+            }
+        },
+        "ResultT[SettingData]": {
+            "description": "Describes the result of an operation",
+            "required": [
+                "code",
+                "description"
+            ],
+            "type": "object",
+            "properties": {
+                "code": {
+                    "format": "int32",
+                    "description": "status return code",
+                    "type": "integer"
+                },
+                "description": {
+                    "description": "Error description",
+                    "type": "string"
+                },
+                "data": {
+                    "$ref": "#/definitions/SettingData",
+                    "description": "additional data"
+                }
+            }
+        },
+        "ResultT[String]": {
+            "description": "Describes the result of an operation",
+            "required": [
+                "code",
+                "description"
+            ],
+            "type": "object",
+            "properties": {
+                "code": {
+                    "format": "int32",
+                    "description": "status return code",
+                    "type": "integer"
+                },
+                "description": {
+                    "description": "Error description",
+                    "type": "string"
+                },
+                "data": {
+                    "description": "additional data",
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "apikey": {
+            "name": "X-EasyTV-Key",
+            "in": "header",
+            "type": "apiKey",
+            "description": "Api key needed to acces protected endpoints"
+        }
+    }
+}

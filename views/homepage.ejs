@@ -1,0 +1,239 @@
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark"> <%= userTitle %>'s Dashboard</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Dashboard</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+
+
+        <div class="row" style="margin: auto;width: 50%;">
+        <!-- Info boxes -->
+        
+          <div class="row" style="margin: auto;width:80%;padding:15px">
+            <h5 style="display:block">Organisation Summary</h5><br>
+            <div class="col-md-8">
+              <div class="info-box">
+                <span class="info-box-icon bg-info elevation-1"><i class="fa fa-files-o"></i></span>
+                <div class="info-box-content">
+                  <span class="info-box-text"> Jobs Published</span>
+                  <span class="info-box-number"> <%= jobsPosted %> </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- fix for small devices only -->
+            <div class="clearfix hidden-md-up"></div>
+            <div class="col-md-8">
+              <div class="info-box mb-3">
+                <span class="info-box-icon bg-warning elevation-1"><i class="fa fa-users"></i></span>
+                <div class="info-box-content">
+                  <span class="info-box-text"> Registered Members</span>
+                  <span class="info-box-number"> <%= orgMembers %> </span>
+                </div>
+              </div>
+            </div>
+        </div>
+     
+          <% if (session.User) { %>
+            <% if (session.User.access != "admin" && session.User.access != "superadmin") { %>
+              <%- include partials/userStats %>
+             <% } %>
+          <% } %>
+         </div>
+        <!-- /.row -->
+        
+        <% if (session.User) { %>
+          <% if (session.User.access != "admin" && session.User.access != "superadmin") { %>
+            <br>
+            <%- include partials/assignedJobs %>
+ 
+            <div id="assignbox"></div>
+            <br>
+            <%- include partials/broadcasterJobs %>
+ 
+            <br> <br>
+              <% if (session.User.settings.showOtherJobs == "yes") { %>
+                <%- include partials/otherJobs %>
+              <% } %>
+ 
+            <% } else { %>
+ 
+            <%- include partials/adminPanel %>
+
+             <% } %>
+        <% } %>
+      </div><!--/. container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+  <script>
+    // confirm assignment request
+     function requestJob(job, userid, assignedJobs) {
+        if(assignedJobs.length>0)
+          $( "#assignbox" ).html( '<div class="alert alert-warning alert-dismissible MyFlashBox centerAction" style="width:40%">\
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>\
+          <strong>Finish or withdraw from your assigned job!</strong></div>' );
+        else
+          bootbox.confirm({
+            title: "Confirmation ",
+            message: "You are going to get assigned this job, do you agree?",
+            buttons: {
+              confirm: { label: "<%= __('organisation.show.yestag') %>", className: 'btn-success' },
+              cancel: { label: "<%= __('organisation.show.canceltag') %>" }
+            },
+            callback: function(result) {
+              if (result) {
+                // add CSRF, check if needed
+                console.log(job);
+                data = {}
+                data = { job: job, userid: userid  };
+                $.post("/task/assign", data, function(status) {
+                  //$('#taskIcon'+taskid).text("lock_outline")
+                  console.log(status);
+                  location.reload();
+                });
+              }
+            }
+          });
+       }
+    // send un-assign request
+    function withdrawJob(job, userid) {
+         bootbox.confirm({
+           title: "Confirmation",
+           message: "You are going to withdraw from this job, are you sure?",
+           buttons: {
+            confirm: { label: "<%= __('organisation.show.yestag') %>", className: 'btn-success' },
+             cancel: { label: "<%= __('organisation.show.canceltag') %>" }
+           },
+           callback: function(result) {
+             if (result) {
+               // add CSRF, check if needed
+               console.log(job);
+               data = {}
+               data = { job: job, userid: userid  };
+               $.post("/task/unassign", data, function(status) {
+                 //$('#taskIcon'+taskid).text("lock_outline")
+                 console.log(status);
+                 location.reload();
+               });
+             }
+           }
+         });
+       }
+    function loaderWait(token){
+       //console.log("iframe loaded!");
+       // A new access-token should be generated/registered for this user automatically
+       $.post("/task/refreshtoken", {token:token}, function(status) {
+          console.log(status);
+        });
+       var elem = document.getElementById('loading');
+       elem.parentNode.removeChild(elem);
+       var iframeWindow = document.getElementsByClassName("modal-dialog")[0];
+       iframeWindow.style.minWidth  = "1400px";
+
+    }
+    // redirect iframe warning
+    function iframeProceed(editorLink, job_id, token, user) {
+         bootbox.confirm({
+           size: 'large',
+           title: "Reviewer/Evaluator Tool",
+           message: "<i id='loading' style='display:block;width:100%;height:100%;color:green' class='fa fa-refresh fa-spin fa-4x fa-fw'></i>  <div class='embed-responsive embed-responsive-16by9'>\
+            <iframe class='embed-responsive-item' src='"+editorLink+'?token='+token+'&userid='+user+'&job='+job_id+"'  onload='loaderWait("+'"'+token+'"'+")' allowfullscreen></iframe>\
+             </div>",
+           buttons: {
+             confirm: { label: "DONE", className: 'btn-success' },
+           },
+           callback: function(result) {
+            location.reload();
+           }
+         });
+      }
+
+    // user "blocking" confirmation
+    function blockUser(orgid, userid) {
+         bootbox.prompt({
+           title: "User block",
+           //description: "You are going to block this user from interacting with your content, are you sure?",
+           value: "Why you block this user?",
+           buttons: {
+             confirm: { label: "<%= __('organisation.show.yestag') %>", className: 'btn-danger' },
+             cancel: { label: "<%= __('organisation.show.canceltag') %>" }
+           },
+           callback: function(result) {
+             if (result) {
+               data = { id: orgid, user: userid  };
+               $.post("/user/block", data, function(status) {
+                 //console.log(status);
+                 location.reload();
+               });
+             }
+           }
+         });
+       }
+
+    // user "unblocking" confirmation
+    function unblockUser(orgid, userid) {
+         bootbox.confirm({
+           title: "User un-block",
+           message: "You are going to restore this user access to your content, are you sure?",
+           buttons: {
+             confirm: { label: "<%= __('organisation.show.yestag') %>", className: 'btn-success' },
+             cancel: { label: "<%= __('organisation.show.canceltag') %>" }
+           },
+           callback: function(result) {
+             if (result) {
+               data = { id: orgid, user: userid  };
+               $.post("/user/unblock", data, function(status) {
+                 console.log(status);
+                 location.reload();
+               });
+             }
+           }
+         });
+       }
+
+    // user role-modification
+    function updateRole(orgid, userid, newRole) {
+         bootbox.confirm({
+           title: "User role modification",
+           message: "You are going to assign this user a new role, are you sure?",
+           buttons: {
+             confirm: { label: "<%= __('organisation.show.yestag') %>", className: 'btn-success' },
+             cancel: { label: "<%= __('organisation.show.canceltag') %>" }
+           },
+           callback: function(result) {
+             if (result) {
+               data = { id: orgid, user: userid, role: newRole  };
+               $.post("/user/role", data, function(status) {
+                 console.log(status);
+                 location.reload();
+               });
+             }
+           }
+         });
+       }
+</script>
+
+<!-- load extra .js plugins only for this view -->
+<% block('localScripts', '<script src="/plugins/bootstrap-table-filter-control.min.js"></script>') %>
+<% block('localScripts', '<script src="/js/dashboard-app.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/bootbox.min.js"></script>') %>

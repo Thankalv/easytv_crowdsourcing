@@ -1,0 +1,40 @@
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1>Dropzone</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i>Home</a></li>
+            <li class="breadcrumb-item active"> <a href="/task/work">work</a></li>
+        </ol>
+        
+    </section>
+    
+
+    <section class="content">
+
+        <div class="col-md-10 offset-md-1">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2><%= __('task.steps.videoupload') %> : "taskname" </h2>
+                        </div>
+                        <div class="x_content">
+                             <p> <%= __('task.steps.dragdrop') %> <button id="submit-videos"> <i class="glyphicon glyphicon-upload" ></i> <%= __('task.steps.submit') %></button> </p>
+                            <div  id="myVideoDropzone" class='dropzone' style="background: #17a2b894; width: 100%; height: 180px;"></div>
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+</div>
+
+
+<% block('localScripts', '<script src="/plugins/bootbox.min.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/annotationDropzone.js"></script>') %>

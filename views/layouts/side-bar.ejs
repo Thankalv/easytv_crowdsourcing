@@ -1,0 +1,93 @@
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4" style="position:absolute; min-height: 100%">
+    <!-- Brand Logo -->
+    <a href="/" class="brand-link">
+      <img src="/images/easytvlogo-main.png"
+           alt="EasyTV Logo"
+           class="brand-image img-circle elevation-3"
+           style="opacity: .8; max-height: 34px;">
+      <span class="brand-text font-weight-bold">Crowdsourcing</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+          <img src="<%= session.User.gravatarImage %>" class="img-circle elevation-2" alt="User Image">
+        </div>
+        <div class="info">
+          <a href="#" class="d-block"> <%= User.fullName( session.User ) %> </a>
+        </div>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
+          <li class="nav-item">
+            <% if (session.activeTag=='dashboard') { %> <a href="/"  class="nav-link active">  <% }else{  %>  <a href="/"  class="nav-link"> <% } %>
+              <i class="nav-icon fa fa-dashboard"></i>
+              <p>
+                Dashboard
+              </p>
+            </a>
+          </li>
+
+          <!-- Organization's variable config, exposed only to org-admins and the master admin -->
+          <% if ( session.User.access!='superadmin' && session.User.access != 'admin') { %>
+          <li class="nav-item">
+                <% if (session.activeTag=='settings') { %> <a href="/user/settings"  class="nav-link active">  <% }else{  %>  <a href="/user/settings"  class="nav-link"> <% } %>
+                  <i class="nav-icon fa fa-gear"></i>
+                  <p>
+                    Account Settings
+                  </p>
+                </a>
+              </li>
+          <% } %>
+
+          <li class="nav-item">
+           <% if (session.activeTag=='feedback') { %> <a href="/feedback"  class="nav-link active">  <% }else{  %>  <a href="/feedback"  class="nav-link"> <% } %>
+              <i class="nav-icon fa fa-edit"></i>
+              <p>
+                Feedback
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <% if (session.activeTag=='log') { %> <a href="/log"  class="nav-link active">  <% }else{  %>  <a href="/log"  class="nav-link"> <% } %>
+              <i class="nav-icon fa fa-table"></i>
+              <p>
+                Logs
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+              <% if (session.activeTag=='users') { %> <a href="/user"  class="nav-link active">  <% }else{  %>  <a href="/user"  class="nav-link"> <% } %>
+                <i class="nav-icon fa fa-users"></i>
+                <p>
+                  Users
+                </p>
+              </a>
+            </li>
+
+            <!-- Organization's variable config, exposed only to org-admins and the master admin -->
+          <% if ( session.User.access=='superadmin' || session.User.access=='admin') { %>
+          <li class="nav-item">
+                <% if (session.activeTag=='org') { %> <a href="/organisation/show?id=<%= session.User.userOrganisation.id %>"  class="nav-link active">  <% }else{  %>  <a href="/organisation/show?id=<%= session.User.userOrganisation.id %>"  class="nav-link"> <% } %>
+                  <i class="nav-icon fa fa-institution"></i>
+                  <p>
+                    Organisation
+                  </p>
+                </a>
+              </li>
+          <% } %>
+          
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>

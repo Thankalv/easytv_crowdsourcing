@@ -1,0 +1,60 @@
+
+<div class="content-wrapper">
+        <section class="content-header">
+            <h1> Video Annotation </h1>
+            <ol class="breadcrumb">
+               <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i>Home</a></li>
+                <li class="breadcrumb-item active"> demo-app </li>
+            </ol>
+        </section>
+    
+        <section class="content">
+                <section class="main-content" style="border-style: groove; background: #f0f5ff;">
+                        <h3>Current Demo</h3>
+                        <div class="video-container">
+                          <video id="the_video" class="video-js" controls preload="auto" width="720" height="405" poster="/images/emilio.jpg" data-setup="{}">
+                            <!-- <source src="https://s3.amazonaws.com/misc-files-bucket/arethusa-cheese-short.mp4" type='video/mp4'> -->
+                              <source src="/videos/Emilio_7_flip.mp4" type='video/mp4'>
+                            <p class="vjs-no-js">
+                              To view this video please enable JavaScript, and consider upgrading to a web browser that
+                              <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                            </p>
+                          </video>
+                        </div>
+                  
+                        <small style="color:blue">*only the last annotation of each one is taken into account</small>
+                  
+                        <br><br>
+                        <button id="post-notifications" class="btn centerButton post-button" style="color:black; border-color: blue; background: #0ca20bc7; font-weight: 500;"> 
+                          Submit annotations
+                        </button>
+
+                        <div id="alertbox"></div>
+                        <!-- <p>
+                          <h3 style="display:inline-flex" id="comment-username"></h3> said <br>
+                          <small id="comment-date"></small>
+                          <div id="comment-content" class="blockquote"> </div>
+                        </p> -->
+                        <h3>Current Annotation</h3>
+                        <div class="console-container">
+                          <div class="clear-console-btn">CLEAR</div>
+                          <div class="console"></div>
+                        </div>
+                      </section>
+        </section>
+
+</div>
+    
+    
+<!-- load extra .css assets only for this view-app -->
+<% block('localScripts', '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="/plugins/video-annotation-app/style.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="https://vjs.zencdn.net/6.2.0/video-js.min.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="/plugins/video-annotation-app/assets/videojs_skin.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="/plugins/video-annotation-app/build/css/annotations.css" rel="stylesheet" type="text/css">') %>
+
+<!-- load extra .js assets only for this view-app -->
+<% block('localScripts', '<script src="https://vjs.zencdn.net/6.2.0/video.min.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/video-annotation-app/build/videojs-annotation-comments.min.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/video-annotation-app/assets/js/demo_annotations.js"> </script>') %>
+<% block('localScripts', '<script src="/plugins/video-annotation-app/assets/js/main.js"></script>') %>

@@ -1,0 +1,60 @@
+<div class="col-md-10 offset-md-1">
+        <div class="card">
+          <div class="card-header border-transparent" style="background: #5f9ea070;">
+            <h3 class="card-title">Your language skills</h3>
+          </div>
+          <div class="card-body p-0">
+            <table class="table lang-list">
+                <thead>
+                    <tr> 
+                      <td></td>
+                      <td>Language</td> 
+                      <td>Level</td> 
+                    </tr>
+                </thead>
+                <tbody>
+                    <% _.each(user.lang_info.langs, function(userLang) { %>
+                      <tr class="tr_clone">
+                          <td colspan="1" style="text-align: left;">
+                        </td>
+                        <td> 
+                            <select class="form-control llang" disabled> 
+                                  <option> <%= langs[langsISO.indexOf(userLang[Object.keys(userLang)[0]])] %> </option>
+                              </select>
+                          </td>
+                          <td> 
+                              <select class="form-control llevel" disabled> 
+                                  <option> <%= levels[userLang[Object.keys(userLang)[1]]-1].description %> </option>
+                              </select>                                   
+                          </td>
+                        </tr>
+                      <% }); %>
+
+                    <tr class="tr_clone" >
+                        <td colspan="1" style="text-align: left;">
+                            <input id="addrow" type="button" class="btn btn-sm btn-block btn-success fa fa-input" style="background-color: cadetblue; font-weight: bold" value="&#xf067" />
+                        </td>
+                        <td> 
+                          <select class="form-control llang" name="lang" id="langselect" style="display:none"> 
+                              <% _.each(langs, function(lang) { %>
+                                <option value="<%= langsISO[langs.indexOf(lang)] %>">
+                                  <%= lang %>
+                                </option>
+                              <% }); %>
+                            </select>
+                        </td>
+                         <td> 
+                            <select class="form-control llevel" name="level" id="levelselect" style="display:none" > 
+                              <% _.each(levels, function(level) { %>
+                                <option value="<%= level.num %>">
+                                    <%= level.description %>
+                                </option>
+                              <% }); %>
+                            </select>                                   
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+          </div>
+        </div>
+    </div>

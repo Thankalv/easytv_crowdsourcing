@@ -1,0 +1,81 @@
+<div class="row">
+  <div class="col-md-10 offset-md-1">
+    <div class="card">
+      <div class="card-header border-transparent" style="background-color: #25bf28d4">
+        <h3 class="card-title"><b>Jobs assigned to you 
+          <i class="material-icons" style='vertical-align: middle !important; font-size: 28px' href='#' data-toggle="tooltip" title="access only to you"> lock_outline  </i> </b> </h3>
+          continue working on them 
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-widget="collapse">
+            <i class="fa fa-minus"></i>
+          </button>
+        </div>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table w-auto" data-toggle="table" data-pagination="true" data-page-size="10" data-page-list="[2,10,25,50]"
+                data-filter-control="true" data-filter-show-clear="false">
+            <thead>
+            <tr>
+              <th> ID </th>
+              <th class="w-10"> Action</th>
+              <th class="w-9"> Lang from/to</th>
+              <th class="w-10"> Duration</th>
+              <th class="w-10"> Progress%</th>
+              <th class="w-20" data-field="date"> Airing Date/<br> Expiration Date</th>
+              <th data-field="title" data-sortable="true" data-filter-control="input" class="w-40"> Original Title</th>
+            </tr>
+            </thead>
+            <tbody>
+                <% _.each(assignedJobs, function(job) { %>
+                  <tr data-id="<%= job.id %>" data-model="job">
+                    <td> <%= job.job_id %> </td>
+                    <td class="w-10">
+                      <div class="row centerAction">
+                      <% if (["OnEdition","AwaitingForEdition", "OnEditionSaved"].indexOf(job.status)>-1) { %> 
+                        <i class="btn btn-success bg-success material-icons" style='vertical-align: middle !important;font-size: 18px'
+                           onclick="iframeProceed('<%= job.edit_link_editor %>','<%= job.job_id %>','<%= job.accesslink.token %>','<%= job.accesslink.user %>')"> input  </i> 
+                           <% } else { %> 
+                          <i class="btn btn-success bg-success material-icons" style='vertical-align: middle !important;font-size: 18px'
+                           onclick="iframeProceed('<%= job.edit_link_reviewer %>','<%= job.job_id %>','<%= job.accesslink.token %>','<%= job.accesslink.user %>')"> input  </i>                      
+                         <% } %>
+                         <i id='taskIcon<%= job.job_id %>' class="btn btn-warning bg-warning material-icons" style='vertical-align: middle !important; font-size: 18px' 
+                            href='#' onclick="withdrawJob('<%= JSON.stringify(job) %>', '<%= session.User.id %>' )" > 
+                            clear
+                        </i> 
+                      </div>
+                    </td>
+                    <td class="w-9">
+                       <b><%= job.language_source %> </b> / <b > <%= job.language_target %> </b>
+                    </td>
+                    <td class="w-10">
+                      <span class="badge badge-success" >
+                          <%= job.asset_duration %>
+                      </span> 
+                    </td>
+                    <td>      
+                        <div class="progress-group">
+                            <b><%= job.validated_percent_editor %></b>%
+                            <div class="progress progress-sm">
+                              <div class="progress-bar bg-primary" style="width: <%= job.validated_percent_editor %>%"></div>
+                            </div>
+                          </div>
+                      </td>                            
+                      <td>  
+                        <b> <span style="font-size:12.5px;font-weight: 700"> <%= UtilService.to_hhmmss_ddmmyyyy(job.publication_date*1000) %> </span> </b> / <br>
+                        <span style="font-size:12px"> <%= UtilService.to_hhmmss_ddmmyyyy(job.expiration_date*1000) %> </span> 
+                      </td>
+                    <td class="w-40"> 
+                       <%= job.asset_name %> 
+                    </td>
+                  </tr>
+                <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
