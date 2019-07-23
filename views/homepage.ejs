@@ -180,7 +180,7 @@
            },
            callback: function(result) {
              if (result) {
-               data = { id: orgid, user: userid  };
+               data = { id: orgid, user: userid, reason: result };
                $.post("/user/block", data, function(status) {
                  //console.log(status);
                  location.reload();
