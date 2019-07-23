@@ -10,7 +10,6 @@
             "email": "tkalv@iti.gr"
         }
   },
-  "host": "localhost:1337",
   "basePath": "/api",
   "tags": [
     {
