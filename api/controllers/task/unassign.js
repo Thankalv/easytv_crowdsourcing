@@ -41,7 +41,7 @@ module.exports = {
         if(existingAssign)
         {
           await Accesslink.destroyOne({job_id: inputs.job.job_id, user: inputs.userid});
-          sails.log("Cancel assignment for job:", inputs.job_id);
+          sails.log("Cancel assignment for job:", inputs.job.job_id);
           return exits.success({description:"The user-job assignment is withdrawn!"});
         }
         else{

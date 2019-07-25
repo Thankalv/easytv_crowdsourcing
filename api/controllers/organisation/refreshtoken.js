@@ -39,9 +39,7 @@ module.exports = {
             return exits.success({code:200, description: updOrg.token});
         else
             return exits.notFound();
-
     }
-  
   
   };
   

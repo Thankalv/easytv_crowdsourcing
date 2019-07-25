@@ -60,7 +60,6 @@ module.exports = {
             emailProofTokenExpiresAt: 0
           });
 
-
           this.req.session.authenticated = true;
           this.req.session.User = user;
           this.req.session.User.userOrganisation = await Organisation.findOne({ id: user.userOrganisation });

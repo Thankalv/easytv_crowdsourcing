@@ -140,8 +140,8 @@ module.exports = {
           res.view( {
             orgid: default_organisation_id,
             organisations: organisations,
-            langs: ISO6391.getAllNames(),
-            langsISO: ISO6391.getAllCodes(),
+            langs: sails.config.custom.langs,
+            langsISO: sails.config.custom.langsISO,
             levels: [   { num: 1, description: 'Junior'},
                       { num: 2, description: 'Intermediate'},
                       { num: 3, description: 'Proficiency'}] ,
@@ -201,7 +201,6 @@ module.exports = {
       consent_required = false,
       token_required = false;
 
-
       var userOrg = await Organisation.findOne({ id: orgid });
 
       if (userOrg === null) {
@@ -219,12 +218,16 @@ module.exports = {
       }
 
       //check Org token
-      if (token_required) {
+      if (token_required)
         if (req.param('orgtoken') !== userOrg.token) {
           message = 'Invalid Security Token. Please provide the security token provided by your Organisation';
           hasError = true;
         }
-      }
+      if (consent_required)
+        if (req.param('agree') !== "agree") {
+          message = 'You need to agree with the CONSENT FORM!';
+          hasError = true;
+        }
       if (req.param('password') !== req.param('confirmation')) {
         message = 'Password and Confirmation Password mismatch.';
         hasError = true;

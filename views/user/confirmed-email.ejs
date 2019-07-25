@@ -1,0 +1,24 @@
+<div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>  Your email is now confirmed </h1>
+        </section>
+      
+        <section class="content">
+            <div class="col-md-8 offset-md-4" style="margin-top: 5%">
+              <div class="row">
+                <h2 style="color:green" class="headline"> 
+                  <i class="fa fa-check-circle"></i>
+                </h2>
+                  <h3 style="color:green">
+                    Thank you for taking care of this!
+                  </h3>
+                  <% if (typeof data!== 'undefined') { %>
+                  <div class="alert alert-warning" role="alert"><%- data %></div>
+                  <% } %>
+          
+              </div>
+            </div>
+
+        </section>
+      </div>

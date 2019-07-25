@@ -20,10 +20,10 @@ module.exports.custom = {
   // stripeSecret: 'sk_test_Zzd814nldl91104qor5911gjald',
   // …
 
-  // variable to control the 'logging' mode of the setup
+  // a simple config variable to control the 'logging' mode of the setup
   loggingMode : true,
 
-  // Send "confirm account" email to assure that's a human user
+  // Send "confirm account" email to assure a human user
   verifyEmailAddresses : true,
 
   // config var to be exposed in email-templates
@@ -31,7 +31,7 @@ module.exports.custom = {
 
   /* easytv authentication token for the API modules intercommunication */
   xEasyTVtoken: "dea005f1143a6626be48e2d4878ecf8538a5dde78996fb673c9663bcb1be5390",
-
+  
   version: 0.5,
   // confirm-email expires in only 1 minute
   emailProofTokenTTL:    24*60*60*1000,// 24 hours

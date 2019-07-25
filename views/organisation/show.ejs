@@ -23,9 +23,9 @@
                   <h5> <%= __('organisation.show.regtoken') %> </h5>
                   <div class="form-group">
                       <div class="checkbox">
-                        <label style='background-color: rgb(188, 235, 236)'>
+                        <label>
                           <input type="checkbox" value="token_required" <%= organisation.token_required ? 'checked': '' %>>
-                          <%= __('organisation.show.securitytoken') %>
+                          Require <div class="badge badge-success"> Security Token </div> upon user registration
                         </label>
                         <div class="row">
                           <div class="col-md-3">
@@ -42,9 +42,9 @@
                     <h5> <%= __('organisation.show.consentform') %> </h5>
                     <div class="form-group">
                         <div class="checkbox">
-                          <label style='background-color: rgb(188, 235, 236)'>
+                          <label >
                             <input type="checkbox" value="consent_required" <%= organisation.consent_required ? 'checked': '' %>>
-                            <%= __('organisation.show.displayconsent') %>
+                            Display <div class="badge badge-success"> Consent Form </div> upon user registration
                           </label>
                         </div>
                         <textarea id="description" name="consent_form" class="textarea">
@@ -121,12 +121,12 @@
      function updateConsent() 
      {
           var data = {
-            consent_form: $('#description').summernote('code'),
+            consent_form: $('#description').summernote('code').trim(),
             consent_required: $("input[type='checkbox'][value=consent_required]").prop("checked"),
             token_required: $("input[type='checkbox'][value=token_required]").prop("checked"),
           };
           // add CSRF, check if needed
-          $.post("/organisation/update/"+'<%=organisation.id%>', data, function(status) {
+          $.post("/organisation/update?id="+'<%=organisation.id%>', data, function(status) {
             location.reload();
           });
       }

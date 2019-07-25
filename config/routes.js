@@ -29,6 +29,7 @@ module.exports.routes = {
 
      // USER
     'GET /user':                    { controller: 'user', action: 'index'},
+    'GET /users':                { controller: 'user', action: 'get'},
     'GET /user/edit':               { controller: 'user', action: 'edit'},
     'GET /user/exportfile':         { controller: 'user', action: 'exportfile'},
     'GET /user/new-user':           { controller: 'user', action: 'newuser'},
@@ -42,12 +43,15 @@ module.exports.routes = {
     'POST /user/role':             { controller: 'user', action: 'role'},
     'POST /user/destroy':           { controller: 'user', action: 'destroy'},
     'GET /email/confirm':           { controller: 'user', action: 'confirm-email' },
+    'GET /email/confirmed':           { controller: 'user', action: 'confirmed-email' },
 
     // ORGANISATION
+    'GET /organisation':               { controller: 'organisation', action: 'get' },
     'GET /organisation/new':               { controller: 'organisation', action: 'new' },
     'GET /organisation/show':              { controller: 'organisation', action: 'show' },
     'POST /organisation/create':           { controller: 'organisation', action: 'create' },
     'POST /organisation/refreshtoken':      { controller: 'organisation', action: 'refreshtoken' },
+    'POST /organisation/update':            { controller: 'organisation', action: 'update' },
     'PATCH /organisation/api-info':         { controller: 'organisation', action: 'api-info'},
 
     // LOG

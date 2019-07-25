@@ -21,6 +21,10 @@ module.exports = {
           statusCode: 200,
           description: 'user is added to the block-list'
         },
+        notFound: {
+          statusCode : 404,
+          description: "The requested user was not found"
+        },
       },
 
     fn: async function (inputs, exits) 
@@ -28,7 +32,7 @@ module.exports = {
       var userId = inputs.user;
       if (!userId) {
         FlashService.error(this.req, 'UserId parameter not found.');
-        return this.res.redirect('/');
+        return exits.notFound();
       } 
       else 
       {
@@ -40,8 +44,9 @@ module.exports = {
         // check if user is currently exists (to avoid the case that was deleted)
         var user2block = await User.findOne(userId);
         if(!user2block){
+          sails.log("No user found!!!");
           FlashService.error(this.req, 'User was not found registered.');
-          return this.res.redirect('/');
+          return exits.notFound();
         }
         // add the user to the org's block-list
         var index = org.blocked.users.indexOf(userId);

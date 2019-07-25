@@ -31,6 +31,7 @@ if(user)
  var langs = <%- JSON.stringify(langs) %>;
  var langsISO = <%- JSON.stringify(langsISO) %>;
  var langsLen = 0;
+ 
 </script>
   
 
@@ -39,14 +40,14 @@ if(user)
   <section class="content">
 
     <div class="col-md-10  offset-md-1">
-      <div class="box box-primary box-solid" style="margin-top: 60px; margin-bottom: 60px">
-        <div class="box-header with-border">
-          <h3 class="box-title"> <%= __('user.register.createAccount') %> </h3>
+      <div class="card card-primary" style="margin-top: 60px; margin-bottom: 60px">
+        <div class="card-header with-border" style="background: #9bc1e9 !important;">
+          <h3 class="card-title"> <%= __('user.register.createAccount') %> </h3>
         </div>
         <!-- /.box-header -->
         <!-- form start -->
         <form action="/user/signup" method="POST" id="sign-up-form" role="form">
-          <div class="box-body">
+          <div class="card-body">
 
             <div class="form-group has-feedback">
               <label for="userOrganisation"> <%= __('user.register.selectOrganisationMsg') %></label>
@@ -71,46 +72,6 @@ if(user)
                 <% }); %>
               </select>
             </div>
-
-
-      <% if (!session.authenticated) { %>
-
-        <% if (consent_required && consent_required === true) { %>
-          <div class="form-group">
-            <label class="control-label"> <%=__('user.register.termsOfUser') %> </label>
-            <div id="license" style="border: 1px solid #e5e5e5; height: 300px; overflow: auto; padding: 10px;">
-              <%- consent_form_text %>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-xs-10">
-              <div class="form-group">
-                <div class="checkbox">
-                  <label><input type="checkbox" name="agree" value="agree" required/> <%= __('user.register.agreement') %> </label>
-                </div>
-              </div>
-            </div>
-            <div class="col-xs-2">
-              <button type="button" class="btn btn-default pull-right" onclick="printTextArea()"> <%= __('user.register.printtag') %>  </button>
-            </div>
-          </div>
-          <script type="text/javascript">
-              function printTextArea() {
-                childWindow = window.open('','childWindow','location=yes, menubar=yes, toolbar=yes');
-                childWindow.document.open();
-                childWindow.document.write('<html><head></head><body>');
-                childWindow.document.write(document.getElementById('license').innerHTML);
-                childWindow.document.write('</body></html>');
-                childWindow.print();
-                childWindow.document.close();
-                childWindow.close();
-              }
-            </script>
-
-        <% } %>
-      <% } %>
-
 
       <div class="row">
         <div class="col-md-6">
@@ -142,9 +103,7 @@ if(user)
           </div>
         </div>
       </div>
-
           <!-- ./custom fields -->
-
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
@@ -192,7 +151,7 @@ if(user)
                                     <input id="addrow" type="button" class="btn btn-sm btn-block btn-success fa fa-input" style="background-color: cadetblue; font-weight: bold" value="&#xf067" />
                                 </td>
                                 <td> 
-                                  <select class="form-control llang" name="lang0" > 
+                                  <select class="form-control llang" name="lang0" id="langselect" style="display:none"> 
                                       <% _.each(langs, function(lang) { %>
                                         <option value="<%= langsISO[langs.indexOf(lang)] %>">
                                           <%= lang %>
@@ -201,7 +160,7 @@ if(user)
                                     </select>
                                 </td>
                                  <td> 
-                                    <select class="form-control llevel" name="level0" > 
+                                    <select class="form-control llevel" name="level0" id="levelselect" style="display:none"> 
                                       <% _.each(levels, function(level) { %>
                                         <option value="<%= level.num %>">
                                             <%= level.description %>
@@ -217,8 +176,53 @@ if(user)
                 </div>
             </div>
 
+            <% if (!session.authenticated) { %>
+              <% if (consent_required && consent_required === true) { %>
+                <div class="col-md-8 offset-md-2">
+                    <div class="card">
+                        <div class="card-header border-transparent" style="background: #5f9ea070;">
+                          <h3 class="card-title"><%=__('user.register.termsOfUser') %></h3>
+                          <div class="card-tools">
+                              <button type="button" class="btn btn-tool" data-widget="collapse">
+                                <i class="fa fa-minus"></i>
+                              </button>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                          <div class="form-group">
+                            <div id="license" style="border: 2px solid #1b848870; height: 200px; overflow: auto; padding: 20px; background: aliceblue">
+                              <%- consent_form_text %>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div style="margin-left: 2.5%">
+                              <div class="form-group">
+                                <div class="checkbox">
+                                  <label><input type="checkbox" name="agree" value="agree" required/> <%= __('user.register.agreement') %> </label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+                    </div>
+                </div>
+                <script type="text/javascript">
+                    function printTextArea() {
+                      childWindow = window.open('','childWindow','location=yes, menubar=yes, toolbar=yes');
+                      childWindow.document.open();
+                      childWindow.document.write('<html><head></head><body>');
+                      childWindow.document.write(document.getElementById('license').innerHTML);
+                      childWindow.document.write('</body></html>');
+                      childWindow.print();
+                      childWindow.document.close();
+                      childWindow.close();
+                    }
+                  </script>
+              <% } %>
+            <% } %>
+
         </div>
-        <div class="box-footer">
+        <div class="card-footer">
           <% if (!session.authenticated) { %>
           <div>
             <a href="/session/new" class="text-center"> <%= __('user.register.alreadyMember') %></a>

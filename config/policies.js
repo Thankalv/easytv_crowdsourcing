@@ -21,7 +21,7 @@ module.exports.policies = {
   '*' : ['flash'],
 
   task:{
-    '*' : true, 
+    '*' : ['sessionAuth', 'superadmin'],
     'assign': ['sessionAuth'],
     'refreshtoken':  ['sessionAuth']
   },
@@ -56,15 +56,19 @@ module.exports.policies = {
   },
 
   organisation:{
+    '*' : ['sessionAuth', 'superadmin'],
     "new": ['flash',"sessionAuth",'superadmin'],
     "create": ['flash',"sessionAuth",'superadmin'],
     "show": ['flash',"sessionAuth",'admin'],
     "refreshtoken": ['admin',"sessionAuth"],
+    "update": ['sessionAuth',"admin"],
     "api-info": ['admin',"sessionAuth"]
   },
 
   user:{
+    "*": ['superadmin'],
     "index" : ['sessionAuth'],
+    "get": ["sessionAuth", "superadmin"],
     "edit" : ['sessionAuth', 'sameOrg', 'flash'],
     "update": ['sessionAuth', 'sameOrg', 'flash'],
     "settings" : ['sessionAuth', 'flash'],
@@ -76,6 +80,7 @@ module.exports.policies = {
     "register": ['flash'],
     "signup": ['flash'],
     "list": ['sessionAuth'],
+    "confirmed-email":  ['flash', 'sessionAuth'],
     "exportfile": ['sessionAuth'],
     "destroy": ['userCanSeeProfile']
   }
