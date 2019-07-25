@@ -20,7 +20,7 @@ module.exports.session = {
   ***************************************************************************/
  host: '127.0.0.1',
  adapter: 'redis',
- //url: process.env.CP_REDIS_HOST || "redis://h:p7f0a0b8a96efe36fd0835a81b9e42ea993b9baa8e1282c67d7ea7dbdd497a9d9@ec2-108-129-69-107.eu-west-1.compute.amazonaws.com:25959",
+ url: process.env.CP_REDIS_HOST || "redis://h:p7f0a0b8a96efe36fd0835a81b9e42ea993b9baa8e1282c67d7ea7dbdd497a9d9@ec2-108-129-69-107.eu-west-1.compute.amazonaws.com:25959",
  
  secret: '4521eb9c88ca3909316c6e254e29c7b1',
 
