@@ -36,7 +36,10 @@ module.exports = {
         type: 'boolean',
         defaultsTo: false
       },
-
+      phone_required:{
+        type: 'boolean',
+        defaultsTo: false
+      },
       // member to use for testing purpose
       editor2Assign: {
         model: "user",

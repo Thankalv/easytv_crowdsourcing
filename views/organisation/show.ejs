@@ -37,8 +37,8 @@
                         </div>
                       </div>
                     </div>
-                    <br>
 
+                    <br>
                     <h5> <%= __('organisation.show.consentform') %> </h5>
                     <div class="form-group">
                         <div class="checkbox">
@@ -51,18 +51,30 @@
                           <%- organisation.consent_form %>
                         </textarea>
                       </div>
+
+                      <br>
+                      <h5> <%= __('organisation.show.userRegister') %> </h5>
+                      <div class="form-group">
+                          <div class="checkbox">
+                            <label >
+                              <input type="checkbox" value="phone_required" <%= organisation.phone_required ? 'checked': '' %>>
+                              <i class="fa fa-phone"></i>  Require a user's phone number upon registration
+                            </label>
+                          </div>
+                      </div>
+
                       <a href="#" class="btn btn-sm btn-flat btn-primary pull-left" onclick="updateConsent()"> <%= __('organisation.show.savesettings') %> </a>
                 </form>
                 
               </div>
             </div>
-            </div>
+          </div>
 
             <br>
 
             <div class="offset-md-2 col-md-8">
     
-                <form action="/user/settings" method="POST" role="form">
+                <form action="/organisation/api-info" method="POST">
 
                     <!-- Dashboard Settings  -->
                     <div class="card">
@@ -71,15 +83,18 @@
                     </div>
                     <div class="card-body">
 
+                      <input type="hidden" name="id" value="<%= organisation.id %>" />
+
                         <div class="form-group">
                           Current  <div class="badge badge-success"> GET endpoint </div> for listing Broadcasters' jobs
                            <input id='APIgetJobs' type="text" class="form-control" value="<%= organisation.api_info.getJobsURL %>" disabled>
+                           <input id='APIgetJobsHidden' name="getJobsURL" type="hidden" class="form-control" value="<%= organisation.api_info.getJobsURL %>">
                         </div>
 
                         <div class="input-group">
                             <input id="APIgetJobsNEW" type="text" class="form-control" value="Enter new endpoint..." >
                             <div class="input-group-append">
-                              <span class="input-group-text btn" id="" onclick="updateAPIpoint('APIgetJobs')" style="background: #ffc107">Save </span>
+                              <span class="input-group-text btn" id="" onclick="updateAPIpoint('APIgetJobs', 'APIgetJobsHidden')" style="background: #ffc107">Save </span>
                             </div>
                         </div>
 
@@ -87,13 +102,14 @@
 
                         <div class="form-group">
                           Current  <div class="badge badge-primary"> POST endpoint </div> for user-job assignment
-                         <input id='APIpostUserJob' type="text" class="form-control" value="<%= organisation.api_info.getJobsURL %>" disabled>
+                          <input id='APIpostUserJob' type="text" class="form-control" value="<%= organisation.api_info.postUserJob %>" disabled>
+                          <input id='APIpostUserJobHidden' name="postUserJob" type="hidden" class="form-control" value="<%= organisation.api_info.postUserJob %>">
                         </div>
 
                         <div class="input-group">
                             <input id="APIpostUserJobNEW" type="text" class="form-control" value="Enter new endpoint..." >
                             <div class="input-group-append">
-                              <span class="input-group-text btn" id="" onclick="updateAPIpoint('APIpostUserJob')" style="background: #ffc107">Save </span>
+                              <span class="input-group-text btn" id="" onclick="updateAPIpoint('APIpostUserJob', 'APIpostUserJobHidden')" style="background: #ffc107">Save </span>
                             </div>
                         </div>
                     </div>
@@ -111,11 +127,12 @@
 
 <script>
   
-     function updateAPIpoint(endpointID) 
+     function updateAPIpoint(endpointID, endpointIDhidden) 
      {
         console.log( document.getElementById(endpointID+"NEW").value );
         var newAPIpoint = document.getElementById(endpointID+"NEW").value;
         $('#'+endpointID).attr('value', newAPIpoint);
+        $('#'+endpointIDhidden).attr('value', newAPIpoint);
      }
 
      function updateConsent() 
@@ -124,9 +141,15 @@
             consent_form: $('#description').summernote('code').trim(),
             consent_required: $("input[type='checkbox'][value=consent_required]").prop("checked"),
             token_required: $("input[type='checkbox'][value=token_required]").prop("checked"),
+            phone_required: $("input[type='checkbox'][value=phone_required]").prop("checked"),
           };
           // add CSRF, check if needed
+          console.log(data);
+          if(data.consent_form=="")
+            data.consent_form="-";
+            
           $.post("/organisation/update?id="+'<%=organisation.id%>', data, function(status) {
+            
             location.reload();
           });
       }

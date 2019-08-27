@@ -35,7 +35,7 @@ exports.getUser = function(where, next, noExistsCheck)
  */
 exports.getUsers = function(where, next) 
 {
-  sails.log(where);
+  //sails.log(where);
   User.find()
     .where(where)
     .sort("access ASC")
@@ -175,8 +175,8 @@ exports.getLangParameters = async function(req, userObj)
 
 /**
  * Process user's language variables upon user profile updating
- * @param   {ObjectId}  req          request object with input params
- * @param   {ObjectId}  userObj      object User for database
+ * @param   {ObjectId}  user          object User for database
+ * @param   {ObjectId}  req           request object with input params
  */
 exports.updateLangParameters = async function(user, req) 
 {
@@ -193,4 +193,40 @@ exports.updateLangParameters = async function(user, req)
   }
   return lang_info;
 
+};
+
+/**
+ * Make this user unable to contribute on a certain language (admin-only functionality)
+ * @param   {ObjectId}  user          object User for database
+ * @param   {ObjectId}  langCode      the target language ISO code
+ */
+exports.blockLang = async function(user, langCode) 
+{
+  var counter = 0;
+  var lang_info = user.lang_info;
+  _.each(lang_info.langs, function(userLang) {
+      if( userLang['lang'+counter] == langCode)
+        userLang['level'+counter] = 4;
+      counter++;
+  });
+
+  return lang_info;
+};
+
+/**
+ * Reverse a previous blocking on a certain language (admin-only functionality)
+ * @param   {ObjectId}  user          object User for database
+ * @param   {ObjectId}  langCode      the target language ISO code
+ */
+exports.unblockLang = async function(user, langCode) 
+{
+  var counter = 0;
+  var lang_info = user.lang_info;
+  _.each(lang_info.langs, function(userLang) {
+      if( userLang['lang'+counter] == langCode)
+        userLang['level'+counter] = 1;
+      counter++;
+  });
+
+  return lang_info;
 };

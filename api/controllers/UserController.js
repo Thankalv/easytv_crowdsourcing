@@ -174,6 +174,7 @@ module.exports = {
       personal_code: req.param('personal_code'),
       personal_code2: req.param('personal_code2'),
       age: req.param('age'),
+      phone_num: req.param('fullNum'),
       gender: req.param('gender'),
       ethnicity: req.param('ethnicity'),
       token: req.param('orgtoken'),
@@ -184,7 +185,7 @@ module.exports = {
     if (typeof req.param('lang0') !== 'undefined')
     {
         userObj = await UserService.getLangParameters(req, userObj);
-        sails.log(userObj);
+        //sails.log(userObj);
     }
     //sails.log(req.allParams());
 

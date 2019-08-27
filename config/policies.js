@@ -23,6 +23,7 @@ module.exports.policies = {
   task:{
     '*' : ['sessionAuth', 'superadmin'],
     'assign': ['sessionAuth'],
+    'unassign': ['sessionAuth'],
     'refreshtoken':  ['sessionAuth']
   },
 
@@ -60,26 +61,29 @@ module.exports.policies = {
     "new": ['flash',"sessionAuth",'superadmin'],
     "create": ['flash',"sessionAuth",'superadmin'],
     "show": ['flash',"sessionAuth",'admin'],
-    "refreshtoken": ['admin',"sessionAuth"],
+    "refreshtoken": ['sessionAuth',"admin"],
     "update": ['sessionAuth',"admin"],
-    "api-info": ['admin',"sessionAuth"]
+    "api-info": ['sessionAuth',"admin"]
   },
 
   user:{
     "*": ['superadmin'],
     "index" : ['sessionAuth'],
-    "get": ["sessionAuth", "superadmin"],
+    "get": ["sessionAuth", "admin"],
     "edit" : ['sessionAuth', 'sameOrg', 'flash'],
     "update": ['sessionAuth', 'sameOrg', 'flash'],
     "settings" : ['sessionAuth', 'flash'],
     "settingsupdate" : ['sessionAuth', 'flash'],
     "newuser": ['flash'],
     "block": ["flash","sessionAuth", "admin"],
+    "blocklang": ["flash","sessionAuth", "admin"],
+    "blocklang-reverse": ["flash","sessionAuth", "admin"],
     "unblock":  ["flash","sessionAuth", "admin"],
     "role":  ["flash","sessionAuth", "admin"],
     "register": ['flash'],
     "signup": ['flash'],
     "list": ['sessionAuth'],
+    "confirm-email": ['flash'],
     "confirmed-email":  ['flash', 'sessionAuth'],
     "exportfile": ['sessionAuth'],
     "destroy": ['userCanSeeProfile']

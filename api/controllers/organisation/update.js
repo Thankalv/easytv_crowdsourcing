@@ -2,7 +2,7 @@
 module.exports = {
 
     friendlyName: "Update organisation's settings",
-    description:  "org-admin API POST request to refresh organisation's settings",
+    description:  "Org-Administrator requests an update organisation's settings",
   
     inputs: {
         id: {
@@ -22,9 +22,12 @@ module.exports = {
         token_required: {
             type: 'boolean',
             required: true,
+        },
+        phone_required: {
+            type: 'boolean',
+            required: true,
         }
     },
-
     exits: {
         success: {
           statusCode : 200,
@@ -35,23 +38,21 @@ module.exports = {
           description: "The org with this id was not found"
         },
       },
-
       
     fn: async function (inputs, exits) 
     {
-        //sails.log(inputs);
+        sails.log(inputs);
         var orgObj = {};
         orgObj.consent_form = inputs.consent_form;
         orgObj.consent_required = inputs.consent_required;
         orgObj.token_required = inputs.token_required;
+        orgObj.phone_required = inputs.phone_required;
 
         var updOrg = await Organisation.updateOne(inputs.id).set(orgObj);
-    
         if(updOrg)
             return exits.success({code:200, description: updOrg.id});
         else
             return exits.notFound();
     }
-  
   };
   

@@ -70,7 +70,7 @@ module.exports = {
             throw { redirect: '/email/confirmed' };
           }
        }  
-        else {
+      else {
         throw new Error(`Consistency violation: User ${user.id} has an email proof token, but somehow also has an emailStatus of "${user.emailStatus}"!  (This should never happen.)`);
       }
   

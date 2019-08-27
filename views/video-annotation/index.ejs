@@ -1,0 +1,90 @@
+
+<div class="content-wrapper">
+
+    <section class="content-header">
+            <h1> Videos & Language </h1>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active"><a href="/"><i class="fa fa-home"></i>Home</a></li>
+                <li class="breadcrumb-item"> Videos & Language</a></li>
+            </ol>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="col-md-10 offset-md-1">
+            <div class="row">
+                    <div class="col-md-5 card" style="background: aliceblue;">
+                        <div class="card-header border-transparent" style="background-color: #3270daba">
+                            <h3 class="card-title"> <b>Videos in Spanish </b> </h3>
+                            <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-widget="collapse">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                                <div class="row" style="margin: auto;">
+                                    <% _.each(slvideos.es, function(video) { %>
+                                        <div class="col-md-10">
+                                          <div class="info-box">
+                                            <span class="info-box-icon bg-info elevation-1" style="width: 125px;height: auto;">
+                                                <video controls preload="auto" width="90%" height="90%" >
+                                                   <source src="<%= video.videoURL %>" type='video/mp4'>
+                                                </video>
+                                            </span>
+                                            <div class="info-box-content">
+                                              <span class="info-box-text"> # Video <b>  </b></span> <br>
+                                              <a href="/video-annotation/annotate?id=<%= video.id %>"><i class="fa fa-edit"></i>Annotate</a>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="clearfix hidden-md-up"></div>
+                                    <% }) %>
+                                </div>
+                        </div>
+                    </div>
+                
+                    <div class="col-md-5 offset-md-1 card" style="background: aliceblue;">
+                        <div class="card-header border-transparent" style="background-color: #3270daba">
+                            <h3 class="card-title"> <b>Videos in Italian </b> </h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-widget="collapse">
+                                <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="row" style="margin: auto;">
+                                <% _.each(slvideos.it, function(video) { %>
+                                        <div class="col-md-10">
+                                          <div class="info-box">
+                                            <span class="info-box-icon bg-info elevation-1" style="width: 125px;height: auto;">
+                                                <video controls preload="auto" width="90%" height="90%" >
+                                                   <source src="<%= video.videoURL %>" type='video/mp4'>
+                                                </video>
+                                            </span>
+                                            <div class="info-box-content">
+                                              <span class="info-box-text"> # Video <b> </b></span> <br>
+                                              <a href="/video-annotation/annotate?id=<%= video.id %>"><i class="fa fa-edit"></i>Annotate</a>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="clearfix hidden-md-up"></div>
+                                <% }) %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- load extra .css assets only for this view-app -->
+<% block('localScripts', '<link href="/plugins/sweetalert/sweetalert2.min.css" rel="stylesheet" type="text/css">') %>
+
+<!-- load extra .js assets only for this view-app -->
+<% block('localScripts', '<script src="/plugins/sweetalert/sweetalert2.min.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/sweetalert/main.js"></script>') %>

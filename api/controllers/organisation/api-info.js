@@ -18,7 +18,7 @@ module.exports = {
             type: 'string',
             description: "for authenticated HTTP requests"
         },
-        get_editor: {
+        getJobsURL: {
             type: 'string',
             description: "Endpoint to return jobs with status=AwaitingForEdition or OnEdition"
         },
@@ -26,7 +26,7 @@ module.exports = {
             type: 'string',
             description: "Endpoint to return jobs with status=AwaitingForRevision or OnRevision"
         },
-        post_credentials:{
+        postUserJob:{
             type: 'string',
             description : "Endpoint to register an authorized user for a job"
         }
@@ -46,14 +46,17 @@ module.exports = {
       
     fn: async function (inputs, exits) 
     {
-        //sails.log(req.allParams());
-        var orgObj = {};
-        orgObj.api_info = inputs;
+        sails.log(inputs);
+        var updOrg = await Organisation.findOne({ id: inputs.id });
+
+        var orgObj = {'api_info':updOrg.api_info};
+        orgObj.api_info.getJobsURL = inputs.getJobsURL;
+        orgObj.api_info.postUserJob = inputs.postUserJob;
 
         var updOrg = await Organisation.updateOne({ id: inputs.id }).set(orgObj);
     
         if(updOrg)
-            return exits.success({code:200, description: updOrg.token});
+            return this.res.redirect("/organisation/show?id="+inputs.id)
         else
             return exits.notFound();
 

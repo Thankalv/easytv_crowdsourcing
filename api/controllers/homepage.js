@@ -23,6 +23,7 @@ module.exports = {
       var userTitle =  _.capitalize( sails.config.custom.broadcasterRoles[this.req.session.User.access.toLowerCase()] );
       var usersOrg = this.req.session.User.userOrganisation;
       var jobsPosted = await Task.count( {content_owner: this.req.session.User.userOrganisation.id });
+      var isBlocked = false;
 
       // -- Prepare the dashboard view's data for "Editor"/"Reviewer" roles
       if(this.req.session.User.access!="admin" && this.req.session.User.access!="superadmin")
@@ -44,6 +45,7 @@ module.exports = {
           var thisUserJobs = [], pendingBroadcasterJobs = [];
           await _.each(broadcasterJobs, ajob => {
               if (userAssignedJobsList.indexOf(ajob.job_id)>-1){
+                // the accesslink should be omitted in case this users is in the 'block-list'
                 ajob.accesslink = userAssignedJobs[userAssignedJobsList.indexOf(ajob.job_id)];
                 thisUserJobs.push(ajob);
               }
@@ -54,28 +56,33 @@ module.exports = {
 
           var otherSubttitles = await Task.find( {content_owner: { '!=' : this.req.session.User.userOrganisation.id }});
           var orgMembers = await User.count({userOrganisation: this.req.session.User.userOrganisation.id});
+          var usersOrg = await Organisation.findOne(this.req.session.User.userOrganisation.id);
+          if (usersOrg.blocked.users.indexOf(this.req.session.User.id)>-1)
+            isBlocked = true;
+
           //sails.log(thisUserJobs);
           return {
+            isBlocked: isBlocked,
             userTitle: userTitle, 
             userStats : userStats,
             orgMembers: orgMembers, 
             jobsPosted: jobsPosted,
             assignedJobs: thisUserJobs,
-            subz:pendingBroadcasterJobs,
+            subz: pendingBroadcasterJobs,
             otherSubz: otherSubttitles
           };
       }
       else // Prepare the dashboard view's data for broadcaster "Administrator" role
       {
           if(this.req.session.User.access=="superadmin")
-            var orgMembers = await User.find().populate("accesslinks");
+            var orgMembers = await User.find( {access: { '!=': 'superadmin' }} ).populate("accesslinks");
           else
-            var orgMembers = await User.find({userOrganisation: this.req.session.User.userOrganisation.id}).populate("accesslinks");
+            var orgMembers = await User.find({userOrganisation: this.req.session.User.userOrganisation.id, access: { '!=': 'superadmin' }}).populate("accesslinks");
 
           var adminsOrg = await Organisation.findOne(this.req.session.User.userOrganisation.id);
           this.req.session.User.userOrganisation = adminsOrg;
 
-          // separate users into editors/reviewers/blocked before rendering HTML
+          // separate users into editors/reviewers/blocked before rendering the view
           var editorUsers = [], reviewerUsers = [], blockedUsers = [];
           await _.each(orgMembers, function(member) 
           {
@@ -86,22 +93,44 @@ module.exports = {
             else
               reviewerUsers.push(member)
           });
-          
-          return { 
+
+          // GET an updated list of pending jobs of the collaborative broadcaster
+          var broadcasterJobs = await TaskService.getJobsFromBroadcaster(usersOrg, this.req.session.User.access);
+          // a list of 'active' assignment access-links from the corresponding SPM/broadcaster
+          var assignedJobs = await Accesslink.find();
+          var assignedJobsList = await assignedJobs.map( ajob => { return ajob.job_id});
+          broadcasterJobs = await UtilService.sortByKey(broadcasterJobs, "publication_date");
+          // compile a list of this user's assigned (top-list) jobs
+          var assignedBroadcasterJobs = [];
+          await _.each(broadcasterJobs, ajob => {
+              if (assignedJobsList.indexOf(ajob.job_id)>-1){
+                ajob.user = assignedJobs[assignedJobsList.indexOf(ajob.job_id)].user;
+                assignedBroadcasterJobs.push(ajob);
+              }
+            });
+
+          return {
+            isBlocked: false,
             userTitle: userTitle, 
-            orgMembers:orgMembers.length, 
+            orgMembers: orgMembers.length, 
             editorUsers: editorUsers,  
             jobsPosted: jobsPosted,
+            assignedJobs: assignedBroadcasterJobs,
             blockedUsers: blockedUsers,
-            reviewerUsers: reviewerUsers, 
+            reviewerUsers: reviewerUsers,
+            langs: sails.config.custom.langs,
+            langsISO: sails.config.custom.langsISO,
+            levels: [ { num: 1, description: 'Junior'},
+                      { num: 2, description: 'Intermediate'},
+                      { num: 3, description: 'Proficiency'},
+                      { num: 4, description: 'Blocked'}]
           };
-
       }
     }
-
     var orgMembers = await User.count();
     var jobsPosted = await Task.count();
-    return { userTitle: "Guest",  orgMembers:orgMembers, assignedJobs: thisUserJobs, jobsPosted:jobsPosted, subz:broadcasterJobs, otherSubz: otherSubttitles};
+    // render view for a "guest" (not logged-in)
+    return { isBlocked: false, userTitle: "Guest",  orgMembers:orgMembers, assignedJobs: thisUserJobs, jobsPosted:jobsPosted, subz:broadcasterJobs, otherSubz: otherSubttitles};
   }
 
 };

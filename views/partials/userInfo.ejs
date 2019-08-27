@@ -11,7 +11,10 @@
             <h5 class="widget-user-desc">  <%= _.capitalize(  user.access ) %></h5>
           </div>
 
-          <span class="dropdown-item dropdown-header"> member since: <%= UtilService.fromNow(user.createdAt) %> <br> email: <%= user.email %>  </span>
+          <span class="dropdown-item dropdown-header"> member since: <%= UtilService.fromNow(user.createdAt) %> 
+            <br> email: <%= user.email %>  
+            <br> ID: <%= user.id %>
+          </span>
 
           <div class="card-footer p-0">
             <ul class="nav flex-column">

@@ -77,6 +77,9 @@ module.exports = {
       defaultsTo: 'new user/not provided'
     },
     // custom fields per Organisation
+    phone_num: {
+      type: 'string',
+    },
     warrant: {
       type: "string"
     },

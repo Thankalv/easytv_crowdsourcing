@@ -17,8 +17,9 @@ module.exports.routes = {
 
     'GET /feedback':                    { controller: 'feedback', action: 'form' },
     'POST /feedback/submit':            { controller: 'feedback', action: 'submit' },
-    'GET /video-annotation':                { controller: 'video_annotation', action: 'demo' },
+    'GET /video-annotation':                { controller: 'video_annotation', action: 'index' },
     'GET /video-annotation/demo':           { controller: 'video_annotation', action: 'demo' },
+    'GET /video-annotation/annotate':        { controller: 'video_annotation', action: 'annotate' },
     'POST /video-annotation/submit':         { controller: 'video_annotation', action: 'submit' },
 
      // SESSION
@@ -29,7 +30,7 @@ module.exports.routes = {
 
      // USER
     'GET /user':                    { controller: 'user', action: 'index'},
-    'GET /users':                { controller: 'user', action: 'get'},
+    'GET /users':                   { controller: 'user', action: 'get'},
     'GET /user/edit':               { controller: 'user', action: 'edit'},
     'GET /user/exportfile':         { controller: 'user', action: 'exportfile'},
     'GET /user/new-user':           { controller: 'user', action: 'newuser'},
@@ -39,6 +40,8 @@ module.exports.routes = {
     'POST /user/signup':            { controller: 'user', action: 'signup'},
     'POST /user/update':           { controller: 'user', action: 'update'},
     'POST /user/block':             { controller: 'user', action: 'block'},
+    'POST /user/blocklang':           { controller: 'user', action: 'blocklang'},
+    'POST /user/reverse-blocklang':   { controller: 'user', action: 'blocklang-reverse'},
     'POST /user/unblock':            { controller: 'user', action: 'unblock'},
     'POST /user/role':             { controller: 'user', action: 'role'},
     'POST /user/destroy':           { controller: 'user', action: 'destroy'},
@@ -52,7 +55,7 @@ module.exports.routes = {
     'POST /organisation/create':           { controller: 'organisation', action: 'create' },
     'POST /organisation/refreshtoken':      { controller: 'organisation', action: 'refreshtoken' },
     'POST /organisation/update':            { controller: 'organisation', action: 'update' },
-    'PATCH /organisation/api-info':         { controller: 'organisation', action: 'api-info'},
+    'POST /organisation/api-info':         { controller: 'organisation', action: 'api-info'},
 
     // LOG
     'GET /log': { controller: 'log', action: 'index'},
@@ -73,11 +76,11 @@ module.exports.routes = {
     'GET /api/cancel/subt':    { controller: 'api', action: 'cancel-subt'},
 
     'POST /api/available/subt':  { controller: 'api', action: 'available-subt'},
-    'POST /api/reject/subt':    { controller: 'api', action: 'reject-subt'},
-    'PUT /api/update/subt':    { controller: 'api', action: 'update-subt'},
-    'POST /api/log-error':      { controller: 'api', action: 'log-error'},
+    'POST /api/reject/subt':     { controller: 'api', action: 'reject-subt'},
+    'PUT /api/update/subt':      { controller: 'api', action: 'update-subt'},
+    'POST /api/log-error':       { controller: 'api', action: 'log-error'},
 
-    'PUT /api/editorstats/subt':      { controller: 'api', action: 'editorstats-subt'},
+    'PUT /api/editorstats/subt':        { controller: 'api', action: 'editorstats-subt'},
     'PUT /api/reviewerstats/subt':      { controller: 'api', action: 'reviewerstats-subt'},
 
     // 'POST /submit-feedback':        { controller: 'feedback', action: 'submit'},

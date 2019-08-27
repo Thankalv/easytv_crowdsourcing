@@ -1,5 +1,5 @@
 <%
-  var show_warrant = false, show_personal_code = false, show_age = false, show_gender = false, consent_required=false, token_required = false;
+  var show_warrant = false, show_personal_code = false, show_age = false, show_gender = false, consent_required=false, token_required = false, phone_required = false;
   var lastName = '', firstName='', email = '', email2='', warrant = '', warrant2 = '', personal_code='', personal_code2='', age ='', consent_form_text = '';
 
   // keep fields between refreshs
@@ -64,6 +64,7 @@ if(user)
                     show_gender = org.gender;
                     show_ethnicity = org.ethnicity;
                     consent_required = org.consent_required;
+                    phone_required = org.phone_required;
                     token_required = org.token_required;
                   } %>
                   <option <%=ct%> value="<%= org.id %>">
@@ -128,7 +129,22 @@ if(user)
               </select>
             </div>
             <% } %>
-            
+
+            <% if (phone_required) { %>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label> Your phone:</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fa fa-phone"></i></span>
+                    </div>
+                    <input type="text" class="form-control" id="phone-number" name="telephone" data-inputmask="'mask': ['999-999-9999 [x99999]', '+099 99 99 9999[9]-9999']" data-mask>
+                  </div>
+                  <!-- /.input group -->
+                </div>
+              </div>
+            <% } %>
+
 
             <div class="row">
                 <div class="col-md-8 offset-md-2">
@@ -241,5 +257,9 @@ if(user)
     window.location.href = "/user/register?orgid=" + $("#userOrganisation").val();
   }
 </script>
+
+
+<% block('localScripts', '<link href="/plugins/intl-tel-input/css/intlTelInput.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<script src="/plugins/intl-tel-input/js/intlTelInput.js"></script>') %>
 
 <% block('localScripts', '<script src="/plugins/register-page.js"></script>') %>

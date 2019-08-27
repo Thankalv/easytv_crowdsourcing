@@ -22,7 +22,6 @@ module.exports = async function(req, res, next) {
 
   var sameOrg = (req.session.User.userOrganisation.id === user2edit.userOrganisation.id);
 
-
   if(sameOrg || req.session.User.access === "superadmin"){
     next();
   }

@@ -59,8 +59,18 @@ module.exports = {
             });
             return editorJobs;
         }
-        else{
-          return broadcasterJobs;
+        else
+        {
+          var assignedJobs= [];
+          await _.each(broadcasterJobs, ajob => {
+            if (["OnEdition","AwaitingForEdition", "OnEditionSaved"].indexOf(ajob.status)>-1) 
+              assignedJobs.push(ajob); 
+          });
+          await _.each(broadcasterJobs, ajob => {
+            if (["OnRevision","AwaitingForRevision", "OnRevisionSaved"].indexOf(ajob.status)>-1) 
+              assignedJobs.push(ajob); 
+          });
+          return assignedJobs;
         }
       }
      },

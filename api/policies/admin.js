@@ -18,8 +18,8 @@ module.exports = function(req, res, next)
   if (req.session.User && (req.session.User.access === "admin" && isOrgsAdmin)) {
     return next();
   }
-  // not admin user is not allowed
-  else {
+  else  // a no-admin user is NOT allowed
+  {
     FlashService.error(req, 'You must be an administrator of this organisation.');
 
     //TODO: check for req.path functionality

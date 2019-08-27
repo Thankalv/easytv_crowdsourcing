@@ -1,0 +1,48 @@
+<div class="dropdown-menu dropdown-menu-lg dropdown-menu-left">
+
+        <div class="card card-widget widget-user-2">
+          <!-- Add the bg color to the header using any of the bg-* classes -->
+          <div class="widget-user-header bg-warning">
+            <div class="widget-user-image">
+              <img class="img-circle elevation-2" src="<%- user.gravatarImage %>" alt="User Avatar">
+            </div>
+            <!-- /.widget-user-image -->
+            <h3 class="widget-user-username">  Blocking per </h3>
+            <h5 class="widget-user-desc">  LANGUAGE</h5>
+          </div>
+
+          <span class="dropdown-item dropdown-header">
+             email: <%= user.email %> <br>
+          </span>
+
+          <div class="card-footer p-0">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  Languages <span class="float-right badge bg-success"> <%= user.lang_info.langs.length %> </span>
+                </a>
+              </li>
+
+              <% _.each(user.lang_info.langs, function(userLang) { %>
+                <li class="nav-item">
+                  <a href="#" class="nav-link">
+                      <%= langs[langsISO.indexOf(userLang[Object.keys(userLang)[0]])]  %> - <%= levels[userLang[Object.keys(userLang)[1]]-1].description %>
+                      <!-- reveal the blocking/unblocking button according the user's level -->
+                      <% if ( userLang[Object.keys(userLang)[1]] == 4) { %>
+                        <span class="float-right badge bg-success" onclick="unblockUserLang('<%= session.User.userOrganisation.id %>', '<%= user.id %>', '<%= userLang[Object.keys(userLang)[0]] %>' )">
+                          <i class="fa fa-check-circle-o" style="background-color: green" type="button" aria-hidden="true"></i> 
+                        </span>
+                      <% } else { %>
+                        <span class="float-right badge bg-danger" onclick="blockUserLang('<%= session.User.userOrganisation.id %>', '<%= user.id %>', '<%= userLang[Object.keys(userLang)[0]] %>' )">
+                          <i class="fa fa-times" style="background-color: red" type="button" aria-hidden="true"></i> 
+                        </span>
+                      <% } %>
+                  </a>
+                </li>
+              <% }); %>
+
+            </ul>
+          </div>
+        </div>
+</div>
+

@@ -14,7 +14,11 @@ module.exports = {
 
     fn: async function (inputs, exits) 
     {
-      users = await User.find();
+      if(this.req.session.User.access=="superadmin")
+        users = await User.find();
+      else
+        users = await User.find({userOrganisation:inputs.id});
+
       return exits.success(users);
     }
   

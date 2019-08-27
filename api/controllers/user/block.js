@@ -8,11 +8,11 @@ module.exports = {
         type: 'string',
       },
       user: {
-        description: "The id of the admin's organisation",
+        description: "The id of the user to block",
         type: 'string',
       },
       reason: {
-        description: "The reason behind this blocking",
+        description: "Describe a reason related to this blocking",
         type: 'string',
       },
     },
@@ -41,7 +41,7 @@ module.exports = {
           return this.res.notFound('Organisation not found.');
         } 
 
-        // check if user is currently exists (to avoid the case that was deleted)
+        // check if user currently still exists (to avoid the case that was deleted in the meantime)
         var user2block = await User.findOne(userId);
         if(!user2block){
           sails.log("No user found!!!");
@@ -53,7 +53,11 @@ module.exports = {
         if (index <0 ) {
           org.blocked.users.push(userId);
         }
-        await Organisation.updateOne({ id: org.id }).set({blocked: org.blocked});
+        // update the block-list of this org in the database
+        await Organisation.updateOne({ id: org.id }).set({blocked: org.blocked});     
+        // all the previously assigned jobs should become available after the blocking
+        await Accesslink.destroy({user:userId});
+
         await sails.helpers.sendTemplateEmail.with({
             to: user2block.email,
             subject: 'Your profile was blocked',

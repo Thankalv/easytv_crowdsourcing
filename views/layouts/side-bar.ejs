@@ -1,5 +1,5 @@
   <!-- Main Sidebar Container -->
-  <aside class="main-sidebar sidebar-dark-primary elevation-4" style="position:absolute; min-height: 100%">
+  <aside class="main-sidebar sidebar-dark-primary elevation-4" style="position:fixed; height: 102%">
     <!-- Brand Logo -->
     <a href="/" class="brand-link">
       <img src="/images/easytvlogo-main.png"
@@ -34,14 +34,22 @@
             </a>
           </li>
 
+          <li class="nav-item">
+            <% if (session.activeTag=='videolang') { %> <a href="/video-annotation"  class="nav-link active">  <% }else{  %>  <a href="/video-annotation"  class="nav-link"> <% } %>
+               <i class="nav-icon fa fa-sign-language"></i>
+               <p>
+                 VideosSL
+                 <span class="right badge badge-warning">New</span>
+               </p>
+             </a>
+           </li>
+
           <!-- Organization's variable config, exposed only to org-admins and the master admin -->
           <% if ( session.User.access!='superadmin' && session.User.access != 'admin') { %>
           <li class="nav-item">
                 <% if (session.activeTag=='settings') { %> <a href="/user/settings"  class="nav-link active">  <% }else{  %>  <a href="/user/settings"  class="nav-link"> <% } %>
                   <i class="nav-icon fa fa-gear"></i>
-                  <p>
-                    Account Settings
-                  </p>
+                  <p> Settings </p>
                 </a>
               </li>
           <% } %>
@@ -49,27 +57,21 @@
           <li class="nav-item">
            <% if (session.activeTag=='feedback') { %> <a href="/feedback"  class="nav-link active">  <% }else{  %>  <a href="/feedback"  class="nav-link"> <% } %>
               <i class="nav-icon fa fa-edit"></i>
-              <p>
-                Feedback
-              </p>
+              <p> Feedback </p>
             </a>
           </li>
 
           <li class="nav-item">
             <% if (session.activeTag=='log') { %> <a href="/log"  class="nav-link active">  <% }else{  %>  <a href="/log"  class="nav-link"> <% } %>
               <i class="nav-icon fa fa-table"></i>
-              <p>
-                Logs
-              </p>
+              <p> Logs </p>
             </a>
           </li>
 
           <li class="nav-item">
               <% if (session.activeTag=='users') { %> <a href="/user"  class="nav-link active">  <% }else{  %>  <a href="/user"  class="nav-link"> <% } %>
                 <i class="nav-icon fa fa-users"></i>
-                <p>
-                  Users
-                </p>
+                <p> Users </p>
               </a>
             </li>
 
@@ -78,9 +80,7 @@
           <li class="nav-item">
                 <% if (session.activeTag=='org') { %> <a href="/organisation/show?id=<%= session.User.userOrganisation.id %>"  class="nav-link active">  <% }else{  %>  <a href="/organisation/show?id=<%= session.User.userOrganisation.id %>"  class="nav-link"> <% } %>
                   <i class="nav-icon fa fa-institution"></i>
-                  <p>
-                    Organisation
-                  </p>
+                  <p> Organisation </p>
                 </a>
               </li>
           <% } %>

@@ -157,7 +157,17 @@ module.exports = {
                 (seconds < 10 ? "0" + seconds : seconds);
     return result;
   },
- 
+
+  /* Convert seconds to MMSS format string*/
+  secs2MMSS: function(totalSec) {
+      totalSec = totalSec.toFixed(0);
+      var minutes = parseInt(totalSec / 60) % 60;
+      var seconds = totalSec % 60;
+      var result = (minutes < 10 ? "0" + minutes : minutes) + ":" + 
+                  (seconds < 10 ? "0" + seconds : seconds);
+      return result;
+  },
+  
   sortByKey: async function(array, key) {
     return array.sort(function(a, b) {
         var x = a[key]; var y = b[key];
@@ -171,14 +181,17 @@ module.exports = {
     var counter = 0;
     await _.each(user.lang_info.langs, lang => {
       userLangs.push(lang["lang"+counter]);
-      langLevels.push(lang["level"+counter]);
+      if( lang["level"+counter] == 4)
+        langLevels.push(-1);
+      else
+        langLevels.push(lang["level"+counter]);
+
       counter++;
     });
 
     var filteredJobs = [];
     var counter = 0;
-    await _.each(jobs, ajob => 
-    {
+    await _.each(jobs, ajob => {
       if (userLangs.indexOf(ajob.language_source)>-1)
         if (userLangs.indexOf(ajob.language_target)>-1) {
           var langsource = userLangs.indexOf(ajob.language_source);

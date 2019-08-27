@@ -1,3 +1,8 @@
+  <script type="text/javascript">
+    var isBlocked = <%= isBlocked %>;
+
+  </script>
+
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -62,7 +67,10 @@
         <% if (session.User) { %>
           <% if (session.User.access != "admin" && session.User.access != "superadmin") { %>
             <br>
-            <%- include partials/assignedJobs %>
+
+            <% if (isBlocked==false) { %>
+              <%- include partials/assignedJobs %>
+            <% } %>
  
             <div id="assignbox"></div>
             <br>
@@ -74,10 +82,8 @@
               <% } %>
  
             <% } else { %>
- 
-            <%- include partials/adminPanel %>
-
-             <% } %>
+             <%- include partials/adminPanel %>
+            <% } %>
         <% } %>
       </div><!--/. container-fluid -->
     </section>
@@ -86,8 +92,21 @@
   <!-- /.content-wrapper -->
 
   <script>
-    // confirm assignment request
-     function requestJob(job, userid, assignedJobs) {
+
+      function swalModal(modaltype) {
+        if(modaltype=="blocked"){   
+          Swal.fire({
+                type: 'error',
+                title: 'Oops...',
+                text: 'LIMITED ACCESS: you are in the blocklist!'
+            });
+        }
+      }
+
+      // confirm assignment request
+      function requestJob(job, userid, assignedJobs) {
+        //if(isBlocked)
+          //swalModal("blocked");
         if(assignedJobs.length>0)
           $( "#assignbox" ).html( '<div class="alert alert-warning alert-dismissible MyFlashBox centerAction" style="width:40%">\
           <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>\
@@ -106,10 +125,15 @@
                 console.log(job);
                 data = {}
                 data = { job: job, userid: userid  };
-                $.post("/task/assign", data, function(status) {
-                  //$('#taskIcon'+taskid).text("lock_outline")
-                  console.log(status);
-                  location.reload();
+                $.post("/task/assign", data)
+                .done(function(msg){  
+                  console.log(msg); 
+                  location.reload(); 
+                })
+                .fail(function(xhr, status, error) { 
+                  console.log(error); 
+                  if(error = "Unauthorized")
+                    swalModal("blocked");
                 });
               }
             }
@@ -127,8 +151,7 @@
            callback: function(result) {
              if (result) {
                // add CSRF, check if needed
-               console.log(job);
-               data = {}
+               // console.log(job);
                data = { job: job, userid: userid  };
                $.post("/task/unassign", data, function(status) {
                  //$('#taskIcon'+taskid).text("lock_outline")
@@ -139,6 +162,7 @@
            }
          });
        }
+    
     function loaderWait(token){
        //console.log("iframe loaded!");
        // A new access-token should be generated/registered for this user automatically
@@ -149,8 +173,8 @@
        elem.parentNode.removeChild(elem);
        var iframeWindow = document.getElementsByClassName("modal-dialog")[0];
        iframeWindow.style.minWidth  = "1400px";
-
     }
+
     // redirect iframe warning
     function iframeProceed(editorLink, job_id, token, user) {
          bootbox.confirm({
@@ -212,6 +236,49 @@
          });
        }
 
+    // impose user blocking "per-language"
+    function blockUserLang(orgid, userid, langCode) {
+         bootbox.confirm({
+           title: "User's language blocking",
+           message: "You are going to block this user from contributing to this language",
+           buttons: {
+             confirm: { label: "<%= __('organisation.show.yestag') %>", className: 'btn-danger' },
+             cancel: { label: "<%= __('organisation.show.canceltag') %>" }
+           },
+           callback: function(result) {
+             if (result) {
+               data = { id: orgid, user: userid, langCode: langCode };
+               $.post("/user/blocklang", data)
+               .done(function(msg){ location.reload(); })
+               .fail(function(xhr, status, error) {
+                  location.reload()
+                });
+             }
+           }
+         });
+       }
+    // reverse previous user blocking "per-language"
+    function unblockUserLang(orgid, userid, langCode) {
+         bootbox.confirm({
+           title: "Undo language blocking",
+           message: "You are going to reverse a block imposed on this user from contributing to this language",
+           buttons: {
+             confirm: { label: "<%= __('organisation.show.yestag') %>", className: 'btn-danger' },
+             cancel: { label: "<%= __('organisation.show.canceltag') %>" }
+           },
+           callback: function(result) {
+             if (result) {
+               data = { id: orgid, user: userid, langCode: langCode };
+               $.post("/user/reverse-blocklang", data)
+               .done(function(msg){ location.reload(); })
+               .fail(function(xhr, status, error) {
+                  location.reload()
+                });
+             }
+           }
+         });
+       }
+
     // user role-modification
     function updateRole(orgid, userid, newRole) {
          bootbox.confirm({
@@ -233,6 +300,10 @@
          });
        }
 </script>
+
+<!-- sweetalert modals -->
+<% block('localScripts', '<link href="/plugins/sweetalert/sweetalert2.min.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<script src="/plugins/sweetalert/sweetalert2.min.js"></script>') %>
 
 <!-- load extra .js plugins only for this view -->
 <% block('localScripts', '<script src="/plugins/bootstrap-table-filter-control.min.js"></script>') %>
