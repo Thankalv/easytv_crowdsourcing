@@ -58,7 +58,7 @@ module.exports = {
               occurredTo: updUser.id,
               adminBy: this.req.session.User.id }).fetch();
 
-          sails.log(unblockLog);
+          // sails.log(unblockLog);
           return exits.success();
       }
     }

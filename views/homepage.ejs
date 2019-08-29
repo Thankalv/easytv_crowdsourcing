@@ -27,41 +27,14 @@
     <section class="content">
       <div class="container-fluid">
 
-
-        <div class="row" style="margin: auto;width: 50%;">
-        <!-- Info boxes -->
-        
-          <div class="row" style="margin: auto;width:80%;padding:15px">
-            <h5 style="display:block">Organisation Summary</h5><br>
-            <div class="col-md-8">
-              <div class="info-box">
-                <span class="info-box-icon bg-info elevation-1"><i class="fa fa-files-o"></i></span>
-                <div class="info-box-content">
-                  <span class="info-box-text"> Jobs Published</span>
-                  <span class="info-box-number"> <%= jobsPosted %> </span>
-                </div>
-              </div>
+          <div class="row" style="margin: auto;width: 50%;">
+              <!-- Info boxes -->
+                <% if (session.User) { %>
+                  <% if (session.User.access != "admin" && session.User.access != "superadmin") { %>
+                    <%- include partials/userLangs %>
+                   <% } %>
+                <% } %>
             </div>
-
-            <!-- fix for small devices only -->
-            <div class="clearfix hidden-md-up"></div>
-            <div class="col-md-8">
-              <div class="info-box mb-3">
-                <span class="info-box-icon bg-warning elevation-1"><i class="fa fa-users"></i></span>
-                <div class="info-box-content">
-                  <span class="info-box-text"> Registered Members</span>
-                  <span class="info-box-number"> <%= orgMembers %> </span>
-                </div>
-              </div>
-            </div>
-        </div>
-     
-          <% if (session.User) { %>
-            <% if (session.User.access != "admin" && session.User.access != "superadmin") { %>
-              <%- include partials/userStats %>
-             <% } %>
-          <% } %>
-         </div>
         <!-- /.row -->
         
         <% if (session.User) { %>
@@ -85,6 +58,40 @@
              <%- include partials/adminPanel %>
             <% } %>
         <% } %>
+        
+        <div class="row" style="margin: auto;width: 100%;">
+            <!-- Info boxes -->
+            <div class="col-md-5 offset-md-1">
+                <h5 style="display:block">Organisation Summary</h5><br>
+                <div class="col-md-8">
+                  <div class="info-box">
+                    <span class="info-box-icon bg-info elevation-1"><i class="fa fa-files-o"></i></span>
+                    <div class="info-box-content">
+                      <span class="info-box-text"> Jobs Published</span>
+                      <span class="info-box-number"> <%= jobsPosted %> </span>
+                    </div>
+                  </div>
+                </div>
+    
+                <!-- fix for small devices only -->
+                <div class="clearfix hidden-md-up"></div>
+                <div class="col-md-8">
+                  <div class="info-box mb-3">
+                    <span class="info-box-icon bg-warning elevation-1"><i class="fa fa-users"></i></span>
+                    <div class="info-box-content">
+                      <span class="info-box-text"> Registered Members</span>
+                      <span class="info-box-number"> <%= orgMembers %> </span>
+                    </div>
+                  </div>
+                </div>
+            </div>
+              <% if (session.User) { %>
+                <% if (session.User.access != "admin" && session.User.access != "superadmin") { %>
+                  <%- include partials/userStats %>
+                 <% } %>
+              <% } %>
+          </div>
+
       </div><!--/. container-fluid -->
     </section>
     <!-- /.content -->
@@ -143,7 +150,7 @@
     function withdrawJob(job, userid) {
          bootbox.confirm({
            title: "Confirmation",
-           message: "You are going to withdraw from this job, are you sure?",
+           message: "You are going to unlock this job, are you sure?",
            buttons: {
             confirm: { label: "<%= __('organisation.show.yestag') %>", className: 'btn-success' },
              cancel: { label: "<%= __('organisation.show.canceltag') %>" }

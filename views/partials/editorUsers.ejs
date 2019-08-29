@@ -1,0 +1,38 @@
+<div class="dropdown-menu dropdown-menu-lg dropdown-menu-left">
+
+        <div class="card card-widget widget-user-2">
+          <!-- Add the bg color to the header using any of the bg-* classes -->
+          <div class="widget-user-header bg-primary">
+            <!-- /.widget-user-image -->
+            <h3 class="widget-user-username">  <%=  job.job_id %> </h3>
+            <h5 class="widget-user-desc">  <%= job.status %></h5>
+          </div>
+
+          <div class="card-footer p-0">
+              <ul class="nav flex-column">
+                <li class="nav-item">
+                  <a href="#" class="nav-link">
+                    Contributions <span class="float-right badge bg-success"> <%= job.prevStats.length %> </span>
+                  </a>
+                </li>
+  
+                <% _.each(job.prevStats, function(prevStat) { %>
+                    <% if(prevStat.worker)  { %>
+                      <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <%=  User.fullName(prevStat.worker) %> -- <%= prevStat.edited_percent %>
+                            <!-- the EVALUATOR of this job_id can edit the contributing users "CONFIDENCE LEVEL" -->
+                            <span class="float-right badge bg-success">
+                                <i class="fa fa-check-circle-o" style="background-color: green" type="button" aria-hidden="true"></i> 
+                            </span>
+                        </a>
+                      </li>
+                    <% } %>
+                <% }); %>
+  
+              </ul>
+            </div>
+          </div>
+  </div>
+  
+  

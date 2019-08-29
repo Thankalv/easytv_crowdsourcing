@@ -43,7 +43,7 @@
                                 
                               <div class="input-group-prepend" style="display: inline-flex;">
                                   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    Modify Role
+                                    Modify Role 
                                   </button>
                                   <div class="dropdown-menu">
                                       <button class="btn dropdown-item" onclick="updateRole('<%= session.User.userOrganisation.id %>', '<%= user.id %>', 'editor' )"> Reviewer </button>
@@ -208,7 +208,7 @@
                         <span style="font-size:12px"> <%= UtilService.to_hhmmss_ddmmyyyy(job.expiration_date*1000) %> </span> 
                       </td>
                     <td class="w-40"> 
-                       <%= job.asset_name %> 
+                       <%= job.asset_name.replace("'", "") %> 
                     </td>
                   </tr>
                 <% }) %>

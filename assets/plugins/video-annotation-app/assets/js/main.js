@@ -1,3 +1,4 @@
+
 // Setup player and plugin
 (function(){
     var player = videojs('the_video', {
@@ -11,7 +12,7 @@
         bindArrowKeys: true,
         meta: {
             user_id: 3,
-            user_name: "Guest"
+            user_name: username
         }
     });
 })();
@@ -23,15 +24,30 @@ function sortByKey(array, key) {
     });
 }
 
+function swalModal(modaltype) {
+    if(modaltype=="error")
+        Swal.fire({
+            type: 'error',
+            title: 'Oops...',
+            text: 'No new annotation was submitted!'
+        });
+    else if(modaltype=="success")
+        Swal.fire({
+            //position: 'top-end',
+            type: 'success',
+            title: 'Done!',
+            text: 'Thanks for submitting!',
+        });
+}
+
 // Intercept VAC logs and port them to console UI
 (function(){
     window.VAC_DEBUG = true;
     var showComment = '';
+    var showCommentNL = '';
     var $console = $(".console"),
+        $consoleNL = $(".consoleNL"),
         consoleLog = console.log;
-    //var $user = $('#comment-username');
-    //var $date = $('#comment-date');
-    //var $comment = $('#comment-content');
 
     console.log = function (msg) 
     {
@@ -45,22 +61,49 @@ function sortByKey(array, key) {
                 if (Array.isArray(arguments[i]))
                 {
                     for (var j=0; j <= arguments[i].length; j++)
-                        if( arguments[i][j] != undefined && commentsId.indexOf(arguments[i][j].id)<0)
-                        {   
+                    {
+                        if( arguments[i][j] != undefined && commentsId.indexOf(arguments[i][j].id)<0){   
                             arguments[i][j]['rangestart'] = arguments[i][j].range.start; 
                             comments.push(arguments[i][j]);
-                            commentsId.push(arguments[i][j].id)
+                            commentsId.push(arguments[i][j].id);
                         }
-                   comments =  sortByKey(comments, 'rangestart');
+                        if( arguments[i][j] != undefined && commentsId.indexOf(arguments[i][j].id)>-1 ){
+                            var cindex = commentsId.indexOf(arguments[i][j].id)
+                            if(arguments[i][j].comments.length==2)
+                                comments[cindex].comments = arguments[i][j].comments;
+                        }
+                    }
+                    //comments =  sortByKey(comments, 'rangestart');
                 }
                 if (typeof arguments[i] === 'object')
                     if (arguments[i].annotation != undefined)
+                        if (arguments[i].annotation.comments.length == 2)
+                            $( ".vac-reply-btn" ).remove();
+
+                if (typeof arguments[i] === 'object')
+                    if (arguments[i].annotation != undefined){
                         showComment = arguments[i].annotation.comments[0];
-                    else
+                        showCommentNL = "";
+                        if (arguments[i].annotation.comments[1] != undefined)
+                            showCommentNL = arguments[i].annotation.comments[1];
+                    }
+                    else{   
                         showComment = "";
+                        showCommentNL = "";
+                    }
                 output = output + " " + JSON.stringify(arguments[i]);
+
+                if(output.indexOf("annotationDeleted")>-1)
+                    if (typeof arguments[i] === 'object')
+                        if (arguments[i].id != undefined)
+                        {
+                            var deleteID = commentsId.indexOf(arguments[i].id);
+                            commentsId.splice(deleteID, 1);
+                            comments.splice(deleteID, 1);
+                        }
             };
 
+            comments =  sortByKey(comments, 'rangestart');
             // Remove extra quotes and any undefined
             output = output.replace(/\"/g, "").trim();
             output = output.replace("undefined", "");
@@ -69,17 +112,18 @@ function sortByKey(array, key) {
             var $p = $("<p/>").text(output);
             //$console.append($p);
             if(output.indexOf("annotationClosed")>-1){
-               // $user.text("");
-              //  $date.text("");
-              //  $comment.text("");
+                $(".console").empty();
+                $(".consoleNL").empty();
+               // $user.text(""); //  $date.text(""); //  $comment.text("");
             }
             else if(typeof showComment === 'object'){
-                $console.append( $("<p/>").text("Username: "+showComment.meta.user_name+" said: "+showComment.body) );
-              //  $user.text(showComment.meta.user_name);
-              //  $date.text(showComment.meta.datetime);
-              //  $comment.text(showComment.body);
+                $console.append( $("<p/>").text(showComment.meta.user_name+" << said: "+showComment.body) );
+                if(typeof showCommentNL === 'object')
+                    $consoleNL.append( $("<p/>").text(showCommentNL.meta.user_name+" << said: "+showCommentNL.body) );
+              //  $user.text(showComment.meta.user_name); //  $date.text(showComment.meta.datetime); //  $comment.text(showComment.body);
             }
             $console.scrollTop($console[0].scrollHeight)
+            $consoleNL.scrollTop($console[0].scrollHeight)
         }
         consoleLog.apply(console, arguments);
     };
@@ -92,22 +136,26 @@ $(".clear-console-btn").on("click", function() {
 
 
 $("#post-notifications").on("click", function() {
-
-    if(comments.length==0)
-        $( "#alertbox" ).html( '<div class="alert alert-warning alert-dismissible MyFlashBox centerButton" style="width:40%">\
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>\
-        No new annotation was found</div>' );
-
+    if(comments.length==0){
+        swalModal("error");
+        return;
+    }
+    // $( "#alertbox" ).html( '<div class="alert alert-warning alert-dismissible MyFlashBox centerButton" style="width:40%">\
+    // <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button> No new annotation was found</div>' );
     //console.log(comments);
-    demoAnnotations.map( annot => { 
-            annot.comments = annot.comments.map( comment => {delete comment.commentList; return comment.body})
-            comments.push(annot)
-        });
+    var vid = $("#the_video_html5_api");
+    var postcomments = [];
+    comments.map( annot => {
+            annot.comments = annot.comments.map( comment => { 
+                if(comment.body) return comment.body; 
+                else return comment;
+            })
+            postcomments.push(annot)
+    });
 
-    var postcomments = sortByKey(comments, "rangestart");
-    var data = {'postcomments': postcomments};
+    postcomments = sortByKey(postcomments, "rangestart");
+    var data = {'id':video_id, 'videoURL': videoURL, 'postcomments': postcomments, 'duration': vid[0].duration};
     console.log(data);
-
     $.ajax({
         url: "/video-annotation/submit",
         type: 'POST',
@@ -116,23 +164,8 @@ $("#post-notifications").on("click", function() {
         dataType: 'json',
         success: function (data) {
             console.info(data);
+            swalModal("success");
         }
     });
-
-    // an example JSON input from  "oeg-upm.net"
-    var video = {
-        "url": "http://nlp-easytv.oeg-upm.net/video/en/5.mp4",
-        "nls": "Climate",
-        "sls": "Climate" ,
-        "duration": "00:03" ,
-        "language": "en" ,
-         "segments": [{
-                 "order": "1",
-                "start": "00:00",
-                "end" : "00:03",
-                "content" : "Climate"
-         }
-         ]
-      }
 
 });

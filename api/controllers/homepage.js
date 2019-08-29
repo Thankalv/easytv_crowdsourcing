@@ -12,7 +12,7 @@ module.exports = {
       statusCode: 200,
       description: 'show the public page.',
       viewTemplatePath: 'homepage'
-    },
+    }
   },
 
   fn: async function () 
@@ -43,10 +43,11 @@ module.exports = {
           broadcasterJobs = await UtilService.filterByLang(broadcasterJobs, this.req.session.User);
           // compile a list of this user's assigned (top-list) jobs
           var thisUserJobs = [], pendingBroadcasterJobs = [];
-          await _.each(broadcasterJobs, ajob => {
+          sails.log(userAssignedJobsList);
+          await _.each(broadcasterJobs, async function(ajob) {
               if (userAssignedJobsList.indexOf(ajob.job_id)>-1){
                 // the accesslink should be omitted in case this users is in the 'block-list'
-                ajob.accesslink = userAssignedJobs[userAssignedJobsList.indexOf(ajob.job_id)];
+                ajob.accesslink = userAssignedJobs[userAssignedJobsList.indexOf(ajob.job_id)];                
                 thisUserJobs.push(ajob);
               }
               else
@@ -65,17 +66,23 @@ module.exports = {
             isBlocked: isBlocked,
             userTitle: userTitle, 
             userStats : userStats,
-            orgMembers: orgMembers, 
+            orgMembers: orgMembers,
             jobsPosted: jobsPosted,
             assignedJobs: thisUserJobs,
             subz: pendingBroadcasterJobs,
-            otherSubz: otherSubttitles
+            otherSubz: otherSubttitles,
+            langs: sails.config.custom.langs,
+            langsISO: sails.config.custom.langsISO,
+            levels: [ { num: 1, description: 'Junior'},
+                      { num: 2, description: 'Intermediate'},
+                      { num: 3, description: 'Proficiency'},
+                      { num: 4, description: 'Blocked'}]
           };
       }
       else // Prepare the dashboard view's data for broadcaster "Administrator" role
       {
           if(this.req.session.User.access=="superadmin")
-            var orgMembers = await User.find( {access: { '!=': 'superadmin' }} ).populate("accesslinks");
+            var orgMembers = await User.find( {access: { '!=': ['superadmin', 'admin'] }} ).populate("accesslinks").populate("userOrganisation");
           else
             var orgMembers = await User.find({userOrganisation: this.req.session.User.userOrganisation.id, access: { '!=': 'superadmin' }}).populate("accesslinks");
 

@@ -70,6 +70,22 @@
             </select>
           </div>
           <% } %>
+
+          <% if ( session.User.userOrganisation.phone_required ) { %>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label> Phone:</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fa fa-phone"></i></span>
+                  </div>
+                  <input type="text" class="form-control" id="phone-number" name="telephone" value="<%= user.phone_num %>" data-mask>
+                </div>
+                <!-- /.input group -->
+              </div>
+            </div>
+          <% } %>
+
           <div class="form-group">
             <label for="password"> <%= __('user.edit.passw') %></label>
             <input type="password" class="form-control" placeholder="password" name="password" id="password">
@@ -117,4 +133,7 @@
 <% block('localScripts', '<link href="/plugins/summernote/summernote.css" rel="stylesheet"><link>') %>
 <% block('localScripts', '<script src="/plugins/summernote/summernote.min.js"></script>') %>
 <% block('localScripts', '<script src="/plugins/wysihtml5.js"></script>') %>
+<% block('localScripts', '<link href="/plugins/intl-tel-input/css/intlTelInput.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<script src="/plugins/intl-tel-input/js/intlTelInput.js"></script>') %>
+
 <% block('localScripts', '<script src="/plugins/register-page.js"></script>') %>

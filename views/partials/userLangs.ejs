@@ -1,0 +1,34 @@
+
+  <div class="col-md-8">
+        <!-- Widget: user widget style -->
+        <div class="card">
+          <!-- Add the bg color to the header using any of the bg-* classes -->
+          <div class="card-header border-transparent" style="background-color: #25bf28d4 !important" >
+            <div class="card-title" >
+              <h5 class="widget-user-desc" style="margin-left:10px"> <i class="fa fa-bar-chart"></i> Your Confidence Level</h5>
+            </div>
+            <div class="card-tools">
+              <button type="button" class="btn btn-tool" data-widget="collapse">
+                <i class="fa fa-minus"></i>
+              </button>
+            </div>
+        </div>
+
+          <div class="card-footer p-0">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <div  class="nav-link">
+                        <b>Language</b> <span class="float-right">  <b>Confidence Level</b> </span>
+                    </div>
+                  </li>
+                <% _.each(session.User.lang_info.langs, function(userLang) { %>
+                <li class="nav-item">
+                  <div  class="nav-link"  style="color: #007bff">
+                      <%= langs[langsISO.indexOf(userLang[Object.keys(userLang)[0]])]  %> <span class="float-right">  <%= levels[userLang[Object.keys(userLang)[1]]-1].description %> </span>
+                  </div>
+                </li>
+                <% }); %>
+            </ul>
+          </div>
+        </div>
+  </div>

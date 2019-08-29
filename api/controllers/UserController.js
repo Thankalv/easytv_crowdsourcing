@@ -306,7 +306,7 @@ module.exports = {
    */
   update: async function(req, res, next) {
     // protect access param, can add only if user is admin
-    sails.log(req.allParams());
+    // sails.log(req.allParams());
     var userObj = {};
 
     if (req.param('lastName'))
@@ -349,6 +349,9 @@ module.exports = {
     if (req.param('custom'))
       userObj.custom = req.param('custom');
 
+    if (req.param("fullNum"))
+      userObj.phone_num = req.param('fullNum');
+
     if (req.param('description'))
       userObj.description = req.param('description').trim();
 
@@ -369,16 +372,19 @@ module.exports = {
     var user2update = await User.findOne(req.param('id'));
     userObj.lang_info = await UserService.updateLangParameters(user2update, req);
 
-    //delete userObj.confirmation;
-    //console.log(req.param('id'));
+    // delete userObj.confirmation;
+    // console.log(req.param('id'));
     var updUser = await User.updateOne(req.param('id'))
-      .intercept( ()=>{  
+      .intercept( ()=>{
         FlashService.error(req, 'Error updating the user');  
-        return res.redirect('/user/edit/' + req.param('id')); })
-      .set(userObj);
+        return res.redirect('/user/edit/' + req.param('id')); 
+      }).set(userObj);
 
-    if(updUser)
-      return res.redirect(referer);
+    if(updUser){ 
+      req.session.User = updUser;
+      req.session.User.userOrganisation = await Organisation.findOne({ id: updUser.userOrganisation });
+      return res.redirect("/user");
+    }
     else{
       FlashService.error(req, 'Cannot update User.');
       return res.redirect('/user/edit/' + req.param('id'));
@@ -387,7 +393,7 @@ module.exports = {
   },
 
 
-    /**
+  /**
    * [exportfile description]
    * @param  {[type]} req [description]
    * @param  {[type]} res [description]

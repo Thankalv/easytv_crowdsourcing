@@ -20,6 +20,17 @@
               <div class="card-body">
                 <form role="form">
 
+                    <h5> <%= __('organisation.show.phoneUser') %> </h5>
+                    <div class="form-group">
+                        <div class="checkbox">
+                          <label >
+                            <input type="checkbox" value="phone_required" <%= organisation.phone_required ? 'checked': '' %>>
+                            <i class="fa fa-phone"></i>  Require a user's tel. number upon registration
+                          </label>
+                        </div>
+                    </div>
+                    <br>
+
                   <h5> <%= __('organisation.show.regtoken') %> </h5>
                   <div class="form-group">
                       <div class="checkbox">
@@ -53,15 +64,6 @@
                       </div>
 
                       <br>
-                      <h5> <%= __('organisation.show.userRegister') %> </h5>
-                      <div class="form-group">
-                          <div class="checkbox">
-                            <label >
-                              <input type="checkbox" value="phone_required" <%= organisation.phone_required ? 'checked': '' %>>
-                              <i class="fa fa-phone"></i>  Require a user's phone number upon registration
-                            </label>
-                          </div>
-                      </div>
 
                       <a href="#" class="btn btn-sm btn-flat btn-primary pull-left" onclick="updateConsent()"> <%= __('organisation.show.savesettings') %> </a>
                 </form>

@@ -10,15 +10,15 @@
 
 
   <section class="content">
-          <div class="col-md-10 offset-md-1">
-              <p> <%= __('feedback.prompt') %></p>
+          <div class="offset-md-2 col-md-8">
+              <p> <%= __('feedback.prompt') %>  </p>
   
-            <div class="box box-primary box-solid">
-              <div class="box-header with-border">
-                <h3 class="box-title"> <%= __('feedback.provide') %> </h3>
+            <div class="card">
+              <div class="card-header" style="background: #74acdd;">
+                <h3 class="card-title" style="font-weight:500">  <%= __('feedback.provide') %> </h3>
               </div>
         
-              <div class="box-body">
+              <div class="card-body">
               <form action="/feedback/submit" method="POST" id="update-organisation-form">
                   <div class="form-group">
                     <label for="theme"> <%= __('feedback.theme') %> </label>

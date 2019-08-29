@@ -73,6 +73,8 @@ module.exports.policies = {
     "edit" : ['sessionAuth', 'sameOrg', 'flash'],
     "update": ['sessionAuth', 'sameOrg', 'flash'],
     "settings" : ['sessionAuth', 'flash'],
+    "confidence-review": ['sessionAuth', 'flash'],
+    "confidence-update": ['sessionAuth', 'flash'],
     "settingsupdate" : ['sessionAuth', 'flash'],
     "newuser": ['flash'],
     "block": ["flash","sessionAuth", "admin"],

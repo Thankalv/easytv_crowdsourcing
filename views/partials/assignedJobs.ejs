@@ -30,8 +30,10 @@
             <tbody>
                 <% _.each(assignedJobs, function(job) { %>
                   <tr data-id="<%= job.id %>" data-model="job">
-                    <td> <%= job.job_id %> </td>
-                    <td class="w-10">
+                    <td> 
+                      <a href="user/confidence-review?job_id=<%= job.job_id %>&lang_source=<%= job.language_source %>&lang_target=<%= job.language_target %>"> <strong> <%= job.job_id %> </strong> </a>
+                    </td>
+                    <td class="w-20">
                       <div class="row centerAction">
                       <% if (["OnEdition","AwaitingForEdition", "OnEditionSaved"].indexOf(job.status)>-1) { %> 
                         <i class="btn btn-success bg-success material-icons" style='vertical-align: middle !important;font-size: 18px'
@@ -56,18 +58,25 @@
                     </td>
                     <td>      
                         <div class="progress-group">
-                            <b><%= job.validated_percent_editor %></b>%
-                            <div class="progress progress-sm">
-                              <div class="progress-bar bg-primary" style="width: <%= job.validated_percent_editor %>%"></div>
+                            <% if (["OnEdition","AwaitingForEdition", "OnEditionSaved"].indexOf(job.status)>-1) { %> 
+                              <b><%= job.validated_percent_editor %></b>%
+                              <div class="progress progress-sm">
+                                <div class="progress-bar bg-primary" style="width: <%= job.validated_percent_editor %>%"></div>
+                              </div>
+                              <% } else { %>
+                                <b><%= job.validated_percent_reviewer %></b>% 
+                                <div class="progress progress-sm">
+                                  <div class="progress-bar bg-primary" style="width: <%= job.validated_percent_reviewer %>%"></div>
+                                </div>
+                                <% } %>
                             </div>
-                          </div>
                       </td>                            
                       <td>  
                         <b> <span style="font-size:12.5px;font-weight: 700"> <%= UtilService.to_hhmmss_ddmmyyyy(job.publication_date*1000) %> </span> </b> / <br>
                         <span style="font-size:12px"> <%= UtilService.to_hhmmss_ddmmyyyy(job.expiration_date*1000) %> </span> 
                       </td>
                     <td class="w-40"> 
-                       <%= job.asset_name %> 
+                       <%= job.asset_name.replace("'", "") %> 
                     </td>
                   </tr>
                 <% }) %>

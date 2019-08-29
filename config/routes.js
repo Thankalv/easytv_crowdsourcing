@@ -47,6 +47,8 @@ module.exports.routes = {
     'POST /user/destroy':           { controller: 'user', action: 'destroy'},
     'GET /email/confirm':           { controller: 'user', action: 'confirm-email' },
     'GET /email/confirmed':           { controller: 'user', action: 'confirmed-email' },
+    'GET /user/confidence-review':    { controller: 'user', action: 'confidence-review' },
+    'POST /user/confidence-update':    { controller: 'user', action: 'confidence-update' },
 
     // ORGANISATION
     'GET /organisation':               { controller: 'organisation', action: 'get' },

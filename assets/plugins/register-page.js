@@ -32,6 +32,18 @@ $(document).ready(function ()
         counter -= 1
     });
 
+    // On-the-fly mask change
+    // $('#phone-number').mask('00000-000', options);
+    
+    var input = document.querySelector("#phone-number");
+    window.intlTelInput(input, {
+        onlyCountries: ["es", "gr", "it"],
+        separateDialCode: true,
+        hiddenInput: "fullNum",
+        preferredCountries: [ "es"],
+        utilsScript: "../plugins/intl-tel-input/js/utils.js?" // just for formatting/placeholders etc
+      });
+
 
 });
 

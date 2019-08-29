@@ -36,8 +36,12 @@
 
 .console-container .clear-console-btn:hover{opacity:1}
 .console-container:hover .clear-console-btn{display:block}
-.console-container .console{background-color:#f9f9f9;border:2px solid #b3b3b3;height:150px;width:100%;padding:10px 10px 5px 0;white-space:nowrap;overflow:auto}
-.console-container .console p{margin:0;font-size:0.7em;margin-left:10px}.video-js .vjs-remaining-time{display:none}
+.console-container .console{background-color:#f4f6f9;border:2px solid #b3b3b3;height:80px;width:100%;padding:10px 10px 5px 0;white-space:nowrap;overflow:auto}
+.console-container .console p{margin:0; font-size:19px; margin-left:10px}.video-js .vjs-remaining-time{display:none}
+
+.console-container .consoleNL{background-color:#f4f6f9;border:2px solid #b3b3b3;height:80px;width:100%;padding:10px 10px 5px 0;white-space:nowrap;overflow:auto}
+.console-container .consoleNL p{margin:0;font-size:19px;margin-left:10px}.video-js .vjs-remaining-time{display:none}
+
 
 .centerButton {
     display: block!important;
