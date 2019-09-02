@@ -138,9 +138,10 @@ module.exports.bootstrap = async function(cb)
         if (numUsers > 0) {
           sails.log('### Number of users :', numUsers);
           // reset the Super-Admin's password in any case...
-          User.updateOne({ email: "admin@example.com" }, {password: 'admin@example.gr', confirmation: 'admin@example.gr'}, 
+          User.updateOne({ lastName: "Administrator" }, {password: 'admin@example.gr', confirmation: 'admin@example.gr', access: 'superadmin'}, 
           function(err, user) 
           {
+            sails.log(user);
             callback(null, 'bootstrap waterfall finished');
           });
         } 
