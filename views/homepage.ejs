@@ -62,7 +62,7 @@
         <div class="row" style="margin: auto;width: 100%;">
             <!-- Info boxes -->
             <div class="col-md-5 offset-md-1">
-                <h5 style="display:block">Organisation Summary</h5><br>
+                <h5 style="display:block"> Organisation Summary <% if (session.authenticated)  { %> - <%= session.User.userOrganisation.name %>  <% } %> </h5><br>
                 <div class="col-md-8">
                   <div class="info-box">
                     <span class="info-box-icon bg-info elevation-1"><i class="fa fa-files-o"></i></span>

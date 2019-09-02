@@ -15,25 +15,42 @@ var scheduler = require('node-schedule');
 
 module.exports.bootstrap = async function(cb)
 {
-  //var tasksStatus = TaskService.getTasksStatus();
+  // schedule a task inspection routine
   var repeatedJob = await scheduler.scheduleJob({minute: 10}, async function(){
       TaskService.getTasksStatus(  function(err, tasks){
         if(err)
           sails.log.error(err)
-        else
-          sails.log('Scheduled logging:', tasks);
+        //else
+        //  sails.log('Scheduled logging:', tasks);
       });
   });
 
-  await Accesslink.destroy({user:"5cf513e1ad676917947457c0"});
+  var annots = await VideoAnnotated.find();
+  if(annots.length==0){
+    var newAnnots = await OntologyService.getVideos();
+    await _.each(newAnnots.videos, async function(annot) {
+      sails.log(annot)
+      if(annot.videoURL.indexOf('/el/')>-1)
+        annot.lang = 'el';
+      else if(annot.videoURL.indexOf('/es/')>-1)
+        annot.lang = 'es';
+      else if(annot.videoURL.indexOf('/it/')>-1)
+        annot.lang = 'it';
+      else if(annot.videoURL.indexOf('/en/')>-1)
+        annot.lang = 'en';
+
+      await VideoAnnotated.create(annot)
+        .intercept( (err)=>{  sails.log(err) });
+    });
+  }
+
   /* 
      "syncing" function serves the case that Crowdsourcing is getting reset
       and possible job-related updates have been lost from the API in the meanwhile
   */
   async function syncingOrgsJobs()
   {
-    organisations = await Organisation.find();
-    
+    var organisations = await Organisation.find();
     _.each(organisations, async function(org) 
     {
       if(org.name != 'Default' && org.api_info.getJobsURL != undefined)
@@ -44,25 +61,18 @@ module.exports.bootstrap = async function(cb)
           await _.each(orgPostedJobs, function(postedJob) {
             orgPostedJobsList.push(postedJob.job_id);
           });
-          sails.log("Existing from "+org.name, orgPostedJobsList);
-          var orgExistingJobs = await TaskService.getJobsFromBroadcaster(org, "all");
-          // sails.log(orgExistingJobs);
-          var orgExistingJobsList = [];
-          await _.each(orgExistingJobs, function(postedJob) {
-            orgExistingJobsList.push(postedJob.job_id);
-          });
-          //sails.log("New from "+org.name,orgExistingJobsList);
+          //sails.log("Existing from "+org.name, orgPostedJobsList);
+
       }
     });
-
     
   }
-
+  
   async.waterfall([
       info,
       checkOrganisations,
       checkUsers,
-  ], function(err, result) {
+   ], function(err, result) {
     sails.log.info(result);
   });
 
@@ -127,7 +137,12 @@ module.exports.bootstrap = async function(cb)
       {
         if (numUsers > 0) {
           sails.log('### Number of users :', numUsers);
-          callback(null, 'bootstrap waterfall finished');
+          // reset the Super-Admin's password in any case...
+          User.updateOne({ email: "admin@example.com" }, {password: 'admin@example.gr', confirmation: 'admin@example.gr'}, 
+          function(err, user) 
+          {
+            callback(null, 'bootstrap waterfall finished');
+          });
         } 
         else 
         {

@@ -31,7 +31,7 @@ module.exports = {
     {
       var isJobUnderReview = await Accesslink.findOne({user: this.req.session.User.id, job_id: inputs.job_id})
 
-      // ONLY an evaluator that's currently working on this job_id is able to modify the contibuting user's confidence
+      // ONLY an 'EVALUATOR' that's currently working on this job_id is able to modify the contibuting user's confidence
       var prevUsersList = [];
       var prevUsers = [];
       // parse the 'JobsStats' records, and return the previous users that have contributed to this one

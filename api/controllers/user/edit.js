@@ -32,6 +32,7 @@ module.exports = {
         } 
         else {
           var user = await User.findOne(userId).populate('userOrganisation');
+          sails.log("Editing user: "+ user.email);
           if (!user) {
             return this.res.notFound('User not found.');
           } 

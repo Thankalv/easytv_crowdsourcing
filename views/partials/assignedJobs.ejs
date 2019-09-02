@@ -31,7 +31,11 @@
                 <% _.each(assignedJobs, function(job) { %>
                   <tr data-id="<%= job.id %>" data-model="job">
                     <td> 
-                      <a href="user/confidence-review?job_id=<%= job.job_id %>&lang_source=<%= job.language_source %>&lang_target=<%= job.language_target %>"> <strong> <%= job.job_id %> </strong> </a>
+                      <% if (session.User.access == "reviewer") { %>
+                       <a href="user/confidence-review?job_id=<%= job.job_id %>&lang_source=<%= job.language_source %>&lang_target=<%= job.language_target %>"> <strong> <%= job.job_id %> </strong> </a>
+                      <% } else { %>
+                        <strong> <%= job.job_id %> </strong>
+                      <% } %>
                     </td>
                     <td class="w-20">
                       <div class="row centerAction">

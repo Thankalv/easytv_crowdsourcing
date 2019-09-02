@@ -17,10 +17,8 @@ module.exports = {
     fn: async function (inputs, exits) 
     {
       // sails.log(this.req.session.User);
-
       return exits.success({ user: this.req.session.User});
 
     }
-  
   
   };

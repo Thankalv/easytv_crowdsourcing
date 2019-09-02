@@ -377,17 +377,17 @@ module.exports = {
     var updUser = await User.updateOne(req.param('id'))
       .intercept( ()=>{
         FlashService.error(req, 'Error updating the user');  
-        return res.redirect('/user/edit/' + req.param('id')); 
+        return res.redirect('/user/edit?id=' + req.param('id')); 
       }).set(userObj);
 
-    if(updUser){ 
+    if(req.session.User.access !="superadmin" && req.session.User.access !="admin" && updUser){ 
       req.session.User = updUser;
       req.session.User.userOrganisation = await Organisation.findOne({ id: updUser.userOrganisation });
       return res.redirect("/user");
     }
     else{
-      FlashService.error(req, 'Cannot update User.');
-      return res.redirect('/user/edit/' + req.param('id'));
+      //FlashService.error(req, 'Cannot update User.');
+      return res.redirect('/user/edit?id=' + req.param('id'));
     }
 
   },

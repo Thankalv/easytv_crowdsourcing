@@ -56,7 +56,8 @@
                                                 <h3 class="timeline-header no-border">
                                                     <a href="#" data-toggle="dropdown">  <%= User.fullName( user ) %> </a>  
                                                     <%- include userInfo %>
-                                                 <br> has a confidence-level of <b> <%= levels[user.lang_source_lvl-1].description %> </b> in the <strong> <%= langs[langsISO.indexOf(lang_source)] %> language </strong>
+                                                 <br> has a confidence-level of <b> <%= levels[user.lang_source_lvl-1].description %> </b> 
+                                                 in the <strong> <%= langs[langsISO.indexOf(lang_source)] %> language </strong>
                                                   <div class="input-group-prepend" style="display: inline-flex;">
                                                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                                         Modify Confidence
@@ -72,7 +73,8 @@
                                                         '<%= user.id %>', '<%= lang_source %>', '4', '<%= job_id %>' )"> <div style="color:red;font-weight:500"> Block</div></button>
                                                     </div>
                                                   </div>
-                                                  <br> has a confidence-level of <b> <%= levels[user.lang_target_lvl-1].description %> </b> in the <strong> <%= langs[langsISO.indexOf(lang_target)] %> language </strong>
+                                                  <br> has a confidence-level of <b> <%= levels[user.lang_target_lvl-1].description %> </b> 
+                                                  in the <strong> <%= langs[langsISO.indexOf(lang_target)] %> language </strong>
                                                   <div class="input-group-prepend" style="display: inline-flex;">
                                                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                                             Modify Confidence

@@ -182,7 +182,8 @@ module.exports = {
    */
   beforeUpdate: function(values, cb) 
   {
-    sails.log(values);
+    sails.log(values.email);
+    sails.log(values.lang_info);
     // do not change password if it is empty
     if (values.password && values.confirmation) 
     {
