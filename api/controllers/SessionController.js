@@ -30,6 +30,7 @@ module.exports = {
         req.logIn(user, function(err) 
         {
           if (err) {
+            sails.log(err);
             var usernamePasswordMismatchError = [{
               name: 'usernamePasswordMismatch',
               message: 'Invalid username and password combination.'
