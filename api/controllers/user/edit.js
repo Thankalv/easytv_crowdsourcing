@@ -41,7 +41,10 @@ module.exports = {
           if (organisations.length == 0) {
             return this.res.notFound('No organisations are registered in the platform!');
           } 
-
+          if (user.access =="superadmin" || user.access == "admin"){
+            user["lang_info"] = {"langs":[]};
+          }
+          
           return exits.success({
             user: user,
             organisations: organisations,
