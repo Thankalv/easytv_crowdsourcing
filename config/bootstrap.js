@@ -26,7 +26,7 @@ module.exports.bootstrap = async function(cb)
   });
 
   var annots = await VideoAnnotated.find();
-  if(annots.length==0){
+  if(false){
     var newAnnots = await OntologyService.getVideos();
     await _.each(newAnnots.videos, async function(annot) {
       sails.log(annot)
