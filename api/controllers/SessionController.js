@@ -41,7 +41,7 @@ module.exports = {
           else 
           {
             //LoggerService.Log(user, 'LOGIN', 'Created session for user', req);
-            sails.log.debug("Just logged user: ",user.email, " from ", user.userOrganisation.name);
+            sails.log.debug("Just logged user: ",user.email);
             //sails.log.debug(user.userLanguage);
   
             User.update( user.id, userObj, function some(err){});
