@@ -44,6 +44,13 @@ module.exports.bootstrap = async function(cb)
     });
   }
 
+  var allOrgs = await Organisation.find();
+  await _.each(allOrgs, async function(org) 
+  {
+    if(!org.blocked)
+      await Organisation.updateOne({id:org.id}, {blocked:{users:[]}});
+  });
+  
   /* 
      "syncing" function serves the case that Crowdsourcing is getting reset
       and possible job-related updates have been lost from the API in the meanwhile
