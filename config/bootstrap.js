@@ -138,12 +138,19 @@ module.exports.bootstrap = async function(cb)
         if (numUsers > 0) {
           sails.log('### Number of users :', numUsers);
           // reset the Super-Admin's password in any case...
-          User.updateOne({ lastName: "Administrator" }, {password: 'admin@example.gr', confirmation: 'admin@example.gr', access: 'superadmin'}, 
-          function(err, user) 
-          {
-            sails.log(user);
-            callback(null, 'bootstrap waterfall finished');
-          });
+           Organisation.findOne({description: { contains: 'Default' }}, 
+           function(err, defOrg) 
+           {
+              if(defOrg)
+              {
+                  User.updateOne({email:"admin@example.com"}, {userOrganisation:defOrg.id},
+                  function(err,user){
+                    callback(null, 'bootstrap waterfall finished (Admin org was reset!)');
+                  });
+              }
+              else
+                callback(null, 'bootstrap waterfall finished');
+           });
         } 
         else 
         {
