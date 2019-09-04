@@ -40,11 +40,10 @@ module.exports = {
           var organisations = await Organisation.find();
           if (organisations.length == 0) {
             return this.res.notFound('No organisations are registered in the platform!');
-          } 
+          }
           if (user.access =="superadmin" || user.access == "admin"){
             user["lang_info"] = {"langs":[]};
           }
-          
           return exits.success({
             user: user,
             organisations: organisations,
@@ -53,7 +52,8 @@ module.exports = {
             langsISO: sails.config.custom.langsISO,
             levels: [   { num: 1, description: 'Junior'},
                       { num: 2, description: 'Intermediate'},
-                      { num: 3, description: 'Proficiency'}]
+                      { num: 3, description: 'Proficiency'},
+                      { num: 4, description: 'Blocked'}],
           });
         }
     }

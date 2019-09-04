@@ -59,7 +59,7 @@ module.exports = {
                      lang_target: inputs.lang_target,
                      langs: sails.config.custom.langs,
                      langsISO: sails.config.custom.langsISO,
-                     levels: [ { num: 1, description: 'Junior'},
+                     levels: [{ num: 1, description: 'Junior'},
                             { num: 2, description: 'Intermediate'},
                             { num: 3, description: 'Proficiency'},
                             { num: 4, description: 'Blocked'}]
