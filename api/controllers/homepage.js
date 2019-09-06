@@ -84,7 +84,7 @@ module.exports = {
           if(this.req.session.User.access=="superadmin")
             var orgMembers = await User.find( {access: { '!=': ['superadmin', 'admin'] }} ).populate("accesslinks").populate("userOrganisation");
           else
-            var orgMembers = await User.find({userOrganisation: this.req.session.User.userOrganisation.id, access: { '!=': 'superadmin' }}).populate("accesslinks");
+            var orgMembers = await User.find({userOrganisation: this.req.session.User.userOrganisation.id, access: { '!=': ['admin','superadmin'] }}).populate("accesslinks");
 
           var adminsOrg = await Organisation.findOne(this.req.session.User.userOrganisation.id);
           this.req.session.User.userOrganisation = adminsOrg;
