@@ -29,6 +29,8 @@ module.exports.custom = {
   // config var to be exposed in email-templates
   baseUrl: process.env.BASE_URL || 'http://localhost:1337',
 
+  adminKey: process.env.ADMIN_KEY,
+  
   /* easytv authentication token for the API modules intercommunication */
   xEasyTVtoken: "dea005f1143a6626be48e2d4878ecf8538a5dde78996fb673c9663bcb1be5390",
   
