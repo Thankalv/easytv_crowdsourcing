@@ -27,6 +27,7 @@ module.exports.routes = {
     'POST /session/create':        { controller: 'session', action: 'create' },
     'GET /session/display':       { controller: 'session', action: 'display'},
     'GET /session/destroy':       { controller: 'session', action: 'destroy'},
+    'GET /session/userdestroy':   { controller: 'session', action: 'userdestroy'},
 
      // USER
     'GET /user':                    { controller: 'user', action: 'index'},
@@ -88,3 +89,4 @@ module.exports.routes = {
     // 'POST /submit-feedback':        { controller: 'feedback', action: 'submit'},
 
 };
+
