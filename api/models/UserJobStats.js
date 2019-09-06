@@ -45,8 +45,14 @@ module.exports = {
         model: 'user',
         required: true
       }
-  
-    }
+    },
+      
+     // customToJSON() method called before any data gets back to the client
+      customToJSON: function() {
+        var obj = this;
+        delete obj.worker;
+        return obj;
+    },
   
   };
   
