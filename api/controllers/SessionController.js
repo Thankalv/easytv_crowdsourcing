@@ -89,7 +89,41 @@ module.exports = {
         sails.log("SESSION ALREADY TERMINATED, NO SESSION/DESTROY!")
         res.redirect('/');
       }
-  
+    },
+
+    userdestroy: async function(req, res, next) 
+    {
+      if (req.session.authenticated) {
+        await Accesslink.destroy({user:req.session.User.id});
+        
+        User.findOne(req.session.User.id, function foundUser(err, user) 
+        {
+          if (err) {
+            FlashService.error(req, 'User not found.');
+            res.redirect('/session/new');
+          }
+          sails.log("Goodbye to user: ", req.session.User.email);
+          if (user) {
+            sails.log.warn('User <'+user.email+'> is deleted!');
+            User.destroy(req.session.User.id, function userDestroyed(err) {
+              if (err) {
+                FlashService.error(req, err);
+                return res.redirect('/user');
+              }
+              // Wipe out the session (log out)
+              req.session.destroy();
+              // LoggerService.Log(user, 'LOGOUT', 'Destroyed session for user', req);
+              // Redirect the browser to the sign-in screen
+              res.redirect('/session/new');            
+            });
+          }
+        });
+      }
+      else {
+        //error caused by server restart (session already terminated)...
+        sails.log("SESSION ALREADY TERMINATED, NO SESSION/DESTROY!")
+        res.redirect('/');
+      }
     }
 
   }
