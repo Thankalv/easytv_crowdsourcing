@@ -71,7 +71,7 @@ module.exports.policies = {
   },
 
   user:{
-    "*": ['superadmin'],
+    "*": ['adminkey'],
     "index" : ['sessionAuth'],
     "get": ["sessionAuth", "admin"],
     "edit" : ['sessionAuth', 'sameOrg', 'flash'],
