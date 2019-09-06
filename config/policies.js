@@ -57,7 +57,7 @@ module.exports.policies = {
   },
 
   organisation:{
-    '*' : ['adminKey'],
+    '*' : ['adminkey'],
     "new": ['flash',"sessionAuth",'superadmin'],
     "create": ['flash',"sessionAuth",'superadmin'],
     "show": ['flash',"sessionAuth",'admin'],
