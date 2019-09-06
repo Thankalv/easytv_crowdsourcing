@@ -13,7 +13,7 @@ module.exports = function(req, res, next) {
     //console.log('Remote connection ip:', req.connection.remoteAddress);
 
     // Client is allowed, proceed to the next policy,
-    if (headerToken == sails.config.adminKey)
+    if (headerToken == sails.config.custom.adminKey)
     {
         return next();
     } 
