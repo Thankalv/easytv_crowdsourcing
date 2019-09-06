@@ -28,7 +28,8 @@ module.exports.policies = {
   },
 
   session: {
-    'display': ['sessionAuth'],
+    "display": ['sessionAuth'],
+    "userdestroy": [ 'sessionAuth', 'userCanSeeProfile']
   },
 
   log: {
@@ -47,7 +48,6 @@ module.exports.policies = {
     'confirm-subt': ['xEasyTv'],
     'reviewerstats-subt': ['xEasyTv'],
     'editorstats-subt': ['xEasyTv'],
-    // api endpoint for users logging error
     'log-error': ['sessionAuth'],
     'api-version': true
   },
@@ -57,13 +57,17 @@ module.exports.policies = {
   },
 
   organisation:{
-    '*' : ['sessionAuth', 'superadmin'],
+    '*' : ['adminKey'],
     "new": ['flash',"sessionAuth",'superadmin'],
     "create": ['flash',"sessionAuth",'superadmin'],
     "show": ['flash',"sessionAuth",'admin'],
     "refreshtoken": ['sessionAuth',"admin"],
     "update": ['sessionAuth',"admin"],
     "api-info": ['sessionAuth',"admin"]
+  },
+
+  userjobstats:{
+    "*": ["adminKey"]
   },
 
   user:{
