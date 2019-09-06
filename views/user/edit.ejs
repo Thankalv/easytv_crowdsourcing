@@ -117,6 +117,10 @@
               
           <input type="submit" class="pull-right btn btn-flat btn-sm btn-primary" value="UPDATE"/>
           
+          <a onClick="deleteUser('<%= user.id %>')" class="pull-left btn btn-flat btn-danger" title="Your data will be wiped out" >
+            DELETE YOUR PROFILE
+          </a>
+          
        </form>
      </div>
 
@@ -127,6 +131,29 @@
   </section>
 </div>
 
+<script>
+  function deleteUser(user_id) 
+  {
+    bootbox.confirm({
+      title: "<%= __('user.index.warning') %>",
+      message: "Are you sure you want to delete your registered profile and your data? <br> Your previous contribution resources to any affiliated organisation will remain (anonymously) to them",
+      buttons: {
+        confirm: { label: "<%= __('user.index.deletetag') %>", className: 'btn-flat btn-danger' },
+        cancel: { label: "<%= __('user.index.canceltag') %>", className: 'btn-flat'}
+      },
+      callback: function(result) {
+        if (result) {
+          $.get("/session/userdestroy", function (data,stats){
+            // add CSRF, check if used in judgements/tasks
+            //$.post("/user/destroy?id="+user_id, function(data, status){
+              console.log(data);
+              location.reload();
+          });
+        }
+      }
+    });
+  }
+</script>
 
 <!-- load extra .js plugins only for this view -->
 <% block('localScripts', '<script src="/plugins/bootbox.min.js"></script>') %>
