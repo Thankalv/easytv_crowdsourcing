@@ -35,7 +35,11 @@ module.exports.policies = {
   log: {
     'index': ['sessionAuth'],
   },
-
+  
+  accesslink: {
+    "*": ['adminkey']
+  },
+  
   feedback:{
     '*' : ['sessionAuth'] 
   },
