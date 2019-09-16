@@ -8,7 +8,6 @@ let transporter = nodemailer.createTransport({
 });
 
 
-
 module.exports = {
 
   friendlyName: 'Send template email',

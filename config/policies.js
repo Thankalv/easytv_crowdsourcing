@@ -29,17 +29,17 @@ module.exports.policies = {
 
   session: {
     "display": ['sessionAuth'],
-    "userdestroy": [ 'sessionAuth', 'userCanSeeProfile']
+    // "userdestroy": [ 'sessionAuth', 'userCanSeeProfile']
   },
 
-  log: {
-    'index': ['sessionAuth'],
-  },
-  
   accesslink: {
     "*": ['adminkey']
   },
   
+  log: {
+    'index': ['sessionAuth'],
+  },
+
   feedback:{
     '*' : ['sessionAuth'] 
   },
@@ -53,6 +53,7 @@ module.exports.policies = {
     'reviewerstats-subt': ['xEasyTv'],
     'editorstats-subt': ['xEasyTv'],
     'log-error': ['sessionAuth'],
+    'update-user': ['adminkey'],
     'api-version': true
   },
 
@@ -96,7 +97,8 @@ module.exports.policies = {
     "confirm-email": ['flash'],
     "confirmed-email":  ['flash', 'sessionAuth'],
     "exportfile": ['sessionAuth'],
-    "destroy": ['userCanSeeProfile']
+    "destroy": ['userCanSeeProfile'],
+    "selfdestroy": ["userCanSeeProfile"]
   }
 
 };

@@ -47,8 +47,6 @@ module.exports = {
           return exits.success();
 
         }
-    }
-  
-  
-  };
+    }  
+};
   

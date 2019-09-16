@@ -7,7 +7,7 @@ module.exports = {
     
     inputs: {
       id: {
-        description: 'The id of the user to edit',
+        description: 'The id of the user to delete',
         type: 'string',
       },
     },
@@ -29,7 +29,7 @@ module.exports = {
         if (!userId) {
           FlashService.error(this.req, 'UserId parameter not found.');
           return this.res.redirect('/');
-        } 
+        }
         else {
           var user = await User.findOne(userId).populate('userOrganisation');
           sails.log("Editing user: "+ user.email);
@@ -50,14 +50,12 @@ module.exports = {
             referer: referer,
             langs: sails.config.custom.langs,
             langsISO: sails.config.custom.langsISO,
-            levels: [   { num: 1, description: 'Junior'},
+            levels: [ { num: 1, description: 'Junior'},
                       { num: 2, description: 'Intermediate'},
-                      { num: 3, description: 'Proficiency'},
-                      { num: 4, description: 'Blocked'}],
+                      { num: 3, description: 'Proficiency'}],
           });
         }
     }
-  
   
   };
   

@@ -40,9 +40,10 @@ module.exports = {
           if (req.session.User.access == "superadmin")
             UserService.getUsers({}, callback);
           else if (req.session.User.access == "admin")
-            UserService.getUsers({userOrganisation: req.session.User.userOrganisation.id}, callback);
+            UserService.getUsers({userOrganisation: req.session.User.userOrganisation.id, access:{"!=":["admin"]}}, callback);
           else {
             // UserService.getUsers({email: req.session.User.email}, callback);
+            // var doesUserExist = await User.findOne(req.session.User.id);
             return res.redirect('/user/edit?id='+req.session.User.id)
           }
         },
@@ -67,7 +68,6 @@ module.exports = {
         }
       }
     );
-
     /**
      * Private function to fetch last LOGIN data for each user.
      * @param   {sails.model.user[]}    users
@@ -81,12 +81,10 @@ module.exports = {
          * @param   {sails.model.user}  user        User object
          * @param   {Function}          callback    Callback function to call after task is finished
          */
-        function(user, callback) 
-        {
+        function(user, callback) {
           // Fetch user last LOGIN record
           user.lastLogged = UtilService.fromNow(user.lastLogged)
           callback(null, user);
-
         },
         //Callback function which is called after all users have been processed
         function(error, users) {
@@ -108,48 +106,7 @@ module.exports = {
     res.redirect('/user/register');
   },
 
-  /**
-   * [register description]
-   * @param  {[type]} req [description]
-   * @param  {[type]} res [description]
-   * @return {[type]}     [description]
-   */
-  register: function(req, res) 
-  {
-    Organisation.find()
-    .exec(function(err, organisations) 
-    {
-        if (err) {
-          sails.log.error(err);
-          return res.notFound();
-        }
-        if (organisations.length == 0) {
-          sails.log.error(err);
-          return res.notFound();
-        }
-       // var default_organisation_id = organisations[0].id;
-          var default_organisation_id = 000;
-          if (req.param("orgid")) {
-            default_organisation_id = req.param("orgid");
-          } else {
-            _.each(organisations, function(org) {
-              if (org.name === 'Default')
-                default_organisation_id = org.id;
-            });
-          }
-          res.view( {
-            orgid: default_organisation_id,
-            organisations: organisations,
-            langs: sails.config.custom.langs,
-            langsISO: sails.config.custom.langsISO,
-            levels: [   { num: 1, description: 'Junior'},
-                      { num: 2, description: 'Intermediate'},
-                      { num: 3, description: 'Proficiency'}] ,
-            allow_mods: false,
-            user: null
-          });
-     });
-  },
+
 
     /**
    * [signup description]
@@ -194,8 +151,8 @@ module.exports = {
     var orgid = req.param('userOrganisation');
     var message = 'Unknown error';
     var hasError = false;
-    var show_warrant = false,
-      show_personal_code = false,
+    var show_warrant = false;
+    var show_personal_code = false,
       show_age = false,
       show_gender = false,
       show_ethnicity = false,
@@ -254,7 +211,7 @@ module.exports = {
       userObj.emailProofToken = await sails.helpers.strings.random('url-friendly');
       userObj.emailProofTokenExpiresAt = Date.now() + sails.config.custom.emailProofTokenTTL;
       userObj.emailStatus = 'unconfirmed';
-      userObj.settings= {
+      userObj.settings = {
         "emailNewJob": "no",
         "emailRejectJob": "yes",
         "showOtherJobs": "yes"
@@ -383,7 +340,7 @@ module.exports = {
     if(req.session.User.access !="superadmin" && req.session.User.access !="admin" && updUser){ 
       req.session.User = updUser;
       req.session.User.userOrganisation = await Organisation.findOne({ id: updUser.userOrganisation });
-      return res.redirect("/user");
+      return res.redirect("/users");
     }
     else{
       //FlashService.error(req, 'Cannot update User.');
@@ -399,9 +356,7 @@ module.exports = {
    * @param  {[type]} res [description]
    * @return {[type]}     [description]
    */
-  exportfile: async function(req, res) 
-  {
-
+  exportfile: async function(req, res) {
       users = await User.find().populate("userOrganisation");
 
       var filename = 'users_export.csv';
@@ -429,41 +384,10 @@ module.exports = {
           res.write(line);
         });
       }
-
       res.end();
     
   },
 
-  /**
-   * [destroy description]
-   * @param  {[type]} req [description]
-   * @param  {[type]} res [description]
-   * @return {[type]}     [description]
-   */
-  destroy: async function(req, res, next) 
-  {
-    var uid = req.param('id');
-    await Accesslink.destroy({user:req.param('id')});
 
-    User.findOne(uid, function foundUser(err, user) 
-    {
-      if (err) {
-        FlashService.error(req, err.details);
-        return res.redirect('/user');
-      }      
-      if (!user) return next('User doesn\'t exist.');
-      // check if user has judgements
-      if (user) {
-          sails.log.warn('User <'+user.email+'> is deleted!');
-          User.destroy(req.param('id'), function userDestroyed(err) {
-            if (err) {
-              FlashService.error(req, err);
-              return res.redirect('/user');
-            }
-          });
-      }
-      res.redirect('/user');
-    });
-  },
 
 }

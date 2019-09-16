@@ -20,6 +20,7 @@ module.exports.routes = {
     'GET /video-annotation':                { controller: 'video_annotation', action: 'index' },
     'GET /video-annotation/demo':           { controller: 'video_annotation', action: 'demo' },
     'GET /video-annotation/annotate':        { controller: 'video_annotation', action: 'annotate' },
+    'GET /video-annotation/get-translation':    { controller: 'video_annotation', action: 'get-translation' },
     'POST /video-annotation/submit':         { controller: 'video_annotation', action: 'submit' },
 
      // SESSION
@@ -27,16 +28,17 @@ module.exports.routes = {
     'POST /session/create':        { controller: 'session', action: 'create' },
     'GET /session/display':       { controller: 'session', action: 'display'},
     'GET /session/destroy':       { controller: 'session', action: 'destroy'},
-    'GET /session/userdestroy':   { controller: 'session', action: 'userdestroy'},
+    // 'GET /session/userdestroy':   { controller: 'session', action: 'userdestroy'},
 
      // USER
-    'GET /user':                    { controller: 'user', action: 'index'},
-    'GET /users':                   { controller: 'user', action: 'get'},
+    'GET /users':                    { controller: 'user', action: 'index'},
+    'GET /user/list':                { controller: 'user', action: 'get'},
     'GET /user/edit':               { controller: 'user', action: 'edit'},
     'GET /user/exportfile':         { controller: 'user', action: 'exportfile'},
     'GET /user/new-user':           { controller: 'user', action: 'newuser'},
     'GET /user/register':           { controller: 'user', action: 'register'},
     'GET /user/settings':           { controller: 'user', action: 'settings'},
+    'GET /user/selfdestroy':         { controller: 'user', action: 'selfdestroy'},
     'POST /user/settings':           { controller: 'user', action: 'settingsupdate'},
     'POST /user/signup':            { controller: 'user', action: 'signup'},
     'POST /user/update':           { controller: 'user', action: 'update'},
@@ -82,6 +84,7 @@ module.exports.routes = {
     'POST /api/reject/subt':     { controller: 'api', action: 'reject-subt'},
     'PUT /api/update/subt':      { controller: 'api', action: 'update-subt'},
     'POST /api/log-error':       { controller: 'api', action: 'log-error'},
+    'PATCH /api/update-user':     {controller: 'api', action: 'update-user'},
 
     'PUT /api/editorstats/subt':        { controller: 'api', action: 'editorstats-subt'},
     'PUT /api/reviewerstats/subt':      { controller: 'api', action: 'reviewerstats-subt'},
@@ -89,4 +92,3 @@ module.exports.routes = {
     // 'POST /submit-feedback':        { controller: 'feedback', action: 'submit'},
 
 };
-

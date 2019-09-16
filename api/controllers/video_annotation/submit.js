@@ -71,9 +71,10 @@ module.exports = {
         });
 
         sails.log(annots.video.segments);
-        var ontoResponse = await OntologyService.annotateVideo(annots); 
+        // call the API POST for submission and update the corresponding DB record
+        var ontologyResponse = await OntologyService.annotateVideo(annots); 
         sails.log('Ontology annotation response-code:', ontoResponse);
-        if(ontoResponse=="Done")
+        if(ontologyResponse=="Done")
           await VideoAnnotated.updateOne({id:inputs.id}).set({segments:annots.video.segments});
 
         if(inputs.postcomments)

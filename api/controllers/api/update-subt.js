@@ -86,9 +86,8 @@ module.exports = {
       jobData.job_id = inputs.job_id;
       /*** /VALIDATE ***/
 
-      var updCrowdTask = await Task.updateOne({ job_id: inputs.job_id, content_owner: jobData.content_owner})
-          .set(jobData)
-          .intercept( (err)=>{  return exits.serverError({code:-500, description: err.details}); })
+      var updCrowdTask = await Task.updateOne({ job_id: inputs.job_id, content_owner: jobData.content_owner}).set(jobData)
+                             .intercept( (err)=>{  return exits.serverError({code:-500, description: err.details}); })
       
       if(updCrowdTask)
         return exits.success({code:200, description: 'The job was updated successfully in CRWD database'});

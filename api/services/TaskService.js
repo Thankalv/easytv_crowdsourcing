@@ -10,10 +10,9 @@ var moment = require("moment");
 
 module.exports = {
 
-    getTasksStatus: async function(next) 
-    {
+    getTasksStatus: async function(next) {
        var tasks = await Task.find();
-       statuses = [];
+       var statuses = [];
        async.each(tasks,
         function(task, callback) {
            //sails.log(task.status);
@@ -30,7 +29,7 @@ module.exports = {
       if(org.api_info.getJobsURL)
       {
         var options = {}
-        options.uri= org.api_info.getJobsURL;
+        options.uri= org.api_info.getJobsURL;  // the url "https://spm-api.easytv.eng.it/api" is substituted with "spm_stack_spm_api/api"
         options.headers= {'User-Agent': 'Request-Promise'};
         options.headers[org.api_info.headerName] = org.api_info.headerToken;
         options.json = true;  // Automatically parses the JSON string in the response
@@ -171,7 +170,7 @@ module.exports = {
         if(prevStats)
         {
           sails.log("Previous job-stats record is marked as rejected!");
-          await UserJobStats.updateOne({ worker: user_id, task: job_id, status: { '!=' : 'Rejected'}})
+          await UserJobStats.update({ worker: user_id, task: job_id, status: { '!=' : 'Rejected'}})
             .set({status:'Rejected'});
           userJobStatsObj = { 'worker':  user_id, 'task': job_id, 'status': prevStats.status, 'action' : prevStats.action }
 
@@ -182,7 +181,7 @@ module.exports = {
       },
 
 
-     /* Find and aggregate user statistics of active or pending jobs */
+     /* Find and Aggregate user-statistics of active or pending jobs */
      getUserStatsAggregate: async function(user)
      {
         var userRole = '';
@@ -194,7 +193,6 @@ module.exports = {
         var stats = await UserJobStats.find({worker:user.id, status: { '!=' : 'Rejected'}});
         var totalViewTime = 0.0;
         var totalEditTime = 0.0;
-
         await _.each(stats, stat => {
           // sails.log(stat.data.asset_duration);
           totalEditTime = totalEditTime +  moment.duration( stat.asset_duration).asSeconds() * (stat.edited_percent/100.0)
@@ -202,12 +200,11 @@ module.exports = {
         });
 
         //sails.log(totalEditTime);
-        //sails.log(totalViewTime);
         var userSummary = {};
+        userSummary['projects'] = stats.length;
         userSummary['editTime'] = UtilService.secs2HHMMSS( totalEditTime );
         userSummary['viewTime'] = UtilService.secs2HHMMSS( totalViewTime );
         userSummary['rejected'] = await UserJobStats.count({worker:user.id, status: 'Rejected'});
-        userSummary['projects'] = stats.length;
         
         return userSummary;
 

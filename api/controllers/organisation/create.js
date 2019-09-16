@@ -45,7 +45,6 @@ module.exports = {
     {
         //sails.log(inputs)
         var existingOrg = await Organisation.findOne( {name: inputs.name});
-
         if (existingOrg)
             return exits.NameAlreadyExists({code:-8, description: 'The provided organisation name already exists.'})
 
@@ -56,8 +55,7 @@ module.exports = {
         //sails.log(inputs.values);
         sails.log(newOrg);
         
-        if(newOrg)
-        {
+        if(newOrg){
             FlashService.success(this.req, 'Created new Organisation!');
             return this.res.redirect('/');
         }

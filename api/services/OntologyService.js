@@ -29,8 +29,8 @@ module.exports = {
        return videosAnnotated;
    },
 
-    /* 
-      POST the submission to the easytv-annotator API
+    /**
+     *  POST the submission to the easytv-annotator API
     */
     annotateVideo: async function(annotations)
     {
@@ -38,7 +38,6 @@ module.exports = {
         options.method = 'POST';
         options.uri = "http://api.easytv.linkeddata.es/easytv-annotator/annotateVideo",
         options.headers = {'User-Agent' : 'Request-Promise', 'Content-Type' : 'application/json'};
-        
         options.body = annotations;
         options.json = true;   // Automatically parses the JSON string in the response
 
@@ -48,5 +47,23 @@ module.exports = {
 
         return ontologyAnnot;
     },
+
+    /** 
+     * GET the suggested translations for a videoURI and the target-language
+    */
+   getTranslation: async function(videoURI, targetLang)
+   {
+       var options = {};
+       options.method = 'GET';
+       options.uri = "http://api.easytv.linkeddata.es/easytv-annotator/getTranslation?targetLang="+targetLang+"&videoURI="+videoURI,
+       options.headers = {'User-Agent' : 'Request-Promise', 'Content-Type' : 'application/json'};
+       options.json = true;   // Automatically parses the JSON string in the response
+
+       var videoTranslation =  await reqProm(options).catch(
+         function(err) { sails.log.error('EasyTv-annotator GET errorcode: '+ err.statusCode + " with message:" + err.message)
+       });
+
+       return videoTranslation;
+   },
 
 }

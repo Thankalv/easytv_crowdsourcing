@@ -30,7 +30,6 @@ module.exports = {
         req.logIn(user, function(err) 
         {
           if (err) {
-            sails.log(err);
             var usernamePasswordMismatchError = [{
               name: 'usernamePasswordMismatch',
               message: 'Invalid username and password combination.'
@@ -41,9 +40,8 @@ module.exports = {
           else 
           {
             //LoggerService.Log(user, 'LOGIN', 'Created session for user', req);
-            sails.log.debug("Just logged user: ",user.email);
+            sails.log.debug("Just logged user: ",user.email, " from ", user.userOrganisation.name);
             //sails.log.debug(user.userLanguage);
-  
             User.update( user.id, userObj, function some(err){});
   
             req.session.authenticated = true;
@@ -83,7 +81,7 @@ module.exports = {
           // Redirect the browser to the sign-in screen
           res.redirect('/session/new');
         });
-      } 
+      }
       else {
         //error caused by server restart (session already terminated)...
         sails.log("SESSION ALREADY TERMINATED, NO SESSION/DESTROY!")
@@ -91,39 +89,5 @@ module.exports = {
       }
     },
 
-    userdestroy: async function(req, res, next) 
-    {
-      if (req.session.authenticated) {
-        await Accesslink.destroy({user:req.session.User.id});
-        
-        User.findOne(req.session.User.id, function foundUser(err, user) 
-        {
-          if (err) {
-            FlashService.error(req, 'User not found.');
-            res.redirect('/session/new');
-          }
-          sails.log("Goodbye to user: ", req.session.User.email);
-          if (user) {
-            sails.log.warn('User <'+user.email+'> is deleted!');
-            User.destroy(req.session.User.id, function userDestroyed(err) {
-              if (err) {
-                FlashService.error(req, err);
-                return res.redirect('/user');
-              }
-              // Wipe out the session (log out)
-              req.session.destroy();
-              // LoggerService.Log(user, 'LOGOUT', 'Destroyed session for user', req);
-              // Redirect the browser to the sign-in screen
-              res.redirect('/session/new');            
-            });
-          }
-        });
-      }
-      else {
-        //error caused by server restart (session already terminated)...
-        sails.log("SESSION ALREADY TERMINATED, NO SESSION/DESTROY!")
-        res.redirect('/');
-      }
-    }
 
   }

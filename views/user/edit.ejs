@@ -1,6 +1,7 @@
 <script type="text/javascript">
-  var langsLen = <%- user.lang_info.langs.length %>;
- 
+
+var langsLen = <%- user.lang_info.langs.length %>;
+
  </script>
 
 <div class="content-wrapper">
@@ -8,7 +9,7 @@
         <h1> <%= __('user.index.users') %> </h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item active"><a href="/"><i class="fa fa-home"></i>Home</a></li>
-            <li class="breadcrumb-item"> <a href="/user">users</a></li>
+            <li class="breadcrumb-item"> <a href="/users">users</a></li>
             <li class="breadcrumb-item"> edit</li>
         </ol>
     </section>
@@ -117,10 +118,11 @@
               
           <input type="submit" class="pull-right btn btn-flat btn-sm btn-primary" value="UPDATE"/>
           
+
           <a onClick="deleteUser('<%= user.id %>')" class="pull-left btn btn-flat btn-danger" title="Your data will be wiped out" >
             DELETE YOUR PROFILE
           </a>
-          
+
        </form>
      </div>
 
@@ -143,7 +145,7 @@
       },
       callback: function(result) {
         if (result) {
-          $.get("/session/userdestroy", function (data,stats){
+          $.get("/user/selfdestroy?id="+user_id, function (data,stats){
             // add CSRF, check if used in judgements/tasks
             //$.post("/user/destroy?id="+user_id, function(data, status){
               console.log(data);

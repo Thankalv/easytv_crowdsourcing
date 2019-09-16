@@ -1,7 +1,7 @@
 module.exports = {
 
     friendlyName: 'Update the role of a user',
-    description: "ONLY the orgs-administrator can modify user's role",
+    description: "ONLY the Org-Administrator can modify user's role",
 
     inputs: {
       id: {
@@ -9,7 +9,7 @@ module.exports = {
         type: 'string',
       },
       user: {
-        description: 'The id of the admin organisation',
+        description: 'The id of the user to update',
         type: 'string',
         required: true,
       },
@@ -19,7 +19,7 @@ module.exports = {
         required: true,
       },
     },
-  
+    
     exits: {
         success: {
           statusCode: 200,
@@ -46,8 +46,6 @@ module.exports = {
 
           return exits.success();
         }
-    }
-  
-  
-  };
+    }  
+};
   
