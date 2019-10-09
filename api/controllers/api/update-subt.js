@@ -74,7 +74,7 @@ module.exports = {
         return exits.errorInAttributes({code:-13, description:"language-code is not a valid ISO6391"});
       if(jobData.language_target!= undefined && !UtilService.checkISO_langCode(jobData.language_target))
           return exits.errorInAttributes({code:-13, description:"language-code is not a valid ISO6391"});
-      if (jobData.confidence_level!= undefined && ['low','intermediate','high'].indexOf(jobData.confidence_level))
+      if (jobData.confidence_level!= undefined && ['low','intermediate','high'].indexOf(jobData.confidence_level)<0)
           return exits.errorInAttributes({code:-13, description:"confidence_level value is not vaild (in ['low','intermediate','high'])"});
       if(jobData.original_title != undefined && typeof jobData.original_title != 'string')
           return exits.errorInAttributes({code:-13, description:"invalid data input: original_title"});
