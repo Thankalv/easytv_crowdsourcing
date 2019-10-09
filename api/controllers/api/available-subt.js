@@ -97,7 +97,7 @@ module.exports = {
             return exits.errorInAttributes({code:-13, description:"expiration_date is not a valid integer"});
         if( !UtilService.checkISO_langCode(jobData.language_source) || !UtilService.checkISO_langCode(jobData.language_target) )
             return exits.errorInAttributes({code:-13, description:"language-code is not a valid ISO6391"});
-        if (['low','intermediate','high'].indexOf(jobData.confidence_level))
+        if (['low','intermediate','high'].indexOf(jobData.confidence_level)<0)
             return exits.errorInAttributes({code:-13, description:"confidence_level value is not vaild (in ['low','intermediate','high'])"});
         if(typeof jobData.original_title != 'string')
             return exits.errorInAttributes({code:-13, description:"invalid data input: original_title"});
@@ -130,9 +130,7 @@ module.exports = {
         else
             throw "serverError";
     }
-  
-  
-  };
+};
   
   
 
