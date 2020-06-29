@@ -1,14 +1,20 @@
 # EasyTV project platform
 ## Crowdsourcing Platforms repo for backend/frontend final version - docker deployment version
+![alt text](https://easytvproject.eu/images/logo_easytv_sintexto.png "EasyTV Logo")
 
-hosted online running version for the EasyTV project [https://cp.easytv.eng.it/]
+Hosted online running version for the EasyTV project [https://cp.easytv.eng.it/]
+
+User's submitted content is being placed in:
+ - **assets/video-submits**
+ - **assets/mocap-subtmis**
 
 
+## License
 
-# based on the SailsJS-project
+[MIT License](https://opensource.org/licenses/MIT)
 
+## based on the SailsJS-project
 a [Sails v1](https://sailsjs.com) application
-
 
 ### Links
 
@@ -18,10 +24,8 @@ a [Sails v1](https://sailsjs.com) application
 + [Community support options](https://sailsjs.com/support)
 + [Professional / enterprise options](https://sailsjs.com/enterprise)
 
-
 ### Version info
 
 This app was originally generated on Tue Apr 23 2019 10:13:42 GMT+0300 (GTB Daylight Time) using Sails v1.1.0.
 
 <!-- Internally, Sails used [`sails-generate@1.16.8`](https://github.com/balderdashy/sails-generate/tree/v1.16.8/lib/core-generators/new). -->
-
