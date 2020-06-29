@@ -1,6 +1,6 @@
 # EasyTV project platform
 ## Crowdsourcing Platform's repo for backend/frontend final version - docker deployment version
-![alt text](https://easytvproject.eu/images/logo_easytv_sintexto.png "EasyTV Logo")
+![alt text](https://easytvproject.eu/images/logo_easytv_sintexto.png | width=100)
 
 Hosted online running version for the EasyTV project [https://cp.easytv.eng.it/]
 
