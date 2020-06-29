@@ -3,9 +3,9 @@
 module.exports = {
 
     friendlyName: 'Subtitle job posting',
-  
+
     description: 'Registers a new job on the crowdsourcing, indicating the editor or review action associated.',
-  
+
     inputs: {
       job_id: {
             type: 'number',
@@ -31,22 +31,18 @@ module.exports = {
             description: "content owner job details"
         },
     },
-
     exits: {
         success: {
           description: 'The job was registered successfully in CP'
         },
-    
         invalid: {
           responseType: 'badRequest',
           description: 'There was an internal error while processing the request.'
         },
-    
         JobAlreadyExists: {
           statusCode: 409,
           description: 'The provided job_id is already in use.',
         },
-    
         errorInAttributes: {
             statusCode: 400,
             description: 'Error detected in parameters.',
@@ -58,12 +54,13 @@ module.exports = {
           },
       },
 
-    fn: async function (inputs, exits) 
+    fn: async function (inputs, exits)
     {
         sails.log(inputs)
         /*** VALIDATE jobData attributes ***/
         var jobData = inputs.data;
-        var existingOrg = await Organisation.find({token: jobData.content_owner.toUpperCase()});
+        jobData.content_owner = jobData.content_owner.toUpperCase();
+        var existingOrg = await Organisation.find({token: jobData.content_owner});
         if (existingOrg.length == 0)
             return exits.errorInAttributes({code:-13, description: 'The provided content_owner is not registered!'})
         else
@@ -78,59 +75,60 @@ module.exports = {
             jobData.action = inputs.action;
             jobData.status = inputs.status;
             var reviewJob = await Task.updateOne({ job_id: existingJob.job_id, action: existingJob.action, content_owner: existingJob.content_owner }).set(jobData);
-            await Accesslink.destroyOne({job_id: existingJob.job_id});
+            var acclink = await Accesslink.destroyOne({job_id: existingJob.job_id});
+            acclink.user = await User.findOne(acclink.user).populate("userOrganisation");
+            if(reviewJob.confidence_level=="low" && VoluntService.isTested( acclink.user, reviewJob.language_target))
+                await ENService.sendEN(acclink.user, 2.5, reviewJob.language_target);
             await UserService.sendNotifications(reviewJob);
             return exits.success({code:200, description: 'The job is ready for review in CRWD platform'});
         }
+        else{
+            if(typeof jobData.validated_percent != 'number')
+                return exits.errorInAttributes({code:-13, description:"invalid data input: validated_percent"});
+            if (jobData.validated_percent<0.0 || jobData.validated_percent>100.0)
+                return exits.errorInAttributes({code:-13, description:"validated_percent out of limits"});
+            if(typeof jobData.publication_date != 'number')
+                return exits.errorInAttributes({code:-13, description:"invalid data input: publication_date"});
+            if (jobData.publication_date<0 || Number.isInteger(jobData.publication_date)==false)
+                return exits.errorInAttributes({code:-13, description:"publication_date is not a valid integer"});
+            if(typeof jobData.expiration_date != 'number')
+                return exits.errorInAttributes({code:-13, description:"invalid data input: expiration_date"});
+            if (jobData.expiration_date<0 || Number.isInteger(jobData.expiration_date)==false)
+                return exits.errorInAttributes({code:-13, description:"expiration_date is not a valid integer"});
+            if( !UtilService.checkISO_langCode(jobData.language_source) || !UtilService.checkISO_langCode(jobData.language_target) )
+                return exits.errorInAttributes({code:-13, description:"language-code is not a valid ISO6391"});
+            if (['low','mid','high'].indexOf(jobData.confidence_level)<0)
+                return exits.errorInAttributes({code:-13, description:"confidence_level value is not vaild (in ['low','mid','high'])"});
+            if(typeof jobData.original_title != 'string')
+                return exits.errorInAttributes({code:-13, description:"invalid data input: original_title"});
+            if(typeof jobData.link != 'string')
+                return exits.errorInAttributes({code:-13, description:"invalid data input: link"});
+            if(typeof jobData.asset_duration != 'string')
+                return exits.errorInAttributes({code:-13, description:"invalid data input: asset_duration"});
+            if(UtilService.IsValidTime(jobData.asset_duration)==false)
+                return exits.errorInAttributes({code:-13, description:"invalid data input: asset_duration"});
+            jobData.job_id = inputs.job_id;
+            jobData.action = inputs.action;
+            jobData.status = inputs.status;
+            /*** /VALIDATE ***/
 
-        if(typeof jobData.validated_percent != 'number')
-            return exits.errorInAttributes({code:-13, description:"invalid data input: validated_percent"});
-        if (jobData.validated_percent<0.0 || jobData.validated_percent>100.0)
-            return exits.errorInAttributes({code:-13, description:"validated_percent out of limits"});
-        if(typeof jobData.publication_date != 'number')
-            return exits.errorInAttributes({code:-13, description:"invalid data input: publication_date"});
-        if (jobData.publication_date<0 || Number.isInteger(jobData.publication_date)==false)
-            return exits.errorInAttributes({code:-13, description:"publication_date is not a valid integer"});
-        if(typeof jobData.expiration_date != 'number')
-            return exits.errorInAttributes({code:-13, description:"invalid data input: expiration_date"});
-        if (jobData.expiration_date<0 || Number.isInteger(jobData.expiration_date)==false)
-            return exits.errorInAttributes({code:-13, description:"expiration_date is not a valid integer"});
-        if( !UtilService.checkISO_langCode(jobData.language_source) || !UtilService.checkISO_langCode(jobData.language_target) )
-            return exits.errorInAttributes({code:-13, description:"language-code is not a valid ISO6391"});
-        if (['low','intermediate','high'].indexOf(jobData.confidence_level)<0)
-            return exits.errorInAttributes({code:-13, description:"confidence_level value is not vaild (in ['low','intermediate','high'])"});
-        if(typeof jobData.original_title != 'string')
-            return exits.errorInAttributes({code:-13, description:"invalid data input: original_title"});
-        if(typeof jobData.link != 'string')
-            return exits.errorInAttributes({code:-13, description:"invalid data input: link"});
-        if(typeof jobData.asset_duration != 'string')
-            return exits.errorInAttributes({code:-13, description:"invalid data input: asset_duration"});
-        if(UtilService.IsValidTime(jobData.asset_duration)==false)
-            return exits.errorInAttributes({code:-13, description:"invalid data input: asset_duration"});
-        
-        jobData.job_id = inputs.job_id;
-        jobData.action = inputs.action;
-        jobData.status = inputs.status;
-        /*** /VALIDATE ***/
+            var newCrowdTask = await Task.create(jobData)
+                                .intercept( (err)=>{  return exits.serverError({code:-500, description: err.details}); })
+                                .fetch();
+            //sails.log(newCrowdTask);
 
-        var newCrowdTask = await Task.create(jobData)
-                            .intercept( (err)=>{  return exits.serverError({code:-500, description: err.details}); })
-                            .fetch();
-        //sails.log(newCrowdTask);
-
-        // if POSTED in 'testmode' this job will be automatically assigned with a POST request to the broadcaster's API
-        if(inputs.testmode && newCrowdTask){            
-            setTimeout(function(){ UserService.autoAssign(newCrowdTask); }, 2 * 1000);
+            // if POSTED in 'testmode' this job will be automatically assigned with a POST request to the broadcaster's API
+            if(inputs.testmode && newCrowdTask){
+                setTimeout(function(){ UserService.autoAssign(newCrowdTask); }, 2 * 1000);
+            }
+            if(newCrowdTask){
+		if(newCrowdTask.confidence_level!="low")
+	                await UserService.sendNotifications(newCrowdTask);
+                return exits.success({code:200, description: 'The job/task was registered successfully in CRWD platform'});
+            }
+            else
+                throw "serverError";
         }
-
-        if(newCrowdTask){
-            await UserService.sendNotifications(newCrowdTask);
-            return exits.success({code:200, description: 'The job/task was registered successfully in CRWD platform'});
-        }
-        else
-            throw "serverError";
     }
 };
-  
-  
 

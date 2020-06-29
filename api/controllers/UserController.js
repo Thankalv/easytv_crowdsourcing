@@ -115,51 +115,51 @@ module.exports = {
    */
   signup: async function(req, res) 
   {
-    // Pass a clean userObj to the database
-    var userObj = {
-      lastName: req.param('lastName'),
-      firstName: req.param('firstName'),
-      userOrganisation: req.param('userOrganisation'),
-      email: req.param('email'),
-      email2: req.param('email2'),
-      password: req.param('password'),
-      confirmation: req.param('confirmation'),
-      access: 'editor', // users initialized as 'editors'
-      request_mod : req.param('mod'),
-      warrant: req.param('warrant'),
-      warrant2: req.param('warrant2'),
-      personal_code: req.param('personal_code'),
-      personal_code2: req.param('personal_code2'),
-      age: req.param('age'),
-      phone_num: req.param('fullNum'),
-      gender: req.param('gender'),
-      ethnicity: req.param('ethnicity'),
-      token: req.param('orgtoken'),
-      lastLogged: new Date()
-      // custom: req.param('custom'),
-    };
-
-    if (typeof req.param('lang0') !== 'undefined')
-    {
-        userObj = await UserService.getLangParameters(req, userObj);
-        //sails.log(userObj);
-    }
-    //sails.log(req.allParams());
-
-    // trim name
-    var userOrg = null;
-    var orgid = req.param('userOrganisation');
-    var message = 'Unknown error';
-    var hasError = false;
-    var show_warrant = false;
-    var show_personal_code = false,
-      show_age = false,
-      show_gender = false,
-      show_ethnicity = false,
-      consent_required = false,
-      token_required = false;
-
+      sails.log(req.allParams());
+      var orgid = req.param('userOrganisation');
       var userOrg = await Organisation.findOne({ id: orgid });
+      // Pass a clean userObj to the database
+      var userObj = {
+        lastName: req.param('lastName'),
+        firstName: req.param('firstName'),
+        userOrganisation: req.param('userOrganisation'),
+        email: req.param('email'),
+        email2: req.param('email2'),
+        password: req.param('password'),
+        confirmation: req.param('confirmation'),
+        access: 'editor', // users initialized as 'editors'
+        request_mod : req.param('mod'),
+        warrant: req.param('warrant'),
+        warrant2: req.param('warrant2'),
+        personal_code: req.param('personal_code'),
+        personal_code2: req.param('personal_code2'),
+        age: req.param('age'),
+        phone_num: req.param('fullNum'),
+        gender: req.param('gender'),
+        ethnicity: req.param('ethnicity'),
+        token: req.param('orgtoken'),
+        lastLogged: new Date()
+      };
+
+      if (typeof req.param('lang0') !== 'undefined'){
+        userObj = await UserService.getLangParameters(req, userObj, userOrg.preReqLang);
+      }
+      //sails.log(req.allParams());
+
+      // trim name
+      //var userOrg = null;
+      //var orgid = req.param('userOrganisation');
+      var message = 'Unknown error';
+      var hasError = false;
+      var show_warrant = false;
+      var show_personal_code = false,
+        show_age = false,
+        show_gender = false,
+        show_ethnicity = false,
+        consent_required = false,
+        token_required = false;
+
+      //var userOrg = await Organisation.findOne({ id: orgid });
 
       if (userOrg === null) {
         message = 'Error in Organisation properties.';
@@ -173,7 +173,9 @@ module.exports = {
         show_ethnicity = userOrg.ethnicity;
         consent_required = userOrg.consent_required;
         token_required = userOrg.token_required;
+        preReqLang = userOrg.preReqLang;
       }
+      var userExist =  await User.findOne({email:userObj.email});
 
       //check Org token
       if (token_required)
@@ -182,16 +184,20 @@ module.exports = {
           hasError = true;
         }
       if (consent_required)
-        if (req.param('agree') !== "agree") {
+        if (req.param('agree') != "agree") {
           message = 'You need to agree with the CONSENT FORM!';
           hasError = true;
         }
-      if (req.param('password') !== req.param('confirmation')) {
+      if (req.param('password') != req.param('confirmation')) {
         message = 'Password and Confirmation Password mismatch.';
         hasError = true;
       }
-      if (req.param('email') !== req.param('email2')) {
+      if (req.param('email') != req.param('email2')) {
         message = 'E-mail and Confirmation E-mail mismatch.';
+        hasError = true;
+      }
+      if(userExist){
+        message = 'This email is already used by a registered account!';
         hasError = true;
       }
 
@@ -211,29 +217,27 @@ module.exports = {
       userObj.emailProofToken = await sails.helpers.strings.random('url-friendly');
       userObj.emailProofTokenExpiresAt = Date.now() + sails.config.custom.emailProofTokenTTL;
       userObj.emailStatus = 'unconfirmed';
-      userObj.settings = {
-        "emailNewJob": "no",
-        "emailRejectJob": "yes",
-        "showOtherJobs": "yes"
-      };
+      userObj.settings = { "emailNewJob": "yes", "emailRejectJob": "yes", "showOtherJobs": "no" };
       
-      var newUser =  await User.create(userObj)
-         .intercept('E_UNIQUE', ()=>{  FlashService.error(req, 'Error creating User'); return res.redirect('/user/register'); })
-         .fetch();
+      var newUser =  await User.create(userObj).fetch()
+        .intercept( (err)=>{ return exits.serverError({description: err.details})} );
 
       newUser.userOrganisation = await Organisation.findOne({ id: orgid });
       
       if (req.session.authenticated) {
          // check if we must add confirmation mail
+         req.session.authenticated = false;
       } 
       else {
-        req.session.authenticated = true;
+        req.session.authenticated = false;
         req.session.User = newUser;
-       //req.session.userAvatar = newUser.gravatarImage;
      }
 
-     if (sails.config.custom.verifyEmailAddresses) 
-     {
+     // Send the EN1 notification to the user and a copy of this to the Volunteer Manager
+     if(newUser.userOrganisation.name!="Default" || newUser.userOrganisation.name=="Sign Language User")
+      await ENService.sendEN(newUser, 1, '');
+
+     if (sails.config.custom.verifyEmailAddresses) {
       // Send "confirm account" email
       await sails.helpers.sendTemplateEmail.with({
         to: newUser.email,
@@ -244,12 +248,17 @@ module.exports = {
           token: newUser.emailProofToken
         }
       });
+
+      req.session.destroy();
+      res.redirect('/session/new?login=first');
+
     } else {
       sails.log.info('Skipping new account email verification... (since `verifyEmailAddresses` is disabled)');
+      return res.redirect('/');
     }
 
-     FlashService.success(req, 'Created User ' + newUser.email);
-     return res.redirect('/');
+     //FlashService.success(req, 'Created User ' + newUser.email);
+     //return res.redirect('/');
 
   },
 
@@ -346,7 +355,6 @@ module.exports = {
       //FlashService.error(req, 'Cannot update User.');
       return res.redirect('/user/edit?id=' + req.param('id'));
     }
-
   },
 
 
@@ -367,8 +375,7 @@ module.exports = {
       var line = 'lastname, firstname, email, userlevel, organisation, date_created\n';
       // write data
       res.write(line);
-      if (!_.isUndefined(users[0])) 
-      {
+      if (!_.isUndefined(users[0])) {
         _.each(users, function(user) {
           var lastname, firstname, email, userlevel, organisation, datecr;
           lastname = user.lastName;
@@ -385,9 +392,5 @@ module.exports = {
         });
       }
       res.end();
-    
   },
-
-
-
 }

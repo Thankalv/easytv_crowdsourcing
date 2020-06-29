@@ -1,0 +1,36 @@
+<br>
+<div class="offset-md-2 col-md-8">
+
+    <div class="card">
+       <div class="card-header" style="background: #cce4f9;">
+           <h3 class="card-title"> Email Notifications </h3>
+      </div>
+       <!-- /.card-header -->
+       <div class="card-body">
+         <form role="form">
+
+             <br>
+             <h5> <i class="fa fa-paper-plane" aria-hidden="true"></i> EN1 </h5>
+             <div class="form-group">
+                  Confirming and thanking for the registration
+                 <textarea id="en1" name="en1" class="textarea">
+                   <%- organisation.en1 %>
+                 </textarea>
+            </div>
+            <br>
+
+            <h5> <i class="fa fa-paper-plane" aria-hidden="true"></i> EN2 </h5>
+            <div class="form-group">
+                 Volunteer has been pre-selected
+                <textarea id="en2" name="en2" class="textarea">
+                  <%- organisation.en2 %>
+                </textarea>
+           </div>
+            <br>
+
+            <a href="#" class="btn btn-sm btn-flat btn-primary pull-left" onclick="updateEmails()"> <%= __('organisation.show.saveemail') %> </a>
+         </form>
+         
+       </div>
+     </div>
+</div>

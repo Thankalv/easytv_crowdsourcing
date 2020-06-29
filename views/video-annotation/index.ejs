@@ -34,7 +34,7 @@
                                                 </video>
                                             </span>
                                             <div class="info-box-content">
-                                              <span class="info-box-text"> # Video <b>  </b></span> <br>
+                                              <span class="info-box-text"> # <%= video.sle %> <b>  </b></span> <br>
                                               <a href="/video-annotation/annotate?id=<%= video.id %>"><i class="fa fa-edit"></i>Annotate</a>
                                             </div>
                                           </div>
@@ -66,7 +66,71 @@
                                                 </video>
                                             </span>
                                             <div class="info-box-content">
-                                              <span class="info-box-text"> # Video <b> </b></span> <br>
+                                              <span class="info-box-text"> # <%= video.sle %> <b> </b></span> <br>
+                                              <a href="/video-annotation/annotate?id=<%= video.id %>"><i class="fa fa-edit"></i>Annotate</a>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="clearfix hidden-md-up"></div>
+                                <% }) %>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5 card" style="background: aliceblue;">
+                        <div class="card-header border-transparent" style="background-color: #3270daba">
+                            <h3 class="card-title"> <b>Videos in English </b> </h3>
+                            <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-widget="collapse">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                                <div class="row" style="margin: auto;">
+                                    <% _.each(slvideos.en, function(video) { %>
+                                        <div class="col-md-10">
+                                          <div class="info-box">
+                                            <span class="info-box-icon bg-info elevation-1" style="width: 125px;height: auto;">
+                                                <video controls preload="auto" width="90%" height="90%" >
+                                                   <source src="<%= video.videoURL %>" type='video/mp4'>
+                                                </video>
+                                            </span>
+                                            <div class="info-box-content">
+                                              <span class="info-box-text"> # <%= video.sle %> <b>  </b></span> <br>
+                                              <a href="/video-annotation/annotate?id=<%= video.id %>"><i class="fa fa-edit"></i>Annotate</a>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="clearfix hidden-md-up"></div>
+                                    <% }) %>
+                                </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5 offset-md-1 card" style="background: aliceblue;">
+                        <div class="card-header border-transparent" style="background-color: #3270daba">
+                            <h3 class="card-title"> <b>Videos in Greek </b> </h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-widget="collapse">
+                                <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="row" style="margin: auto;">
+                                <% _.each(slvideos.el, function(video) { %>
+                                        <div class="col-md-10">
+                                          <div class="info-box">
+                                            <span class="info-box-icon bg-info elevation-1" style="width: 125px;height: auto;">
+                                                <video controls preload="auto" width="90%" height="90%" >
+                                                   <source src="<%= video.videoURL %>" type='video/mp4'>
+                                                </video>
+                                            </span>
+                                            <div class="info-box-content">
+                                              <span class="info-box-text"> # <%= video.sle %> <b> </b></span> <br>
                                               <a href="/video-annotation/annotate?id=<%= video.id %>"><i class="fa fa-edit"></i>Annotate</a>
                                             </div>
                                           </div>

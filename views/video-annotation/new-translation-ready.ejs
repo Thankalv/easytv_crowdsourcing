@@ -1,0 +1,160 @@
+
+<script type="text/javascript">
+    var video_id1 = '<%- videoInput.id %>';
+    var video_id2 = '<%- videoTransl.id %>';
+    var vid1 = <%- JSON.stringify(videoInput) %>;
+    var vid2 = <%- JSON.stringify(videoTransl) %>;
+    var videoURL = '<%- videoTransl.videoURL %>';
+    var sourceLang = '<%- videoInput.lang %>';
+    var targetLang = '<%- videoTransl.lang %>';
+    var username = "<%- session.User.firstName %>";
+    var nls = "<%- videoTransl.concept %>"
+    var vidsegments = <%- JSON.stringify(videoInput.segments) %>;
+    var vidsegments2 = <%- JSON.stringify(videoTransl.segments) %>;
+</script>
+
+<div class="content-wrapper">
+
+    <section class="content-header">
+            <h1> Suggested translation</h1>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i>Home</a></li>
+                <li class="breadcrumb-item active"> <a href="/video-annotation/show-translations"> Suggest new translation</a></li>
+            </ol>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="col-md-12">
+            <div class="row">
+                    <div class="col-md-6 card" style="background: aliceblue; height:540px">
+                        <div class="card-header border-transparent" style="background-color: #3270daba">
+                            <h3 class="card-title"> <b>Source Video - <%= videoInput.lang %></b> </h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                                <div class="row" style="margin: auto;">
+                                    <div class="col-md-12" id="vidFrame1" style="min-height: 240px;">
+                                        <video id="the_video" class="video-js" controls preload="auto" width="90%" style="min-width:210px" data-setup="{}">
+                                            <source src="<%= videoInput.videoURL %>" type='video/mp4'>
+                                         </video>
+                                          <div class="info-box">
+                                            <div class="info-box-content">
+                                              <span class="info-box-text"> <b> <%= videoInput.lang %></b> concept: <%= videoInput.sle %></span> <br>
+                                            </div>
+                                          </div>
+                                          <h5>Annotation in <b>Sign-Language order</b> </h5>
+                                          <div class="console-container">
+                                            <div class="sourceConsole" style="font-size:12px"></div>
+                                          </div>
+                                    </div>
+                                    
+                                    <div class="x_content" id="mocapFrame1" style="display:none">
+                                      <% if (videoInput.mocapURL=="")  { %>
+                                        <p> Motion-Capture data is missing, can you provide them?
+                                          <button id="submit-mocap1"> <i class="glyphicon glyphicon-upload" ></i> Submit</button> </p>
+                                          <form method='POST' action='/task/uploadmocap-extra' class="dropzone" id="my-dropzone-1" 
+                                              style="width: 80%; margin-left:5%;background: #9addff;border: 3px dashed rgba(0, 0, 0, 0.3);">
+                                          </form>
+                                        <% } else { %>
+                                          <div class="row offset-md-1">
+                                              <h2 style="color:green" class="headline"> 
+                                                  <i class="fa fa-check-circle"></i></h2>
+                                              <h3 style="color:green">
+                                                  Have a look at the 3D-Avatar
+                                              </h3>
+                                          </div>
+                                          <a id="show-avatar1" href="/video-annotation/show-mocap?id=<%- videoInput.id %>" class="btn" 
+                                              style="display:block; color:midnightblue; border-color: blue; background: #00a6c2cf; font-weight: 500;margin-left:auto;margin-right:auto; width: 40%;">
+                                              <i class="fa fa-street-view" style="font-size: 22px;color: #33f5f5d1;"></i> 3D Avatar
+                                          </a>
+                                          <% } %>
+                                          <br><br>
+                                          <a id="show-avatar1" href="/video-annotation/show-mocap?id=<%- videoInput.id %>" class="btn" 
+                                            style="display:none; color:midnightblue; border-color: blue; background: #00a6c2cf; font-weight: 500;margin-left:auto;margin-right:auto; width: 40%;">
+                                            <i class="fa fa-street-view" style="font-size: 22px;color: #33f5f5d1;"></i> 3D Avatar
+                                          </a>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                
+                    <div class="col-md-6 card" style="background: aliceblue; height:540px" >
+                        <div class="card-header border-transparent" style="background-color: #3270daba">
+                            <h3 class="card-title"> <b>Suggested Translation - <%= videoTransl.lang %></b> </h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                                <div class="row" style="margin: auto;">
+                                    <div class="col-md-12" id="vidFrame2" style="min-height: 240px;">
+                                         <video id="the_video2" class="video-js" controls preload="auto" width="90%" style="min-width:210px"  data-setup="{}">
+                                            <source src="<%= videoTransl.videoURL %>" type='video/mp4'>
+                                         </video>
+                                          <div class="info-box">
+                                            <div class="info-box-content">
+                                              <span class="info-box-text"> <b> <%= videoTransl.lang %></b> concept: <%= videoTransl.concept %></span> <br>
+                                            </div>
+                                          </div>
+                                          <h5>Annotation in <b>Sign-Language order</b> </h5>
+                                          <div class="console-container">
+                                            <div class="targetConsole" style="font-size:12px"></div>
+                                          </div>
+                                    </div>
+
+                                    <div class="x_content" id="mocapFrame2" style="display:none">
+                                          <p> Motion-Capture data is missing, can you provide them?
+                                            <button id="submit-mocap2"> <i class="glyphicon glyphicon-upload" ></i> Submit</button> </p>
+                                            <form method='POST' action='/task/uploadmocap-extra' class="dropzone" id="my-dropzone-2" 
+                                                style="width: 80%; margin-left:5%;background: #9addff;border: 3px dashed rgba(0, 0, 0, 0.3);">
+                                            </form>
+                                    </div>
+                                    <a id="show-avatar2" href="/video-annotation/show-mocap?id=<%- videoTransl.id %>" class="btn" 
+                                      style="display:none; color:midnightblue; border-color: blue; background: #00a6c2cf; font-weight: 500;margin-left:auto;margin-right:auto; width: 40%;">
+                                      <i class="fa fa-street-view" style="font-size: 22px;color: #33f5f5d1;"></i> 3D Avatar
+                                    </a>
+
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+             <button id="play-video" class="btn centerButton post-button" style="color:midnightblue; border-color: blue; background: #00a6c2cf; font-weight: 500;width:20%"> 
+                <i class="material-icons" style="display: inline-flex; vertical-align: middle;">play_circle_outline</i>  Both Videos
+              </button>
+              <br>
+              
+              <button id="post-translation" class="btn centerButton post-button" style="display:block!important;color:midnightblue; border-color: blue; background: #00c22acf; font-weight: 500;width:20%"> 
+                  <i class="material-icons" style="display: inline-flex; vertical-align: middle;">send</i>  Post Translation
+                </button>         
+          </div>
+    </section>
+</div>
+
+
+<!-- load extra .css assets only for this view-app -->
+<% block('localScripts', '<link href="/plugins/sweetalert/sweetalert2.min.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="/plugins/slider/ion.rangeSlider.min.css" rel="stylesheet" type="text/css">') %>
+
+<% block('localScripts', '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="/plugins/video-annotation-app/transl-style.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="https://vjs.zencdn.net/6.2.0/video-js.min.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="/plugins/video-annotation-app/assets/videojs_skin.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="/plugins/video-annotation-app/build/css/annotations.css" rel="stylesheet" type="text/css">') %>
+
+
+<!-- load extra .js assets only for this view-app -->
+<% block('localScripts', '<script src="/plugins/sweetalert/sweetalert2.min.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/sweetalert/main.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/slider/ion.rangeSlider.min.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/slider/suggested-translation.js"></script>') %>
+<!-- dropzone stuff -->
+<% block('localScripts', '<link href="/plugins/dropzone/dropzone.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<script src="/plugins/dropzone/dropzone.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/dropzone/uploadMocap2.js"></script>') %>
+
+<!-- some extra .js assets only for the video-annotation app -->
+<% block('localScripts', '<script src="https://vjs.zencdn.net/6.2.0/video.min.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/video-annotation-app/build/videojs-annotation-comments.min.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/video-annotation-app/assets/js/translation_annotations.js"> </script>') %>
+<% block('localScripts', '<script src="/plugins/video-annotation-app/assets/js/translate-vid-ready.js"></script>') %>

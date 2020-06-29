@@ -22,7 +22,6 @@ var cssFilesToInject = [
   'dependencies/google-icons.css',
   'dependencies/daterangepicker-bs3.css',
   'dependencies/bootstrap-table.min.css',
-  'dependencies/dist/min/dropzone.min.css',
   'dependencies/**/*.css',
 
   // All of the rest of your custom `.css` files will be injected here,
@@ -41,7 +40,7 @@ var jsFilesToInject = [
   // Bring in `.js` files for any other client-side JavaScript dependencies.
   // (e.g. Lodash, Vue.js, jQuery, Bootstrap, Ember, Angular, etc.)
   // > Be sure to list dependencies that depend on each other in the right order!
-  'dependencies/lodash.js',
+  //'dependencies/lodash.js',
 
 
   // All of the rest of your custom client-side js files will be injected here,
@@ -50,17 +49,16 @@ var jsFilesToInject = [
 
   "dependencies/jquery.min.js",
   "dependencies/bootstrap.bundle.min.js",
-  "js/adminlte.js",
+  //"js/adminlte.js",
 
   "js/demo.js",
 
   "plugins/jquery.sparkline.min.js",
   "plugins/jquery-jvectormap-1.2.2.min.js",
-  "plugins/jquery-jvectormap-world-mill-en.js",
+  //"plugins/jquery-jvectormap-world-mill-en.js",
   "plugins/jquery.slimscroll.min.js",
   "plugins/Chart.min.js",
-  "plugins/bootstrap-table.min.js",
-  "dependencies/dist/min/dropzone.min.js"
+  //"plugins/bootstrap-table.min.js"
 
 ];
 

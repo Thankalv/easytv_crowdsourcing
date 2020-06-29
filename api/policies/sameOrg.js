@@ -19,6 +19,11 @@ module.exports = async function(req, res, next) {
   }
 
   var user2edit = await User.findOne(uid).populate('userOrganisation');
+  if(!user2edit){
+    FlashService.error(req, 'This user-profile seems to be deleted!');
+    res.redirect('/users');
+    return;
+  }
 
   var sameOrg = (req.session.User.userOrganisation.id === user2edit.userOrganisation.id);
 

@@ -1,0 +1,118 @@
+
+<script type="text/javascript">
+    var video_id1 = '<%- videoInput.id %>';
+    var vid1 = <%- JSON.stringify(videoInput) %>;
+    var videoURL = '<%- videoInput.videoURL %>';
+    var sourceLang = '<%- videoInput.lang %>';
+    var username = "<%- session.User.firstName %>";
+    var vidsegments = <%- JSON.stringify(videoInput.segments) %>;
+
+  </script>
+
+<div class="content-wrapper">
+
+    <section class="content-header">
+            <h1> Suggest a new translation</h1>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active"><a href="/"><i class="fa fa-home"></i>Home</a></li>
+                <li class="breadcrumb-item"> <a href="/video-annotation/show-translations"> Suggest new translation</a></li>
+            </ol>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="col-md-12">
+            <div class="row">
+                    <div class="col-md-6 card" style="background: aliceblue; height:550px">
+                        <div class="card-header border-transparent" style="background-color: #3270daba">
+                            <h3 class="card-title"> <b>Source Video - <%= videoInput.lang %></b> </h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                                <div class="row" style="margin: auto;">
+                                    <div class="col-md-12" style="min-height: 240px;">
+                                        <video id="the_video" class="video-js" controls preload="auto" width="90%" style="min-width:210px" data-setup="{}">
+                                            <source src="<%= videoInput.videoURL %>" type='video/mp4'>
+                                         </video>
+                                          <div class="info-box">
+                                            <div class="info-box-content">
+                                              <span class="info-box-text"> <b> <%= videoInput.lang %></b> concept: <%= videoInput.sle %></span> <br>
+                                            </div>
+                                          </div>
+                                          <h5>Annotation in <b>Sign-Language order</b> </h5>
+                                          <div class="console-container">
+                                            <div class="sourceConsole" style="font-size:12px"></div>
+                                          </div>
+                                    </div>
+                                    <div class="clearfix hidden-md-up"></div>
+                                </div>
+                        </div>
+                    </div>
+                
+                    <div class="col-md-6 card" style="background: aliceblue; height:550px" >
+                        <div class="card-header border-transparent" style="background-color: #3270daba">
+                            <h3 class="card-title"> Suggested Translation for <b> <%= targetLang %> Sign Language </b> </h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                                <div class="row" style="margin: auto;">
+                                    <div class="col-md-12" style="max-height: 180px;">
+
+                                            <div class="clearfix"></div>
+                                            <div class="x_content">
+                                                <p> Submit a new video for this concept
+                                                    <button id="submit-videos"> <i class="glyphicon glyphicon-upload" ></i> Submit</button> </p>
+                                                    <form method='POST' action='/task/uploadsuggestion' class="dropzone" id="my-dropzone-1" 
+                                                    style="background: #00a6c270;border: 3px dashed rgba(128, 169, 50, 0.64);"></form>
+                                                <br>
+                                             </div>
+                                      
+                                          <div class="info-box">
+                                            <div class="info-box-content">
+                                              <span class="info-box-text"> <b> <%= targetLang %></b> concept: 
+                                                <div class="console-container" style="margin-top: 5px;">
+                                                    <input type="concept" class="form-control targetConsole" style="padding: 5px;" placeholder="Concept in Natural Language" id="concept" required="">
+                                                </div>
+                                            </span>
+                                            </div>
+                                          </div>
+                                          <h5>Annotation in <b>Sign-Language order</b> </h5>
+                                          <div class="console-container">
+                                            <div class="targetConsole" style="font-size:12px"></div>
+                                          </div>
+                                    </div>
+                                    <div class="clearfix hidden-md-up"></div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</div>
+
+
+<!-- load extra .css assets only for this view-app -->
+<% block('localScripts', '<link href="/plugins/sweetalert/sweetalert2.min.css" rel="stylesheet" type="text/css">') %>
+
+<% block('localScripts', '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="/plugins/video-annotation-app/transl-style.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="https://vjs.zencdn.net/6.2.0/video-js.min.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="/plugins/video-annotation-app/assets/videojs_skin.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="/plugins/video-annotation-app/build/css/annotations.css" rel="stylesheet" type="text/css">') %>
+
+<!-- load extra .js assets only for this view-app -->
+<% block('localScripts', '<script src="/plugins/sweetalert/sweetalert2.min.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/sweetalert/main.js"></script>') %>
+
+<!-- some extra .js assets only for the video-annotation app -->
+<% block('localScripts', '<script src="https://vjs.zencdn.net/6.2.0/video.min.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/video-annotation-app/build/videojs-annotation-comments.min.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/video-annotation-app/assets/js/translation_suggetion.js"> </script>') %>
+<% block('localScripts', '<script src="/plugins/video-annotation-app/assets/js/translate-vid.js"></script>') %>
+
+<!-- load the dropzone.js assets -->
+<% block('localScripts', '<link href="/plugins/dropzone/dropzone.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<script src="/plugins/dropzone/dropzone.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/dropzone/uploadSuggestion.js"></script>') %>

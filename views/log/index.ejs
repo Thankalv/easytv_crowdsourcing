@@ -18,9 +18,8 @@
             <thead>
               <tr>
                 <th> <%= __('log.index.user') %> </th>
-                <th> <%= __('log.index.ip') %> </th>
+                 <!--  <th> <%= __('log.index.ip') %> </th>  -->
                 <th> <%= __('log.index.action') %> </th>
-                <th> <%= __('log.index.msg') %> </th>
                 <th> <%= __('log.index.created@') %> </th>
                 <th> <%= __('log.index.updated@') %> </th>
               </tr>
@@ -28,10 +27,9 @@
             <tbody>
               <% _.each(logs, function(log) { %>
                 <tr data-id="<%= log.id %>" data-model="log">
-                  <td><% if(log.user) { %> <a href='/user/show/<%=log.user.id %>'> <%= log.user.email %></a> <% } %></td>
-                  <td><%= log.ip %></td>
-                  <td><%= log.greeting %></td>
-                  <td><%= log.demoString %></td>
+                  <td><% if(log.user) { %> <a href='/user/edit?id=<%=log.user.id %>'> <%= log.user.email %></a> <% } else { %> <b style="color: darkslateblue;"> SYSTEM </b>  <% } %></td>
+                   <!-- <td><%= log.ip %></td>  -->
+                  <td><%- log.activity %></td>
                   <td><%= UtilService.fromNow(log.createdAt) %></td>
                   <td><%= UtilService.fromNow( log.updatedAt) %></td>
                 </tr>

@@ -5,37 +5,60 @@
  */
 module.exports = {
 
-    schema: true,
-    
-    attributes: 
-    {
-        video: {
-          type: 'string',
-          required: true,
-          unique: true,
-          description: "url for information from SPARQL endpoint"
-        },
+  schema: true,
   
-        videoURL: {
-          type: 'string',
-          required: true,
-        },
-  
-        wle: {
-          type: 'string'
-        },
+  attributes: 
+  {
+      video: {
+        type: 'string',
+        required: true,
+        unique: true,
+        description: "URL for information from SPARQL endpoint"
+      },
 
-        sle: {
-            type: 'string'
-          },
+      videoURL: {
+        type: 'string',
+        required: true,
+      },
 
-        lang: {
-            type: 'string'
-          },
+      mocapURL: {
+        type: 'string',
+      },
+      hashstring:{
+        type: "string"
+      },
+      
+      wle: {
+        type: 'string'
+      },
 
-        segments: {
-            type: 'json',
-            description: 'a list of time-stamped segments'
-          }
-    }
+      sle: {
+        type: 'string'
+      },
+
+      lang: {
+        type: 'string'
+      },
+
+      segments: {
+        type: 'json',
+        description: 'a list of time-stamped segments'
+      },
+
+      mocapBCKP:{
+        type: "string"
+      },
+
+      vscore: {
+        type:"number",
+        description: "a user generated evaluation",
+        min: 0
+      },
+      scorers: {
+        type:"number",
+        description: "the number of scorers till now",
+        isInteger: true,
+        min: 0
+      }
+  }
 }

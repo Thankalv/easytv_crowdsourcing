@@ -1,0 +1,55 @@
+<div class="dropdown-menu dropdown-menu-lg dropdown-menu-left">
+
+        <div class="card card-widget widget-user-2">
+          <!-- Add the bg color to the header using any of the bg-* classes -->
+          <div class="widget-user-header bg-primary">
+            <div class="widget-user-image">
+              <img class="img-circle elevation-2" src="<%- user.gravatarImage %>" alt="User Avatar">
+            </div>
+            <!-- /.widget-user-image -->
+            <h3 class="widget-user-username">  <%= _.capitalize(  User.fullName( user ) ) %> </h3>
+            <h5 class="widget-user-desc">  <%= _.capitalize(  sails.config.custom.broadcasterRoles[user.access] ) %></h5>
+          </div>
+
+          <span class="dropdown-item dropdown-header" style="font-size:15px"> 
+                 member since: <%= UtilService.fromNow(user.createdAt) %> 
+            <br> email: <%= user.email %>
+
+            <% if (user.phone_num)  { %>  <br> Tel.: <%= user.phone_num %>  <% } %>
+
+            <br> ID: <b> <%= user.id %> </b>
+            
+          </span>
+
+          <% if(user.registStatus == "submitted") { %>
+          <div class="card-footer p-0">
+              <ul class="nav flex-column">
+                <li class="nav-item">
+                  <a href="#" class="nav-link">
+                    Info Completed <span class="float-right badge bg-success"> <i class="fa fa-check-circle" aria-hidden="true"></i></span>
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      Lastname-2 <span class="float-right badge bg-success">  <%- user.regComplete.lastName2  %> </span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      ID/Passport <span class="float-right badge bg-success">  <%- user.regComplete.idpassport  %> </span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      Conf. Agreement <span class="float-right badge bg-success">  <%- user.regComplete.conf_agree  %> </span>
+                    </a>
+                </li>
+
+              </ul>
+            </div>
+            <% } %>
+      </div>
+</div>

@@ -1,11 +1,25 @@
 var nodemailer = require('nodemailer');
 
-let transporter = nodemailer.createTransport({
-  host: "193.178.235.20",
-  port: 25,
-  secure: false,
-  tls: { rejectUnauthorized: false}
-});
+
+if(sails.config.custom.isDocker=='NO')
+  var transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    auth: {
+      user: 'thanassiskalv@gmail.com',
+      pass: 'czihbhsihtousfdz'
+    },
+    testMode: false,
+    ssl: true
+  });
+else
+  var transporter = nodemailer.createTransport({
+    host: "193.178.235.20",
+    port: 25,
+    secure: false,
+    tls: { rejectUnauthorized: false}
+  });
+
 
 
 module.exports = {
@@ -55,6 +69,14 @@ module.exports = {
         'Instead, just log it to the console.',
       example: 'foo@bar.com',
       required: true
+    },
+
+    cc: {
+      description: 'The email address of the cc recipient.',
+      extendedDescription: 'If this is any address ending in "@example.com", then don\'t actually deliver the message. '+
+        'Instead, just log it to the console.',
+      example: 'foo2@bar.com',
+      required: false
     },
 
     subject: {
@@ -140,6 +162,7 @@ module.exports = {
     var mailOptions = {
         from: 'EasyTV@platform.com',
         to: inputs.to,
+        cc: inputs.cc,
         subject: inputs.subject,
         html: htmlEmailContents
     };

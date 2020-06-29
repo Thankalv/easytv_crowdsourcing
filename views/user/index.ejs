@@ -36,7 +36,7 @@
                     <th data-field="email" data-sortable="true" data-filter-control="input"> <%= __('user.index.email') %></th>
                     <th data-field="organisation" data-sortable="true" data-filter-control="select"> <%= __('user.index.organisation') %> </th>
                     <th data-field="login" data-sortable="true"> <%= __('user.index.lastlogin') %> </th>
-                    <th></th>
+                    <th data-field="role"> Role </th>
                     <th></th>
                     <th></th>
                     </tr>
@@ -66,8 +66,10 @@
                     <td>
                     <% if (user.access === "superadmin") { %>
                         <img src="/images/admin.png" title="<%= __('user.index.administrator') %>">
-                    <% } else if (user.access === "producer") { %>
-                        <img src="/images/prod.png" title="<%= __('user.index.producer') %>">
+                    <% } else if (user.access === "admin") { %>
+                        <img src="/images/admin.png" title="<%= __('user.index.producer') %>">
+                    <% } else if (user.access === "reviewer") { %>
+                        <img width=32 height=32 src="/images/modr.png" title="<%= __('user.index.producer') %>">
                     <% } else { %>
                         <img src="/images/user.png" title="<%= __('user.index.participant') %>">
                     <% } %>
@@ -83,7 +85,7 @@
                     </td>      
                     <td>
                        <a href="#" onClick="deleteUser('<%= user.id %>')" class="" title="<%= __('user.index.deleteUser') %>" >
-                            <i class="fa fa-trash fa-2x"></i>
+                            <i style="color:rgb(199, 70, 70)" class="fa fa-trash fa-2x"></i>
                           </a>
                     </td>
                     </tr>

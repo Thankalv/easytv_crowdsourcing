@@ -1,9 +1,29 @@
 <div class="container">
 
+    <div class="pull-left" style="font-weight:bold;"> <a href="/about" style="color:#007bffc9"> About Privacy Policy </a> </div> <br>
+    <div class="pull-left" style="font-weight: bolder;"> <a href="https://easytvproject.eu" style="color:#007bffc9"> EasyTV Project </a> - <a href="https://easytvproject.eu/files/D9.1.pdf" style="color:#007bffc9"> Ethical Considerations</a> </div><br>
+    <div ><a href="http://www.iti.gr/" target="_blank">I.T.I.</a>, <a href="http://www.certh.gr/" target="_blank">CERTH</a>  - Visual Computing Lab
     
-    <div class="pull-left> &copy; 2018 <a href="https://vcl.iti.gr/" target="_blank">Visual Computing Lab</a>, <a href="http://www.iti.gr/" target="_blank">I.T.I.</a>, <a href="http://www.certh.gr/" target="_blank">CERTH</a> </div>
 
-    <div class="pull-left">  Version  <a href="#"> <%= sails.config.version %> </a> </div>
-  
+        <% if (session.authenticated && (session.User.userOrganisation.name == "Sign Language User"))  { %>
+            <div class="pull-right" style="font-size:14px; font-weight: bold;text-decoration: underline;">
+            Your feedback about this tool is really helpful!
+            <a href="https://easytvproject.eu/questionnaire#/form/services" style="color:#007bffc9"> Questionnaire of EasyTV Project </a>
+            </div>
+
+        <% } else if (session.authenticated && (session.User.access == "editor"))  { %>
+            <div class="pull-right" style="font-size:13px; font-weight: bold;"> 
+            Your feedback about this tool is really helpful!
+            <a href="https://easytvproject.eu/questionnaires/multilang-subt-rev/info-ca.html" style="color:#007bffc9"> Questionnaire of EasyTV Project </a>
+            </div>
+
+        <% } else if (session.authenticated && (session.User.access == "reviewer"))  { %>
+            <div class="pull-right" style="font-size:13px; font-weight: bold;"> 
+            Your feedback about this tool is really helpful!
+            <a href="https://easytvproject.eu/questionnaires/multilang-subt-eval/info-ca.html" style="color:#007bffc9"> Questionnaire of EasyTV Project </a>
+            </div>
+        <% } %>
+    </div>
+
 </div>
 

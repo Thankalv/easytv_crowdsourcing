@@ -15,6 +15,11 @@
            <div class="card">
               <div class="card-header" style="background: #cce4f9;">
                   <h3 class="card-title"> Registration requirements </h3>
+                  <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-widget="collapse">
+                      <i class="fa fa-minus"></i>
+                    </button>
+                  </div>
              </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -43,7 +48,7 @@
                             <input id='orgToken' class="form-control" readonly type="text" value="<%= organisation.token %>">
                           </div> 
                           <div class="col-md-3">
-                            <a href="#" class="btn btn-sm btn-flat btn-warning" onclick="refreshToken()"> <%= __('organisation.show.refresh') %> </a>
+                            <a href="#" class="btn btn-flat btn-warning" onclick="refreshToken()"> <b> <%= __('organisation.show.refresh') %> </b> </a>
                           </div>
                         </div>
                       </div>
@@ -51,7 +56,7 @@
 
                     <br>
                     <h5> <%= __('organisation.show.consentform') %> </h5>
-                    <div class="form-group">
+                    <div class="form-group showTextarea">
                         <div class="checkbox">
                           <label >
                             <input type="checkbox" value="consent_required" <%= organisation.consent_required ? 'checked': '' %>>
@@ -64,7 +69,42 @@
                       </div>
 
                       <br>
+                      <h5> Confidentiality agreement </h5>
+                      <div class="form-group showTextarea">
+                        <label>This will be displayed in the registration form of a suitable volunteer</label>
+                          <textarea id="confidentiality" name="confidentiality" class="textarea">
+                            <%- organisation.confidentiality_form %>
+                          </textarea>
+                        </div>
+                      <br>
 
+                      <br>
+                      <h5> Delete Profile Message </h5>
+                      <div class="form-group showTextarea">
+                        <label>This message will be displayed when users attempt to delete their profile</label>
+                          <textarea id="deleteProfileMessage" name="deleteProfileMessage" class="textarea">
+                            <%- organisation.deleteProfileMessage %>
+                          </textarea>
+                        </div>
+                      <br>
+                        
+                      <h5> <%= __('organisation.show.defaultLang') %> </h5>
+                      <div class="form-group">
+                        <label for="prereqLang"> Define the default language knowledge of your organisation</label>
+                        <select class="form-control col-md-4" name="prereqLang" id="langselect" >
+                          <%  if(organisation.preReqLang!="") { %>
+                            <option selected value="<%= organisation.preReqLang %>">   <%= langs[langsISO.indexOf(organisation.preReqLang)] %> </option>
+                          <%  } else { %>
+                            <option class="placeholder" selected disabled value=""> select language </option>
+                          <%  } %>
+                          <% _.each(langs, function(lang) { %>
+                            <option value="<%= langsISO[langs.indexOf(lang)] %>">
+                              <%= lang %>
+                            </option>
+                          <% }); %>
+                        </select>
+                      </div>
+                      <br>
                       <a href="#" class="btn btn-sm btn-flat btn-primary pull-left" onclick="updateConsent()"> <%= __('organisation.show.savesettings') %> </a>
                 </form>
                 
@@ -75,16 +115,18 @@
             <br>
 
             <div class="offset-md-2 col-md-8">
-    
                 <form action="/organisation/api-info" method="POST">
-
                     <!-- Dashboard Settings  -->
                     <div class="card">
                     <div class="card-header" style="background: #cce4f9;">
                         <h3 class="card-title">API Connection Definitions </h3>
+                        <div class="card-tools">
+                          <button type="button" class="btn btn-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                          </button>
+                        </div>
                     </div>
                     <div class="card-body">
-
                       <input type="hidden" name="id" value="<%= organisation.id %>" />
 
                         <div class="form-group">
@@ -92,7 +134,6 @@
                            <input id='APIgetJobs' type="text" class="form-control" value="<%= organisation.api_info.getJobsURL %>" disabled>
                            <input id='APIgetJobsHidden' name="getJobsURL" type="hidden" class="form-control" value="<%= organisation.api_info.getJobsURL %>">
                         </div>
-
                         <div class="input-group">
                             <input id="APIgetJobsNEW" type="text" class="form-control" value="Enter new endpoint..." >
                             <div class="input-group-append">
@@ -101,7 +142,6 @@
                         </div>
 
                         <br><br>
-
                         <div class="form-group">
                           Current  <div class="badge badge-primary"> POST endpoint </div> for user-job assignment
                           <input id='APIpostUserJob' type="text" class="form-control" value="<%= organisation.api_info.postUserJob %>" disabled>
@@ -114,72 +154,111 @@
                               <span class="input-group-text btn" id="" onclick="updateAPIpoint('APIpostUserJob', 'APIpostUserJobHidden')" style="background: #ffc107">Save </span>
                             </div>
                         </div>
+
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer">
-                        <input type="submit" class="btn btn-flat btn-sm btn-success pull-left" value="UPDATE" />
+                        <input type="submit" class="btn btn-flat btn-sm btn-primary pull-left" value="UPDATE" />
                     </div>
                     </div>
                 </form>
     
              </div>
         
+            <%- include customEmails %>
+
       </section>
 </div>
 
 <script>
-  
-     function updateAPIpoint(endpointID, endpointIDhidden) 
-     {
-        console.log( document.getElementById(endpointID+"NEW").value );
-        var newAPIpoint = document.getElementById(endpointID+"NEW").value;
-        $('#'+endpointID).attr('value', newAPIpoint);
-        $('#'+endpointIDhidden).attr('value', newAPIpoint);
-     }
+    function updateAPIpoint(endpointID, endpointIDhidden) {
+      console.log( document.getElementById(endpointID+"NEW").value );
+      var newAPIpoint = document.getElementById(endpointID+"NEW").value;
+      $('#'+endpointID).attr('value', newAPIpoint);
+      $('#'+endpointIDhidden).attr('value', newAPIpoint);
+    }
 
-     function updateConsent() 
-     {
-          var data = {
-            consent_form: $('#description').summernote('code').trim(),
-            consent_required: $("input[type='checkbox'][value=consent_required]").prop("checked"),
-            token_required: $("input[type='checkbox'][value=token_required]").prop("checked"),
-            phone_required: $("input[type='checkbox'][value=phone_required]").prop("checked"),
-          };
-          // add CSRF, check if needed
-          console.log(data);
-          if(data.consent_form=="")
-            data.consent_form="-";
-            
-          $.post("/organisation/update?id="+'<%=organisation.id%>', data, function(status) {
-            
-            location.reload();
-          });
-      }
+    function updateConsent() {
+        var data = {
+          consent_form: $('#description').summernote('code').trim(),
+          confidentiality_form: $('#confidentiality').summernote('code').trim(),
+          deleteProfileMessage: $('#deleteProfileMessage').summernote('code').trim(),
+          consent_required: $("input[type='checkbox'][value=consent_required]").prop("checked"),
+          token_required: $("input[type='checkbox'][value=token_required]").prop("checked"),
+          phone_required: $("input[type='checkbox'][value=phone_required]").prop("checked"),
+          prereq_lang: $("#langselect").val()
+        };
+        // add CSRF, check if needed
+        console.log(data);
+        if(data.consent_form=="")
+          data.consent_form="-";
+        if(data.confidentiality_form=="")
+          data.confidentiality_form="-";
+        if(data.deleteProfileMessage=="")
+          data.deleteProfileMessage="-";
+          
+        $.post("/organisation/update?id="+'<%=organisation.id%>', data, function(status) {
+          
+          location.reload();
+        });
+    }
 
-  
-      function refreshToken() 
-      { // warning bootbox
-          bootbox.confirm({
-            title: "<%= __('organisation.show.warning') %> ",
-            message: "<%= __('organisation.show.warningmsg') %>",
-            buttons: {
-              confirm: { label: "<%= __('organisation.show.yestag') %>", className: 'btn-danger' },
-              cancel: { label: "<%= __('organisation.show.canceltag') %>" }
-            },
-            callback: function(result) {
-              if (result) {
-                // add CSRF, check if needed
-                $.post("/organisation/refreshtoken?id="+'<%=organisation.id%>', {}, function(status) {
-                  $('#orgToken').attr('value', status.description)
-                });
-              }
+    function updateEmails() {
+        var data = {
+          en1_content: $('#en1').summernote('code').trim(),
+          en2_content: $('#en2').summernote('code').trim(),
+          en25_content: $('#en25').summernote('code').trim(),
+          en3_content: $('#en3').summernote('code').trim(),
+          en4_content: $('#en4').summernote('code').trim(),
+          en5_content: $('#en5').summernote('code').trim(),
+          en6_content: $('#en6').summernote('code').trim(),
+          en7_content: $('#en7').summernote('code').trim(),
+          testFinishedNotify: $("input[type='checkbox'][value=testFinishedNotify]").prop("checked"),
+          jobFinishedNotify: $("input[type='checkbox'][value=jobFinishedNotify]").prop("checked"),
+          voluntManager: $("#voluntManager").val()
+        };
+        // add CSRF, check if needed
+        if(data.consent_form=="")
+          data.consent_form="-";
+        $.post("/organisation/update-emails?id="+'<%=organisation.id%>', data, function(status) {
+          location.reload();
+        });
+    }
+
+    function refreshToken() 
+    { // warning bootbox
+        bootbox.confirm({
+          title: "<%= __('organisation.show.warning') %> ",
+          message: "<%= __('organisation.show.warningmsg1') %> <br> <%= __('organisation.show.warningmsg2') %>",
+          buttons: {
+            confirm: { label: "<%= __('organisation.show.yestag') %>", className: 'btn-danger' },
+            cancel: { label: "<%= __('organisation.show.canceltag') %>" }
+          },
+          callback: function(result) {
+            if (result) {
+              // add CSRF, check if needed
+              $.post("/organisation/refreshtoken?id="+'<%=organisation.id%>', {}, function(status) {
+                $('#orgToken').attr('value', status.description)
+              });
             }
-          });
-        }
+          }
+        });
+      }
 </script>
 
-<% block('localScripts', '<link href="/plugins/summernote/summernote.css" rel="stylesheet"><link>') %>
-<% block('localScripts', '<script src="/plugins/summernote/summernote.min.js"></script>') %>
+<style>
+  .showTextarea {
+    animation: cssAnimation 0s 0.35s forwards;
+    visibility: hidden;
+  }
+  
+  @keyframes cssAnimation {
+    to   { visibility: visible; }
+  }
+</style>
+
+<% block('localScripts', '<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.css" rel="stylesheet"><link>') %>
+<% block('localScripts', '<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.js"></script>') %>
 <% block('localScripts', '<script src="/plugins/wysihtml5.js"></script>') %>
 <% block('localScripts', '<script src="/plugins/bootbox.min.js"></script>') %>
       

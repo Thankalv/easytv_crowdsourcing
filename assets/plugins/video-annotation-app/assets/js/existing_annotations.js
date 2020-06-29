@@ -5,16 +5,18 @@
 
     ];
 
-    // REFACTOR: initialization of previous annotation's segments can be done (and should) in the back-end controller
-    console.log(vidsegments);
-    for (var i=0; i <= vidsegments.length; i++)
+    // re-factor: initialization of previous annotation's segments can be done (and should) in the back-end controller
+    //console.log(vidsegments);
+    for (var i=0; i < vidsegments.length; i++)
     {
+        console.log(vidsegments[i]);
         segment = {};
-        segment.id = vidsegments[i].order;
+        //segment.id = vidsegments[i]["order"];
         segment.shape = null;
         segment.range = {};
         segment.range.start = vidsegments[i].start;
         segment.range.end = vidsegments[i].end;
+        segment.id = vidsegments[i].order;
         segment.comments = [];
         segment.comments.push( {id:1, meta:{user_name: "prev-annotation"}, body: vidsegments[i].content});
         if(vidsegments[i].content2)

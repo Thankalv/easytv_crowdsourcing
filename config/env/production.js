@@ -19,6 +19,8 @@
  * https://sailsjs.com/docs/concepts/deployment
  */
 
+var passport = require('passport');
+
 module.exports = {
 
 
@@ -78,31 +80,114 @@ module.exports = {
 
 
 
-  models: {
+  models :{
+
 
     /***************************************************************************
     *                                                                          *
-    * To help avoid accidents, Sails automatically sets the automigration      *
-    * strategy to "safe" when your app lifts in production mode.               *
-    * (This is just here as a reminder.)                                       *
+    * Whether model methods like `.create()` and `.update()` should ignore     *
+    * (and refuse to persist) unrecognized data-- i.e. properties other than   *
+    * those explicitly defined by attributes in the model definition.          *
     *                                                                          *
-    * More info:                                                               *
-    * https://sailsjs.com/docs/concepts/models-and-orm/model-settings#?migrate *
+    * To ease future maintenance of your code base, it is usually a good idea  *
+    * to set this to `true`.                                                   *
+    *                                                                          *
+    * > Note that `schema: false` is not supported by every database.          *
+    * > For example, if you are using a SQL database, then relevant models     *
+    * > are always effectively `schema: true`.  And if no `schema` setting is  *
+    * > provided whatsoever, the behavior is left up to the database adapter.  *
+    * >                                                                        *
+    * > For more info, see:                                                    *
+    * > https://sailsjs.com/docs/concepts/orm/model-settings#?schema           *
     *                                                                          *
     ***************************************************************************/
+  
+    // schema: true,
+  
+  
+    /***************************************************************************
+    *                                                                          *
+    * How and whether Sails will attempt to automatically rebuild the          *
+    * tables/collections/etc. in your schema.                                  *
+    *                                                                          *
+    * > Note that, when running in a production environment, this will be      *
+    * > automatically set to `migrate: 'safe'`, no matter what you configure   *
+    * > here.  This is a failsafe to prevent Sails from accidentally running   *
+    * > auto-migrations on your production database.                           *
+    * >                                                                        *
+    * > For more info, see:                                                    *
+    * > https://sailsjs.com/docs/concepts/orm/model-settings#?migrate          *
+    *                                                                          *
+    ***************************************************************************/
+  
     migrate: 'safe',
-
+  
+  
     /***************************************************************************
     *                                                                          *
-    * If, in production, this app has access to physical-layer CASCADE         *
-    * constraints (e.g. PostgreSQL or MySQL), then set those up in the         *
-    * database and uncomment this to disable Waterline's `cascadeOnDestroy`    *
-    * polyfill.  (Otherwise, if you are using a databse like Mongo, you might  *
-    * choose to keep this enabled.)                                            *
+    * Base attributes that are included in all of your models by default.      *
+    * By convention, this is your primary key attribute (`id`), as well as two *
+    * other timestamp attributes for tracking when records were last created   *
+    * or updated.                                                              *
+    *                                                                          *
+    * > For more info, see:                                                    *
+    * > https://sailsjs.com/docs/concepts/orm/model-settings#?attributes       *
     *                                                                          *
     ***************************************************************************/
-    // cascadeOnDestroy: false,
-
+  
+    attributes: {
+      createdAt: { type: 'number', autoCreatedAt: true, },
+      updatedAt: { type: 'number', autoUpdatedAt: true, },
+      id: { type: 'number', autoIncrement: true, },
+      //--------------------------------------------------------------------------
+      //  /\   Using MongoDB?
+      //  ||   Replace `id` above with this instead:
+      //
+      // ```
+      // id: { type: 'string', columnName: '_id' },
+      // ```
+      //
+      // Plus, don't forget to configure MongoDB as your default datastore:
+      // https://sailsjs.com/docs/tutorials/using-mongo-db
+      //--------------------------------------------------------------------------
+    },
+  
+  
+    /******************************************************************************
+    *                                                                             *
+    * The set of DEKs (data encryption keys) for at-rest encryption.              *
+    * i.e. when encrypting/decrypting data for attributes with `encrypt: true`.   *
+    *                                                                             *
+    * > The `default` DEK is used for all new encryptions, but multiple DEKs      *
+    * > can be configured to allow for key rotation.  In production, be sure to   *
+    * > manage these keys like you would any other sensitive credential.          *
+    *                                                                             *
+    * > For more info, see:                                                       *
+    * > https://sailsjs.com/docs/concepts/orm/model-settings#?dataEncryptionKeys  *
+    *                                                                             *
+    ******************************************************************************/
+  
+    dataEncryptionKeys: {
+      default: 'ghBbi9hAHMBp/pNSq9UGFVgX/zeBfEGNJJ8tUfJhSSg='
+    },
+  
+  
+    /***************************************************************************
+    *                                                                          *
+    * Whether or not implicit records for associations should be cleaned up    *
+    * automatically using the built-in polyfill.  This is especially useful    *
+    * during development with sails-disk.                                      *
+    *                                                                          *
+    * Depending on which databases you're using, you may want to disable this  *
+    * polyfill in your production environment.                                 *
+    *                                                                          *
+    * (For production configuration, see `config/env/production.js`.)          *
+    *                                                                          *
+    ***************************************************************************/
+  
+    cascadeOnDestroy: true
+  
+  
   },
 
 
@@ -118,7 +203,7 @@ module.exports = {
   *                                                                         *
   ***************************************************************************/
   blueprints: {
-    shortcuts: false,
+
   },
 
 
@@ -148,10 +233,11 @@ module.exports = {
     *                                                                          *
     ***************************************************************************/
     cors: {
-      // allowOrigins: [
-      //   'https://example.com',
-      // ]
-    },
+      allRoutes: true,
+      allowOrigins: ['https://spm.easytv.eng.it'],
+      allowRequestMethods: 'GET, POST, PUT, DELETE, OPTIONS, HEAD',
+      allowRequestHeaders: 'content-type, x-easytv-key'
+    }
 
   },
 
@@ -184,8 +270,11 @@ module.exports = {
     * > (For a full list, see https://sailsjs.com/plugins/sessions)            *
     *                                                                          *
     ***************************************************************************/
-    // adapter: '@sailshq/connect-redis',
-    // url: 'redis://user:password@localhost:6379/databasenumber',
+    host: '127.0.0.1',
+    adapter: 'redis',
+    url: process.env.CP_REDIS_HOST || "redis://127.0.0.1:6379",
+    
+    secret: '4521eb9c88ca3909316c6e254e29c7b1',
     //--------------------------------------------------------------------------
     // /\   OR, to avoid checking it in to version control, you might opt to
     // ||   set sensitive credentials like this using an environment variable.
@@ -196,8 +285,6 @@ module.exports = {
     // ```
     //
     //--------------------------------------------------------------------------
-
-
 
     /***************************************************************************
     *                                                                          *
@@ -250,10 +337,9 @@ module.exports = {
     * > Be sure to use the right protocol!  ("http://" vs. "https://")         *
     *                                                                          *
     ***************************************************************************/
-    // onlyAllowOrigins: [
-    //   'https://example.com',
-    //   'https://staging.example.com',
-    // ],
+    onlyAllowOrigins: [
+      'https://easytvproject.eu',
+    ],
 
 
     /***************************************************************************
@@ -297,34 +383,96 @@ module.exports = {
 
 
 
-  http: {
+  http : {
 
-    /***************************************************************************
-    *                                                                          *
-    * The number of milliseconds to cache static assets in production.         *
-    * (the "max-age" to include in the "Cache-Control" response header)        *
-    *                                                                          *
-    ***************************************************************************/
-    cache: 365.25 * 24 * 60 * 60 * 1000, // One year
-
-    /***************************************************************************
-    *                                                                          *
-    * Proxy settings                                                           *
-    *                                                                          *
-    * If your app will be deployed behind a proxy/load balancer - for example, *
-    * on a PaaS like Heroku - then uncomment the `trustProxy` setting below.   *
-    * This tells Sails/Express how to interpret X-Forwarded headers.           *
-    *                                                                          *
-    * This setting is especially important if you are using secure cookies     *
-    * (see the `cookies: secure` setting under `session` above) or if your app *
-    * relies on knowing the original IP address that a request came from.      *
-    *                                                                          *
-    * (https://sailsjs.com/config/http)                                        *
-    *                                                                          *
-    ***************************************************************************/
-    // trustProxy: true,
-
+    /****************************************************************************
+    *                                                                           *
+    * Sails/Express middleware to run for every HTTP request.                   *
+    * (Only applies to HTTP requests -- not virtual WebSocket requests.)        *
+    *                                                                           *
+    * https://sailsjs.com/documentation/concepts/middleware                     *
+    *                                                                           *
+    ****************************************************************************/
+    middleware: {
+  
+      /***************************************************************************
+      *                                                                          *
+      * The order in which middleware should be run for HTTP requests.           *
+      * (This Sails app's routes are handled by the "router" middleware below.)  *
+      *                                                                          *
+      ***************************************************************************/
+  
+      order: [
+         'cookieParser',
+         'session',
+         'passportInit',
+         'passportSession',
+         'mySidebarTags',
+         'bodyParser',
+         'compress',
+         'poweredBy',
+         'router',
+         'www',
+         'favicon',
+       ],
+  
+      passportInit: passport.initialize(),
+      passportSession: passport.session(),
+  
+      /****************************************************************************
+       * a custom sidebar's active tag parser              *
+       ****************************************************************************/
+      mySidebarTags: function(req, res, next) {
+        // console.log("Requested:", req.method, req.url, req.ip);
+        var reqString = req.method+' '+req.url;
+        
+        if(req.session)
+          if (reqString.indexOf("GET /log") !== -1){
+            req.session.activeTag = 'log'
+          }
+          else if(reqString.indexOf("GET /feedback") !== -1){
+            req.session.activeTag = 'feedback'
+          }
+          else if(reqString.indexOf("GET /volunteer") !== -1){
+            req.session.activeTag = 'volunteer'
+          }
+          else if(reqString.indexOf("GET /user/settings") !== -1){
+            req.session.activeTag = 'settings'
+          }
+          else if(reqString.indexOf("GET /user") !== -1){
+            req.session.activeTag = 'users'
+          }
+          else if(reqString.indexOf("GET /organisation") !== -1){
+            req.session.activeTag = 'org'
+          }
+          else if(reqString.indexOf(" /video-annotation") !== -1){
+            req.session.activeTag = 'videolang'
+          }
+          else{
+            req.session.activeTag = 'dashboard'
+          }
+  
+        return next();
+      },
+  
+      /***************************************************************************
+      *                                                                          *
+      * The body parser that will handle incoming multipart HTTP requests.       *
+      *                                                                          *
+      * https://sailsjs.com/config/http#?customizing-the-body-parser             *
+      *                                                                          *
+      ***************************************************************************/
+  
+      // bodyParser: (function _configureBodyParser(){
+      //   var skipper = require('skipper');
+      //   var middlewareFn = skipper({ strict: true });
+      //   return middlewareFn;
+      // })(),
+  
+    },
+  
   },
+  
 
 
 
@@ -370,27 +518,73 @@ module.exports = {
   * > See config/custom.js for more info on how to configure these options. *
   *                                                                         *
   ***************************************************************************/
-  custom: {
-    baseUrl: 'https://example.com',
-    internalEmailAddress: 'support@example.com',
+ custom : {
 
-    // mailgunDomain: 'mg.example.com',
-    // mailgunSecret: 'key-prod_fake_bd32301385130a0bafe030c',
-    // stripeSecret: 'sk_prod__fake_Nfgh82401348jaDa3lkZ0d9Hm',
-    //--------------------------------------------------------------------------
-    // /\   OR, to avoid checking them in to version control, you might opt to
-    // ||   set sensitive credentials like these using environment variables.
-    //
-    // For example:
-    // ```
-    // sails_custom__mailgunDomain=mg.example.com
-    // sails_custom__mailgunSecret=key-prod_fake_bd32301385130a0bafe030c
-    // sails_custom__stripeSecret=sk_prod__fake_Nfgh82401348jaDa3lkZ0d9Hm
-    // ```
-    //--------------------------------------------------------------------------
+  /***************************************************************************
+  *                                                                          *
+  * Any other custom config this Sails app should use during development.    *
+  *                                                                          *
+  ***************************************************************************/
+  // a simple config variable to control the 'logging' mode of the setup
+  loggingMode : true,
 
-  },
+  // Send "confirm account" email to assure a human user
+  verifyEmailAddresses : true,
 
+  // access API from admin-key
+  adminKey: process.env.ADMIN_KEY || "admin-12345",
+  
+  // access API from admin-key
+  isDocker: process.env.IS_DOCKER || "NO",
+
+  // admins manage all confidence-level
+  confLevel: process.env.MANAGE_LEVEL || "YES",
+  
+  // restore the back-up file of the destroyed orgs
+  restoreOrgs: process.env.RESTORE_ORGS || "NO",
+
+  // force older testing user to become "email-confirmed"
+  forceConfirmed: process.env.FORCE_CONFIRM || "NO",
+
+  // config var to be exposed in email-templates
+  baseUrl: process.env.BASE_URL || 'http://localhost:1337',
+
+  // our AWS repo base-url
+  AWSurl:  "https://easytv-repo-sl.s3.amazonaws.com/",
+
+  video_directory: 'video-submits/',
+  mocap_directory: 'mocap-submits/',
+
+  /* easytv authentication token for the API modules inter-communication */
+  xEasyTVtoken: "dea005f1143a6626be48e2d4878ecf8538a5dde78996fb673c9663bcb1be5390",
+  version: 0.5,
+  // confirm-email expires in only 1 minute
+  emailProofTokenTTL:  72*60*60*1000,// 24 hours
+
+  ontologyLangs: ['English', 'Spanish', 'Italian', 'Greek'],
+  ontologyLangsISO: ['en', 'es', 'it', 'el'],
+
+  langs: ['English', 'Spanish', 'Catalan', 'Arabic', 'Berber'],
+  langsISO : ['en', 'es', 'ca', 'ar', 'bb'],
+
+  broadcasterRoles: {"editor": "reviewer", "reviewer": "evaluator", "admin":"admin", "superadmin": "superadmin"},
+
+  LEVELS: {"low": -1, "mid": 1, "high": 5, "professional": 9 },
+
+  /* Levels for registration workflow -- as suggested by the broadcaster*/
+  // 'validation pending' is for a fresh member (no visibility)
+  // 'test' is for a user that has only "test content" visibility
+  confidence_level: {"-2":"validation pending", "-1":"test", "0":"suitable"},
+
+  workflow_levels: {  "-3": "NOT SUITABLE", "-2": "Pending Evaluation", "-1": "Under Evaluation",  0 : "Suitable",
+                       1 : 'Archive', 2: 'Archive+', 3: 'Archive++', 4 : 'Archive+++', 
+                       5: 'Broadcast', 6: 'Broadcast+', 7: 'Broadcast++', 8: "Broadcast+++", 9:"Professional"},
+
+},
+
+uploads :{
+  adapter: require("sails-hook-uploads")
+}
 
 
 };

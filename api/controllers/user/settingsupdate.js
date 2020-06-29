@@ -9,7 +9,6 @@ module.exports = {
         },
         emailRejectJob: {
             type: 'string',
-            required: true,
         },
         showOtherJobs:{
           type: 'string',

@@ -1,0 +1,66 @@
+<div class="content-wrapper">
+    <section class="content-header">
+            <h1> Sign Language Multilingual </h1>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active"><a href="/"><i class="fa fa-home"></i>Home</a></li>
+                <li class="breadcrumb-item"> Suggested translations</a></li>
+            </ol>
+    </section>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="col-md-10 offset-md-2">
+            <div class="row">
+                    <div class="col-md-8 card" style="background: aliceblue;">
+                        <div class="card-header border-transparent" style="background-color: #03c200cf">
+                            <h3 class="card-title"> Retrieve translations in <b> <%= targetLang  %> Sign Language</b> </h3>
+                            <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-widget="collapse">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                                <button type="button" class="btn centerButton post-button dropdown-toggle" data-toggle="dropdown" style="background:lightblue">
+                                 Choose Language
+                                </button>
+                                <div class="dropdown-menu">
+                                    <% _.each(otherLangs, function(lang) { %>
+                                    <a style="color: black;" class="btn dropdown-item" href="/video-annotation/show-translations?clang=<%= lang[1] %>"> <%- lang[0] %> </a>
+                                   <% });  %>
+                                 </div>
+                                   <br><br>
+
+                                <div class="row" style="margin: auto;">
+                                    <% _.each(listVideos, function(video) { %>
+                                        <div class="col-md-10">
+                                          <div class="info-box">
+                                            <span class="info-box-icon bg-info elevation-1" style="width: 125px;height: auto;">
+                                                <video controls preload="metadata" width="90%" height="90%" >
+                                                   <source src="<%= video.videoURL %>" type='video/mp4'>
+                                                </video>
+                                            </span>
+                                            <div class="info-box-content">
+                                              <span class="info-box-text"> # <%= video.sle %> <b>  </b></span> <br>
+                                                <a href="/video-annotation/get-translation?targetLang=<%= targetLangISO %>&videoURI=<%= video.video %>&id=<%- video.id %>">
+                                                    <i class="fa fa-language"></i> 
+                                                    Evaluate Suggested Translation
+                                                </a>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="clearfix hidden-md-up"></div>
+                                    <% }) %>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- load extra SweetAlert2 assets only for this view-app -->
+<% block('localScripts', '<link href="/plugins/sweetalert/sweetalert2.min.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<script src="/plugins/sweetalert/sweetalert2.min.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/sweetalert/main.js"></script>') %>

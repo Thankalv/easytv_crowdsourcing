@@ -1,0 +1,75 @@
+<script type="text/javascript">
+  var video_id = '<%- videoAnnot.id %>';
+  var videoURL = '<%- videoAnnot.videoURL %>';
+  var username = "<%- session.User.firstName %>";
+  var vidsegments = <%- JSON.stringify(videoAnnot.segments) %>;
+</script>
+  
+<div class="content-wrapper">
+        <section class="content-header">
+            <h1> Video Annotation </h1>
+            <ol class="breadcrumb">
+               <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i>Home</a></li>
+                <li class="breadcrumb-item active"> Annotate the Video </li>
+            </ol>
+        </section>
+        <section class="content">
+                <section class="main-content" style="border-style: groove; background: #f0f5ff;">
+                  <h4>Annotating video <a href="<%= videoAnnot.videoURL %>"> resource </a> </h4> 
+                  <%- include taskSteps %>
+                  
+                        <div class="video-container" style='border: 4px solid #007bff87;'>
+                          <video id="the_video" class="video-js" controls preload="auto" width="720" height="405" data-setup="{}">
+                            <!-- <source src="https://s3.amazonaws.com/misc-files-bucket/arethusa-cheese-short.mp4" type='video/mp4'> -->
+                              <source src="<%= videoAnnot.videoURL %>" type='video/mp4'>
+                            <p class="vjs-no-js">
+                              To view this video please enable JavaScript, and consider upgrading to a web browser that
+                              <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+                            </p>
+                          </video>
+                        </div>
+                  
+                        <small style="color:rgb(81, 95, 110)">*the first annotation of each segment should be in <strong>Sign-Language order</strong>, the second should be in <strong>Natural-Language Order</strong></small>
+                        <br><br>
+
+                        <a id="next-mocap" href="/video-annotation/mocap-new?id=<%- videoAnnot.id %>" class="btn centerButton post-button" 
+                            style="display:none!important; color:midnightblue; border-color: blue; background: #00a6c2cf; font-weight: 500;margin-left:auto;margin-right:auto; width: 40%;">
+                            <i class="fa fa-arrow-circle-right"></i>  Mocap data
+                        </a>
+
+                        <button id="post-notifications" class="btn centerButton post-button" style="color:midnightblue; border-color: blue; background: #00a6c2cf; font-weight: 500;"> 
+                          <i class="material-icons" style="display: inline-flex; vertical-align: middle;">send</i>  Submit annotations
+                        </button> 
+
+                        <br>
+                        <div id="alertbox"></div>
+
+                        <h5>Annotation in <b>Sign-Language order</b> </h5>
+                        <div class="console-container">
+                          <!-- <div class="clear-console-btn">CLEAR</div> -->
+                          <div class="console" style="font-size:19px"></div>
+                        </div>
+                        <h5>Annotation in <b>Natural-Language order</b></h5>
+                        <div class="console-container">
+                          <!-- <div class="clear-console-btn">CLEAR</div> -->
+                          <div class="consoleNL" style="font-size:19px"></div>
+                        </div>
+                      </section>
+        </section>
+</div>
+
+<!-- load extra .css assets only for this view-app -->
+<% block('localScripts', '<link href="/plugins/sweetalert/sweetalert2.min.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="/plugins/video-annotation-app/style.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="https://vjs.zencdn.net/6.2.0/video-js.min.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="/plugins/video-annotation-app/assets/videojs_skin.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="/plugins/video-annotation-app/build/css/annotations.css" rel="stylesheet" type="text/css">') %>
+
+
+<!-- load extra .js assets only for this view-app -->
+<% block('localScripts', '<script src="/plugins/sweetalert/sweetalert2.min.js"></script>') %>
+<% block('localScripts', '<script src="https://vjs.zencdn.net/6.2.0/video.min.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/video-annotation-app/build/videojs-annotation-comments.min.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/video-annotation-app/assets/js/existing_annotations.js"> </script>') %>
+<% block('localScripts', '<script src="/plugins/video-annotation-app/assets/js/main.js"></script>') %>

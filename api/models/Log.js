@@ -17,22 +17,15 @@ module.exports = {
     ip: {
       type: 'string'
     },
-    
-    demoString: {
-      type: 'string',
-      description: 'A dummy demo string for demoing.',
-    },
-
     lastViewed: {
       type: 'string',
       description: 'A JS date-string representing the moment at which this view was requested.',
       example: "Jan 5 2017 18:00:55",
     },
-
-    greeting: {
+    activity: {
       type: 'string',
-      description: 'A random user greeting.',
-      example: "hello idiot!",
+      description: 'A descriptive string for the activity',
+      example: "Reviewer has been blocked by the admin",
     },
 
     randomhashing: {
@@ -44,7 +37,13 @@ module.exports = {
   },
 
 
-  beforeCreate: function (valuesToSet, proceed) {
+  beforeCreate: async function (valuesToSet, proceed) {
+    
+    await User.update({access:"admin"}).set({unreadLogs:true});
+    //sails.log(valuesToSet.user);
+    if(valuesToSet.user)
+      await User.updateOne(valuesToSet.user).set({unreadLogs:true});
+    
     // Hash a random password
     sails.helpers.passwords.hashPassword(sails.helpers.strings.random()).exec((err, hashedPassword)=>{
       if (err) { return proceed(err); }

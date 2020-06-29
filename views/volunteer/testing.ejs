@@ -1,0 +1,222 @@
+
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1> Volunteer Evaluation </h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active"><a href="/"><i class="fa fa-home"></i>Home</a></li>
+            <li class="breadcrumb-item"> <a href="/volunteer/testing"> Evaluation of Language Level</a></li>
+        </ol>
+    </section>
+
+    <section class="content">
+          <br>
+
+          <div class="col-md-4 offset-md-4">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3 style="font-size: 2.05rem;">Catalan <i class="fa fa-arrow-right"></i> <%- targetLang %></h3>
+
+                <p> <b> <%= session.User.userOrganisation.name %> </b> subtitling skills evaluation</p>
+              </div>
+              <div class="icon">
+                <i class="fa fa-language"></i>
+              </div>
+              
+            </div>
+          </div>
+
+        <% if(job!='none') { %>
+          <%- include assignedTest %>
+        <% } else { %>
+          <div class="row">
+                <div class="col-md-8 offset-md-2">
+                  <div class="card">
+                    <div class="card-header border-transparent" style="background-color: #17a2b8">
+                      <h3 class="card-title">  <b> Currently available content</b></h3>
+                    </div>
+                      <div class="card-body p-0">
+                        <div class="table-responsive">
+                          <table class="table w-auto" data-toggle="table" data-pagination="true" data-page-size="10" data-page-list="[2,10,25,50]"
+                                data-filter-control="true" data-filter-show-clear="false">
+                            <thead>
+                            <tr>
+                              <th>ID</th>
+                              <th class="w-10"> Action</th>
+                              <th class="w-20"> Duration</th>
+                              <th class="w-20"> Progress%</th>
+                              <th class="w-40" data-field="title" data-sortable="true" data-filter-control="input"> Test Title</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <% _.each(testJobs, function(sub) { %>
+                                  <tr data-id="<%= sub.id %>" data-model="sub">
+                                    <td> <%= sub.job_id %> </td>
+                                    <td>
+                                        <i id='taskIcon<%= sub.job_id %>' class="btn btn-danger material-icons" 
+                                            style='color:#6d9026;border-color:#6d9026;vertical-align: middle !important; font-size: 24px;background: #6996e4a3!important; border-width: 2px;' 
+                                              href='#' onclick="requestJob('<%= JSON.stringify(sub.clJob) %>', '<%= session.User.id %>' )" > 
+                                              assignment_turned_in
+                                          </i> 
+                                      </td>
+
+                                      <td class="w-20">
+                                        <span class="badge badge-success" style="font-size:15px;">
+                                            <%= sub.asset_duration %>
+                                        </span> 
+                                      </td>
+                                    <td>      
+                                        <div class="progress-group">
+                                          <% if (["OnEdition","AwaitingForEdition", "OnEditionSaved"].indexOf(sub.status)>-1) { %> 
+                                              <b><%= sub.validated_percent_editor %></b>%
+                                              <div class="progress progress-sm">
+                                                <div class="progress-bar bg-info" style="width: <%= sub.validated_percent_editor %>%"></div>
+                                              </div>
+                                            <% } else { %>
+                                              <b><%= sub.validated_percent_reviewer %></b>% 
+                                              <div class="progress progress-sm">
+                                                <div class="progress-bar bg-info" style="width: <%= sub.validated_percent_reviewer %>%"></div>
+                                              </div>
+                                            <% } %>
+                                          </div>
+                                      </td>                            
+                                    <td class="w-40">
+                                        <%- UtilService.truncStripTags( sub.asset_name.replace("'", "") , 60) %>
+                                    </td>
+                                  </tr>
+                                <% }) %>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+              <% } %>
+    </section>
+</div>
+
+<script>
+     function swalModal(modaltype) {
+      if(modaltype=="blocked"){   
+        Swal.fire({
+              type: 'error',
+              title: 'Oops...',
+              text: 'LIMITED ACCESS: you are in the blocklist!'
+          });
+      }
+      if(modaltype=="work-saved"){   
+        Swal.fire({
+              type: 'success',
+              title: 'Your work was saved!',
+              text: 'Thanks for your contribution!'
+          });
+      }
+    }
+    // confirm test-assignment request
+    function requestJob(job, userid) {
+        bootbox.confirm({
+          title: "Confirmation ",
+          message: "You are going to get assigned this job, do you agree?",
+          buttons: {
+            confirm: { label: "<%= __('organisation.show.yestag') %>", className: 'btn-success' },
+            cancel: { label: "<%= __('organisation.show.canceltag') %>" }
+          },
+          callback: function(result) {
+            if (result) {
+              // add CSRF, check if needed
+              console.log(job);
+              data = {}
+              data = { job: job, userid: userid  };
+              $.post("/task/assign", data)
+              .done(function(msg){  
+                console.log(msg); 
+                location.reload(); 
+              })
+              .fail(function(xhr, status, error) { 
+                console.log(error); 
+                if(error = "Unauthorized")
+                  swalModal("blocked");
+              });
+            }
+          }
+        });
+     }
+
+  function loaderWait(token){
+     //console.log("iframe loaded!");
+     // A new access-token should be generated/registered for this user automatically
+     $.post("/task/refreshtoken", {token:token}, function(status) {
+          console.log(status);
+      });
+     var elem = document.getElementById('loading');
+     elem.parentNode.removeChild(elem);
+     var iframeWindow = document.getElementsByClassName("modal-dialog")[0];
+     iframeWindow.setAttribute("style","margin-top:2px;min-width:90vw");
+     var frameHeader = document.getElementsByClassName("modal-header")[0];
+     frameHeader.parentNode.removeChild(frameHeader);
+     var frameFooter = document.getElementsByClassName("modal-footer")[0];
+     frameFooter.parentNode.removeChild(frameFooter);
+     // disable exiting with escape or click to off-modal area
+    $('.modal').removeAttr("tabindex");
+  }
+
+  // redirect iframe warning
+  function iframeProceed(editorLink, job_id, token, user) {
+    bootbox.confirm({
+      size: 'large',
+      title: "Reviewer/Evaluator Tool",
+      message: "<i id='loading' style='display:block;width:100%;height:100%;color:green' class='fa fa-refresh fa-spin fa-4x fa-fw'></i>  <div class='embed-responsive embed-responsive-16by9'>\
+      <iframe class='embed-responsive-item' src='"+editorLink+'?token='+token+'&userid='+user+'&job='+job_id+"' onload='loaderWait("+'"'+token+'"'+")' allowfullscreen></iframe>\
+        </div>",
+      buttons: {
+        confirm: { label: "DONE", className: 'btn-success' },
+      },
+      callback: function(result) {
+        location.reload();
+      }
+    });
+  }
+    
+  var iframeClose = function(event){
+      if(event.data == "action:exit"){
+        var iframe = document.getElementsByClassName("modal-dialog")[0];
+        iframe.parentNode.removeChild(iframe);
+        var fade = document.getElementsByClassName("modal-backdrop")[0];
+        fade.parentNode.removeChild(fade);
+        swalModal("work-saved");
+        location.reload();
+      }
+    }
+  window.addEventListener("message", iframeClose);
+
+  // send un-assign request
+  function withdrawJob(job, userid) {
+      bootbox.confirm({
+        title: "Confirmation",
+        message: "You are going to unlock this job, are you sure?",
+        buttons: {
+        confirm: { label: "<%= __('organisation.show.yestag') %>", className: 'btn-success' },
+          cancel: { label: "<%= __('organisation.show.canceltag') %>" }
+        },
+        callback: function(result) {
+          if (result) {
+            // add CSRF, check if needed
+            // console.log(job);
+            data = { job: job, userid: userid  };
+            $.post("/task/unassign", data, function(status) {
+              //$('#taskIcon'+taskid).text("lock_outline")
+              console.log(status);
+              location.reload();
+            });
+          }
+        }
+      });
+    }
+</script>
+
+<!-- sweetalert modals -->
+<% block('localScripts', '<link href="/plugins/sweetalert/sweetalert2.min.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<script src="/plugins/sweetalert/sweetalert2.min.js"></script>') %>
+<!-- bootbox modals -->
+<% block('localScripts', '<script src="/plugins/bootbox.min.js"></script>') %>

@@ -2,11 +2,8 @@
 module.exports = {
 
     friendlyName: 'Register a new organisation in the platform',
-  
     description: 'Register a new organisation in the platform',
-  
     inputs: {
-  
         name: {
             type: 'string',
             required: true,
@@ -17,30 +14,23 @@ module.exports = {
             description: "a description paragraph"
         }
     },
-
     exits: {
-
         success: {
           description: 'A new organisation was registered successfully in CP'
         },
-    
         invalid: {
           responseType: 'badRequest',
           description: 'There was an internal error while processing the request.'
         },
-
         NameAlreadyExists: {
             statusCode: 409,
             description: 'The provided organisation name is already in use.',
         },
-        
         errorInAttributes: {
             statusCode: 409,
             description: 'Missing value for required attribute.',
           },
-
       },
-
     fn: async function (inputs, exits) 
     {
         //sails.log(inputs)
@@ -49,7 +39,9 @@ module.exports = {
             return exits.NameAlreadyExists({code:-8, description: 'The provided organisation name already exists.'})
 
         var newOrg = await Organisation.create(inputs)
-            .intercept('E_INVALID_NEW_RECORD',  (err)=>{  FlashService.success(this.req, err.details);; return this.res.redirect('/'); })
+            .intercept('E_INVALID_NEW_RECORD',  (err)=>{  
+                FlashService.success(this.req, err.details); return this.res.redirect('/'); 
+            })
             .fetch();
 
         //sails.log(inputs.values);

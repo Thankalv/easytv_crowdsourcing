@@ -24,9 +24,7 @@ module.exports = {
           required: true,
           description: "content owner job details"
       },
-   
   },
-
   exits: {
 
       success: {
@@ -55,7 +53,7 @@ module.exports = {
 
       /*** VALIDATE jobData attributes ***/
       var jobData = inputs.data;
-
+      jobData.content_owner = jobData.content_owner.toUpperCase();
       var existingOrg = await Organisation.find( {token: jobData.content_owner});
       if (existingOrg.length == 0)
           return exits.errorInAttributes({code:-13, description: 'The provided content_owner is not registered!'})
@@ -74,8 +72,8 @@ module.exports = {
         return exits.errorInAttributes({code:-13, description:"language-code is not a valid ISO6391"});
       if(jobData.language_target!= undefined && !UtilService.checkISO_langCode(jobData.language_target))
           return exits.errorInAttributes({code:-13, description:"language-code is not a valid ISO6391"});
-      if (jobData.confidence_level!= undefined && ['low','intermediate','high'].indexOf(jobData.confidence_level)<0)
-          return exits.errorInAttributes({code:-13, description:"confidence_level value is not vaild (in ['low','intermediate','high'])"});
+      if (jobData.confidence_level!= undefined && ['low','mid','high'].indexOf(jobData.confidence_level)<0)
+          return exits.errorInAttributes({code:-13, description:"confidence_level value is not vaild (in ['low','mid','high'])"});
       if(jobData.original_title != undefined && typeof jobData.original_title != 'string')
           return exits.errorInAttributes({code:-13, description:"invalid data input: original_title"});
       if(typeof jobData.asset_duration == 'string' && UtilService.IsValidTime(jobData.asset_duration)==false)
@@ -88,12 +86,9 @@ module.exports = {
 
       var updCrowdTask = await Task.updateOne({ job_id: inputs.job_id, content_owner: jobData.content_owner}).set(jobData)
                              .intercept( (err)=>{  return exits.serverError({code:-500, description: err.details}); })
-      
       if(updCrowdTask)
         return exits.success({code:200, description: 'The job was updated successfully in CRWD database'});
       else
         return exits.serverError({code:-500, description: "Undefined error occurred"});
   }
-
-
 };

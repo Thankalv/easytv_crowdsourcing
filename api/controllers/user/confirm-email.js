@@ -1,53 +1,49 @@
 module.exports = {
 
     friendlyName: 'Confirm email',
-  
     description:
     `Confirm a new user's email address, or an existing user's request for an email address change,
     then redirect to either a special landing page (for newly-signed up users), or the account page
     (for existing users who just changed their email address).`,
   
     inputs: {
-  
       token: {
         description: 'The confirmation token from the email.',
         example: '4-32fad81jdaf$329'
       }
-  
     },
-  
     exits: {
-  
       success: {
         description: 'Email address confirmed and requesting user logged in.'
       },
-  
       redirect: {
         description: 'Email address confirmed and requesting user logged in.  Since this looks like a browser, redirecting...',
         responseType: 'redirect'
       },
-  
       invalidOrExpiredToken: {
         responseType: 'expired',
-        description: 'The provided token is expired, invalid, or already used up.',
+        description: 'The provided token is expired, invalid, or already used up. You should sign-up again',
       },
-  
     },
   
-  
     fn: async function (inputs) {
-  
       // If no token was provided, this is automatically invalid.
       if (!inputs.token) {
         throw 'invalidOrExpiredToken';
       }
-  
       // Get the user with the matching email token.
       var user = await User.findOne({ emailProofToken: inputs.token });
   
       // If no such user exists, or their token is expired, bail.
       if (!user || user.emailProofTokenExpiresAt <= Date.now()) {
-        throw 'invalidOrExpiredToken';
+        if (user && user.emailStatus!="confirmed"){
+          sails.log.warn('User <'+user.email+'> is deleted!');
+          await User.destroyOne(user.id);
+          await Log.create({activity:"System has automatically removed user: "+user.email + " because her/his email confirmation-period expired"});
+          throw 'invalidOrExpiredToken';
+        }else{
+          throw 'invalidOrExpiredToken';
+        }
       }
   
       if (user.emailStatus === 'unconfirmed') 

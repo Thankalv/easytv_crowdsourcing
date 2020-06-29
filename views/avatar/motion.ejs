@@ -1,0 +1,39 @@
+
+
+<script type="text/javascript">
+	var motionFile = "<%= motionfile %>";  
+</script>
+
+
+<div class="content-wrapper">
+
+	<section class="content-header offset-md-1">
+		<h2> 3D Player </h2>
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i>Home</a></li>
+			<li class="breadcrumb-item active"> 3D Player - <a href="http://threejs.org" target="_blank" rel="noopener">three.js</a> - FBXLoader<br /> </li>
+		</ol>
+	</section>
+
+	<section class="content">
+
+		<div id="info" class="offset-md-1">
+			<button id="stop" type="button" class="btn badge fa fa-stop-circle" style="background-color: rgb(219, 121, 91); font-weight: bold" value="&#xf067"> Pause </button>
+			<button id="play" type="button" class="btn badge fa fa-play" style="background-color: rgb(81, 122, 187); font-weight: bold" value="&#xf067"> Play </button>
+
+			<button id="change" type="button" class="btn badge fa fa-arrow-right" style="background-color: cadetblue; font-weight: bold;margin-left: 25px;" value="&#xf067"> Next-Clip </button>
+		</div>
+
+		<div id="canvasCol" class="col-md-10 offset-md-1">
+			<div id="3dContainer">
+
+			</div>
+		</div>
+
+	</section>
+
+</div>
+
+
+
+<% block('localScripts', '<script type="module" src="/plugins/3Dviewer/myPlayer.js"></script>') %>

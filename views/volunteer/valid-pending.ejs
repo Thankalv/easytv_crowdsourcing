@@ -1,0 +1,168 @@
+<div class="content-wrapper">
+      
+        <section class="content">
+            <div class="circle col-md-8 offset-md-4">
+                <div class="up">
+                    <div class="innera"></div>
+                </div>
+                <div class="down">
+                    <div class="innerb"></div>
+                </div>
+            </div>
+
+            <div class="col-md-8 offset-md-4" style="margin-top: 5%">
+              <div class="row">
+                  <h3 style="color:black;font-size:23px">
+                    Thank you for registering! <i class="fa fa-smile-o"></i> <br> 
+                    You are now in <b style="color:green;text-decoration: underline"> Validation Pending queue. </b> <br>
+                    <span style="font-size:20px"> You shall be contacted soon! <i class="fa fa-paper-plane-o "></i> </span>
+                  </h3>
+              </div>
+            </div>
+            <br>
+            <div class="row" style="margin:auto; width:50%;">
+              <div class="col-md-8 offset-md-2" style="opacity: 0.65;">
+                <!-- Widget: user widget style -->
+                <div class="card">
+                  <!-- Add the bg color to the header using any of the bg-* classes -->
+                  <div class="card-header border-transparent" style="background-color: rgb(140, 155, 139) !important;">
+                    <div class="card-title" >
+                      <h5 class="widget-user-desc" style="margin-left:5px">  Language Level pending for evaluation</h5>
+                    </div>
+                </div>        
+                  <div class="card-footer p-0">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <div  class="nav-link">
+                                <b>Language</b> <span class="float-right">  <b>Knowledge Level</b> </span>
+                            </div>
+                          </li>
+                        <% _.each(session.User.lang_info.langs, function(userLang) { %>
+                        <li class="nav-item">
+                          <div  class="nav-link"  style="color: #007bff">
+                            <% if ( userLang[Object.keys(userLang)[0]] != defaultLang ) {  %>
+                              <%= langs[langsISO.indexOf(userLang[Object.keys(userLang)[0]])]  %> <span class="float-right">  <%= levels[userLang[Object.keys(userLang)[1]]] %> </span>
+                            <% } %>
+                          </div>
+                        </li>
+                        <% }); %>
+                    </ul>
+                  </div>
+                </div>
+          </div>
+            </div>
+        </section>
+</div>
+
+<style>
+.circle{
+    position:relative;
+    margin:10px auto;
+    width:80px;
+    height:80px;
+    background:#ecf0f1;
+    border-radius:100%;
+    overflow:hidden;
+    animation: rotates 2s infinite linear;
+    -webkit-animation: rotates 2s infinite linear;
+}
+.up{
+    width: 30px;
+    height: 40px;
+    left:25px;
+    overflow:hidden;
+    background:#cef;
+    position:absolute;
+}
+.up:before,.up:after{
+    content:"";
+    width:30px;height:30px;
+    background:#ecf0f1;
+    position:absolute;
+    z-index:1;
+}
+.up:before{
+    top:30px;
+    left:-17px;
+    transform:rotate(45deg);
+    -webkit-transform:rotate(45deg);
+}
+.up:after{
+    top:30px; left:17px;
+    transform:rotate(45deg);
+    -webkit-transform:rotate(45deg);
+}
+.innera{
+    position:relative;
+    top:15px;
+    width:30px;height:30px;
+    background:#f1c40f;
+    animation: mymove 2s infinite linear;
+    -webkit-animation: mymove 2s infinite linear;
+}
+.down{
+    width: 30px;
+    height: 40px;
+    left:25px;
+    top:40px;
+    overflow:hidden;
+    background:#cef;
+    position:absolute;
+    z-index:1;
+}
+.down:before,.down:after{
+    content:"";
+    width:30px;
+    height:40px;
+    background:#ecf0f1;
+    position:absolute;
+    z-index:1;
+}
+.down:before{
+    top:-25px;
+    left:-17px;
+    transform:rotate(45deg);
+    -webkit-transform:rotate(45deg);
+}
+.down:after{
+    top:-25px;
+    left:24px;
+    transform:rotate(45deg);
+    -webkit-transform:rotate(45deg);
+}
+.innerb{
+    position:relative;
+    top:40px;
+    width:30px;height:30px; background:#f1c40f;
+    animation: mymoveb 2s infinite linear;
+    -webkit-animation: mymoveb 2s infinite linear;
+}
+@keyframes mymove{
+    0%{top:15px;}
+    100%{top:45px;}
+}
+@keyframes mymoveb{
+    0%{top:40px;}
+    90%{top:20px;}
+    100%{top:-5px;}
+}
+@keyframes rotates{
+    0%{transform:rotate(0deg);}
+    80%{transform:rotate(0deg);}
+    100%{transform:rotate(180deg);}
+}
+@-webkit-keyframes mymove{
+    0%{top:15px;}
+    100%{top:45px;}
+}
+@-webkit-keyframes mymoveb{
+    0%{top:40px;}
+    90%{top:20px;}
+    100%{top:-5px;}
+}
+@-webkit-keyframes rotates{
+    0%{-webkit-transform:rotate(0deg);}
+    80%{-webkit-transform:rotate(0deg);}
+    100%{-webkit-transform:rotate(180deg);}
+}
+</style>

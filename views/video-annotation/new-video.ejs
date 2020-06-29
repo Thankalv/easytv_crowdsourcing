@@ -1,0 +1,57 @@
+<script type="text/javascript">
+
+      var taskId = '<%= videoAnnot.id %>';
+      var clang = '<%= videoAnnot.lang %>';
+    </script>
+      
+    <div class="content-wrapper">
+            <section class="content-header">
+                <h1> Sign Language Multilingual Database </h1>
+                <ol class="breadcrumb">
+                   <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i>Home</a></li>
+                    <li class="breadcrumb-item active"> Pending Tasks - Concept Video </li>
+                </ol>
+            </section>
+        
+            <section class="content">
+                  <br><br>
+                        <div class="col-md-6 card  offset-md-2" style="background: aliceblue;">
+                             <div class="card-header border-transparent" >
+                                    <h3 class="card-title"> <b> Concept # <%= videoAnnot.sle %> </b> </h3>
+                                    <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-widget="collapse">
+                                        <i class="fa fa-minus"></i>
+                                    </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="clearfix"></div>
+                                    <div class="x_content">
+                                        <p> Submit a new video for this concept
+                                            <button id="submit-videos"> <i class="glyphicon glyphicon-upload" ></i> Submit</button> </p>
+                                            <form method='POST' action='/task/uploadvideo' class="dropzone" id="my-dropzone-1" style="background: #9addff;border: 3px dashed rgba(0, 0, 0, 0.3);"></form>
+                                        <br>
+                                     </div>
+                                </div>
+
+                               <a id="next-annotate" href="/video-annotation/annotate-new?id=<%= videoAnnot.id %>" 
+                                class="btn" style="display:none; color:midnightblue; border-color: blue; background: #00a6c2cf; font-weight: 500;margin-left:auto;margin-right:auto; width: 40%;">
+                                <i class="fa fa-edit"></i>Annotate
+                               </a>
+                            </div>
+            </section>
+    </div>
+    
+    
+    <!-- load extra .css assets only for this view-app -->
+    <% block('localScripts', '<link href="/plugins/sweetalert/sweetalert2.min.css" rel="stylesheet" type="text/css">') %>
+    <% block('localScripts', '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">') %>
+    <% block('localScripts', '<link href="/plugins/video-annotation-app/style.css" rel="stylesheet" type="text/css">') %>
+    
+    <% block('localScripts', '<link href="/plugins/dropzone/dropzone.css" rel="stylesheet" type="text/css">') %>
+    
+    <!-- load extra .js assets only for this view-app -->
+    <% block('localScripts', '<script src="/plugins/sweetalert/sweetalert2.min.js"></script>') %>
+    <% block('localScripts', '<script src="/plugins/dropzone/dropzone.js"></script>') %>
+    
+    <% block('localScripts', '<script src="/plugins/dropzone/uploadFile.js"></script>') %>

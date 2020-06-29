@@ -1,0 +1,38 @@
+<div class="col-md-4 offset-md-4" style="opacity: 0.7;">
+        
+        <div class="card card-primary" style="margin-top: 120px">
+            <div class="card-header with-border" style="background: #6ca8e9 !important;">
+                <h3 class="card-title "> <i class="fa fa-sign-in"></i> Sign In </h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+        
+                <form class="form-horizontal" action="/session/create" method="POST" role="form">
+            
+                    <div class="card-body" >
+                    <div class="form-group has-feedback">
+                        <label for="username" class="col-md-4 control-label"> email </label>
+                        <div class="col-md-12">
+                        <input class="form-control" name="username" id="username" placeholder="email" type="email" required autofocus>
+                        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                        </div>
+                    </div>
+                    <div class="form-group has-feedback">
+                        <label for="password" class="col-md-4 control-label"> password </label>
+                        <div class="col-md-12">
+                        <input class="form-control" name="password" id="password" placeholder="password" type="password" required>
+                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                        </div>
+                    </div>
+                    </div>
+            
+                    <div class="card-footer">
+                    <!-- <div><a href="#"> <%= __('session.new.forgotPassw') %> </a></div> -->
+                    <div><a href="/user/new-user" style="font-weight: bolder;"> <%= __('session.new.registerNew') %> </a></div>
+                        <button type="submit" class="btn btn-success btn-flat pull-right"> Submit</button>
+                        <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+                    </div>
+            
+                </form>
+            </div>
+    </div>

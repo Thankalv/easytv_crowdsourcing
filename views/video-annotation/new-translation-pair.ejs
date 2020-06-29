@@ -1,0 +1,122 @@
+
+<script type="text/javascript">
+    var pair = <%- JSON.stringify(readyPair) %>;
+
+    var videoURL1 = '<%- readyPair.video1 %>';
+    var videoURL2 = '<%- readyPair.video2 %>';
+    var sourceLang = '<%- readyPair.langfull1 %>';
+    var targetLang = '<%- readyPair.langfull2 %>';
+    var lang1 = '<%- readyPair.lang1 %>';
+    var lang2 = '<%- readyPair.lang2 %>';
+    var concept1 = '<%- readyPair.concept1 %>';
+    var concept2 = '<%- readyPair.concept2 %>';
+    var username = "<%- session.User.firstName %>";
+
+    var vidsegments = [];
+    var vidsegments2 = [];
+
+  </script>
+
+<div class="content-wrapper">
+
+    <section class="content-header">
+            <h1> Suggested translation</h1>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i>Home</a></li>
+                <li class="breadcrumb-item active"> <a href="/video-annotation/show-translations"> Suggest new translation</a></li>
+            </ol>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="col-md-12">
+            <div class="row">
+                    <div class="col-md-6 card" style="background: aliceblue; height:500px">
+                        <div class="card-header border-transparent" style="background-color: #3270daba">
+                            <h3 class="card-title"> <b> Video #1 - <%= readyPair.langfull1 %></b> </h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                                <div class="row" style="margin: auto;">
+                                    <div class="col-md-10" style="min-height: 180px;">
+                                        <video id="the_video" class="video-js" controls preload="auto" width="90%" style="min-width:210px" data-setup="{}">
+                                            <source src="<%= readyPair.video1 %>" type='video/mp4'>
+                                         </video>
+                                          <div class="info-box">
+                                            <div class="info-box-content">
+                                              <span class="info-box-text"> <b> <%= readyPair.langfull1 %></b> concept: <%= readyPair.concept1 %></span> <br>
+                                            </div>
+                                          </div>
+                                          <h5>Annotation in <b>Sign-Language order</b> </h5>
+                                          <div class="console-container">
+                                            <div class="sourceConsole" style="font-size:12px"></div>
+                                          </div>
+                                    </div>
+                                    <div class="clearfix hidden-md-up"></div>
+                                </div>
+                        </div>
+                    </div>
+                
+                    <div class="col-md-6 card" style="background: aliceblue; height:500px" >
+                        <div class="card-header border-transparent" style="background-color: #3270daba">
+                            <h3 class="card-title"> <b>  Video #2 - <%= readyPair.langfull2 %></b> </h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                                <div class="row" style="margin: auto;">
+                                    <div class="col-md-10" style="min-height: 180px;">
+                                         <video id="the_video2" class="video-js" controls preload="auto" width="90%" style="min-width:210px"  data-setup="{}">
+                                            <source src="<%= readyPair.video2 %>" type='video/mp4'>
+                                         </video>
+                                          <div class="info-box">
+                                            <div class="info-box-content">
+                                              <span class="info-box-text"> <b> <%= readyPair.langfull2 %></b> concept: <%= readyPair.concept2 %></span> <br>
+                                            </div>
+                                          </div>
+                                          <h5>Annotation in <b>Sign-Language order</b> </h5>
+                                          <div class="console-container">
+                                            <div class="targetConsole" style="font-size:12px"></div>
+                                          </div>
+                                    </div>
+                                    <div class="clearfix hidden-md-up"></div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+             <button id="play-video" class="btn centerButton post-button" style="color:midnightblue; border-color: blue; background: #00a6c2cf; font-weight: 500;width:20%"> 
+                <i class="material-icons" style="display: inline-flex; vertical-align: middle;">play_circle_outline</i>  Both Videos
+              </button>
+              <br>
+              
+              <button id="post-translation" class="btn centerButton post-button" style="color:midnightblue; border-color: blue; background: #00c22acf; font-weight: 500;width:20%"> 
+                  <i class="material-icons" style="display: inline-flex; vertical-align: middle;">send</i>  Post Translation
+                </button>         
+          </div>
+    </section>
+</div>
+
+
+<!-- load extra .css assets only for this view-app -->
+<% block('localScripts', '<link href="/plugins/sweetalert/sweetalert2.min.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="/plugins/slider/ion.rangeSlider.min.css" rel="stylesheet" type="text/css">') %>
+
+<% block('localScripts', '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="/plugins/video-annotation-app/transl-style.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="https://vjs.zencdn.net/6.2.0/video-js.min.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="/plugins/video-annotation-app/assets/videojs_skin.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="/plugins/video-annotation-app/build/css/annotations.css" rel="stylesheet" type="text/css">') %>
+
+
+<!-- load extra .js assets only for this view-app -->
+<% block('localScripts', '<script src="/plugins/sweetalert/sweetalert2.min.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/sweetalert/main.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/slider/ion.rangeSlider.min.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/slider/suggested-translation.js"></script>') %>
+
+<!-- some extra .js assets only for the video-annotation app -->
+<% block('localScripts', '<script src="https://vjs.zencdn.net/6.2.0/video.min.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/video-annotation-app/build/videojs-annotation-comments.min.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/video-annotation-app/assets/js/translation_annotations.js"> </script>') %>
+<% block('localScripts', '<script src="/plugins/video-annotation-app/assets/js/translate-pair.js"></script>') %>

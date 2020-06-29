@@ -1,0 +1,112 @@
+<script type="text/javascript">
+    var langsLen = <%- user.lang_info.langs.length %>;
+</script>
+    
+    <div class="content-wrapper">
+      <section class="content">
+        <br><br>
+        <div class="row">
+        
+            <div class="offset-md-2 col-md-8">
+                <div class="card">
+                <div class="card-header" style="background: #cce4f9;">
+                    <h3 class="card-title"> Complete your registration <b>  <%= user.email %> </b> providing the following info to <b> <%= org.name %> </b> organisation </h3>
+                </div>
+            
+                <div class="card-body">
+                    <form action="/volunteer/register" method="POST" id="complete-user-form" > 
+
+                        <input type="hidden" name="userid" value="<%= user.id %>" />
+                        <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+                        <input type="hidden" name="orgid" value="<%= org.id %>" />
+                        <input type="hidden" name="lang" value="<%= lang %>" />
+                
+                        <div class="form-group">
+                            <label for="firstName"> First Name </label>
+                            <input type="text" name="firstName" value="<%= user.firstName %>" class="form-control"  required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName1"> First Surname </label>
+                            <input type="text" name="lastName1" value="<%= user.lastName %>" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName2"> Second Surname </label>
+                            <input type="text" name="lastName2" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="passport"> National ID card (DNI) or Passport Number </label>
+                            <input type="text" name="idpassport" class="form-control"  required>
+                        </div>
+                        
+                        <div class="col-md-8 offset-md-2">
+                                <div class="card">
+                                    <div class="card-header border-transparent" style="background: #5f9ea070;">
+                                      <h3 class="card-title"> Please read the consent form </h3>
+                                    </div>
+                                    <div class="card-body p-0">
+                                      <div class="form-group">
+                                        <div id="license" style="border: 2px solid #1b848870; height: 200px; overflow: auto; padding: 20px; background: aliceblue">
+                                          <%- org.confidentiality_form %>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div style="margin-left: 2.5%">
+                                          <div class="form-group">
+                                            <div class="checkbox">
+                                              <label>
+                                                <input type="checkbox" name="agree" value="agree" required/> I agree with the confidentiality agreement
+                                              </label>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                  </div>
+                                </div>
+                            </div>
+                            <script type="text/javascript">
+                                function printTextArea() {
+                                  childWindow = window.open('','childWindow','location=yes, menubar=yes, toolbar=yes');
+                                  childWindow.document.open();
+                                  childWindow.document.write('<html><head></head><body>');
+                                  childWindow.document.write(document.getElementById('license').innerHTML);
+                                  childWindow.document.write('</body></html>');
+                                  childWindow.print();
+                                  childWindow.document.close();
+                                  childWindow.close();
+                                }
+                              </script>
+
+                        <div class="col-md-8 offset-md-2">
+                            <div class="form-group" id="showTextarea">
+                                <label for="description"> Comment area </label> <span style="color:cadetblue"> (*optional) </span>
+                                <textarea id="description" name="description" class="textarea" placeholder="do you have any additional comments?">
+                                </textarea>
+                            </div>
+                        </div>
+
+                        <input type="submit" class="btn btn-flat btn-sm btn-success" value="REGISTER" />
+
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style>
+#showTextarea {
+  animation: cssAnimation 0s 0.5s forwards;
+  visibility: hidden;
+}
+
+@keyframes cssAnimation {
+  to   { visibility: visible; }
+}
+</style>
+
+<% block('localScripts', '<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.css" rel="stylesheet"><link>') %>
+<% block('localScripts', '<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/wysihtml5.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/bootbox.min.js"></script>') %>

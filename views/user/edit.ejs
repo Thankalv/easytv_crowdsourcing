@@ -1,8 +1,8 @@
 <script type="text/javascript">
-
-var langsLen = <%- user.lang_info.langs.length %>;
-
- </script>
+  var langs =  <%- JSON.stringify(langs) %>;
+  var langsISO = <%- JSON.stringify(langsISO) %>;
+  var langsLen = <%- user.lang_info.langs.length %>;
+</script>
 
 <div class="content-wrapper">
     <section class="content-header">
@@ -45,7 +45,7 @@ var langsLen = <%- user.lang_info.langs.length %>;
             <input type="text" name="email" class="form-control" value="<%= user.email %>" required>
           </div>
 
-          <div class="form-group">
+          <div class="form-group showTextarea">
               <label for="description"> Description </label>
               <textarea id="description" name="description" class="textarea" placeholder="few words about your experience">
                   <% if (user.description) { %>
@@ -119,7 +119,7 @@ var langsLen = <%- user.lang_info.langs.length %>;
           <input type="submit" class="pull-right btn btn-flat btn-sm btn-primary" value="UPDATE"/>
           
 
-          <a onClick="deleteUser('<%= user.id %>')" class="pull-left btn btn-flat btn-danger" title="Your data will be wiped out" >
+          <a onClick="deleteUser('<%= user %>', '<%= user.id %>')" class="pull-left btn btn-flat btn-danger" style="background: rgb(187, 12, 12);" title="Your data will be wiped out" >
             DELETE YOUR PROFILE
           </a>
 
@@ -134,11 +134,12 @@ var langsLen = <%- user.lang_info.langs.length %>;
 </div>
 
 <script>
-  function deleteUser(user_id) 
+  // TO DO: replace the bootbox with a modal -> to display properly any HTML delete-message
+  function deleteUser(user, user_id) 
   {
     bootbox.confirm({
-      title: "<%= __('user.index.warning') %>",
-      message: "Are you sure you want to delete your registered profile and your data? <br> Your previous contribution resources to any affiliated organisation will remain (anonymously) to them",
+      title: "Deleting a user profile",
+      message: "<%- user.userOrganisation.deleteProfileMessage %>",
       buttons: {
         confirm: { label: "<%= __('user.index.deletetag') %>", className: 'btn-flat btn-danger' },
         cancel: { label: "<%= __('user.index.canceltag') %>", className: 'btn-flat'}
@@ -157,10 +158,21 @@ var langsLen = <%- user.lang_info.langs.length %>;
   }
 </script>
 
+<style>
+  .showTextarea {
+    animation: cssAnimation 0s 0.5s forwards;
+    visibility: hidden;
+  }
+  
+  @keyframes cssAnimation {
+    to   { visibility: visible; }
+  }
+</style>
+
 <!-- load extra .js plugins only for this view -->
 <% block('localScripts', '<script src="/plugins/bootbox.min.js"></script>') %>
-<% block('localScripts', '<link href="/plugins/summernote/summernote.css" rel="stylesheet"><link>') %>
-<% block('localScripts', '<script src="/plugins/summernote/summernote.min.js"></script>') %>
+<% block('localScripts', '<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.css" rel="stylesheet"><link>') %>
+<% block('localScripts', '<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.js"></script>') %>
 <% block('localScripts', '<script src="/plugins/wysihtml5.js"></script>') %>
 <% block('localScripts', '<link href="/plugins/intl-tel-input/css/intlTelInput.css" rel="stylesheet" type="text/css">') %>
 <% block('localScripts', '<script src="/plugins/intl-tel-input/js/intlTelInput.js"></script>') %>

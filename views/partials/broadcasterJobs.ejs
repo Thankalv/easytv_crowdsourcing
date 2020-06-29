@@ -30,9 +30,10 @@
                   <tr data-id="<%= sub.id %>" data-model="sub">
                     <td> <%= sub.job_id %> </td>
                     <td>
-                        <i id='taskIcon<%= sub.job_id %>' class="btn btn-danger bg-danger material-icons" style='vertical-align: middle !important; font-size: 24px' 
-                              href='#' onclick="requestJob('<%= JSON.stringify(sub) %>', '<%= session.User.id %>', '<%= assignedJobs %>' )" > 
-                              launch
+                        <i id='taskIcon<%= sub.job_id %>' class="btn btn-danger material-icons" 
+                              style='color:#6d9026;border-color:#6d9026;vertical-align: middle !important; font-size: 24px;background: #6996e4a3!important; border-width: 2px;'
+                              href='#' onclick="requestJob('<%= JSON.stringify(sub.clJob) %>', '<%= session.User.id %>', '<%= assignedJobs %>' )" > 
+                              assignment_turned_in
                          </i> 
                      </td>
                      <td class="w-9">

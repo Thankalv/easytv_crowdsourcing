@@ -26,7 +26,7 @@
               <% _.each(user.lang_info.langs, function(userLang) { %>
                 <li class="nav-item">
                   <a href="#" class="nav-link">
-                      <%= langs[langsISO.indexOf(userLang[Object.keys(userLang)[0]])]  %> - <%= levels[userLang[Object.keys(userLang)[1]]-1].description %>
+                      <%= langs[langsISO.indexOf(userLang[Object.keys(userLang)[0]])]  %> - <%= levels[userLang[Object.keys(userLang)[1]]] %>
                       <!-- reveal the blocking/unblocking button according the user's level -->
                       <% if ( userLang[Object.keys(userLang)[1]] == 4) { %>
                         <span class="float-right badge bg-success" onclick="unblockUserLang('<%= session.User.userOrganisation.id %>', '<%= user.id %>', '<%= userLang[Object.keys(userLang)[0]] %>' )">

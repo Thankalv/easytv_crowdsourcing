@@ -36,6 +36,14 @@ module.exports = {
       confirmation: {
         description: 'new password of the user',
         type: 'string',
+      },
+      userOrganisation: {
+        description: 'change the id of the registered org',
+        type: 'string',
+      },
+      lang_info:{
+        description: "users language level",
+        type: "json"
       }
     },
 

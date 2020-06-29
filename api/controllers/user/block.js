@@ -50,7 +50,7 @@ module.exports = {
         }
         // add the user to the org's block-list
         var index = org.blocked.users.indexOf(userId);
-        if (index <0 ) {
+        if (index<0) {
           org.blocked.users.push(userId);
         }
         // update the block-list of this org in the database

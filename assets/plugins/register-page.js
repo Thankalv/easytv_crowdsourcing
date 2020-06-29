@@ -2,6 +2,7 @@
 $(document).ready(function () 
 {
     var counter = langsLen+1;
+    //var selectedLangs = [];
 
     $("#addrow").on("click", function () {
         //var newRow = $("<tr>");
@@ -17,13 +18,45 @@ $(document).ready(function ()
             $("#levelselect").css("display", "block");
         }
         else{
+            console.log(langs);
+            var selectedLangs = [];
+            var selectedNames = [];
+            var selecRows = $("select.llang");
+            console.log(selecRows);
+            selecRows.each( function(row){
+               selectedLangs.push(selecRows[row].value);
+               selectedNames.push(selecRows[row].name);
+               $("[name='"+selecRows[row].name+"']").attr("disabled", true);
+            })
+            console.log(selectedLangs);
+            //$(this).closest(".tr_clone").find("select.llang").attr("disabled", true);
+
             var prevRow = $(this).closest(".tr_clone").clone();
-            prevRow.find("select.llang").attr('name' , "lang"+(counter-1));
-            prevRow.find("select.llevel").attr('name' , "level"+(counter-1));
+            prevRow.find("select.llang").empty();
+            prevRow.find("select.llang").attr('name', "lang"+(counter-1));
+            prevRow.find("select.llevel").attr('name', "level"+(counter-1));
+            langs.forEach( function(lang){
+                if(selectedLangs.indexOf(langsISO[langs.indexOf(lang)])<0)
+                    prevRow.find("select.llang").append("<option value='"+langsISO[langs.indexOf(lang)]+"'> "+lang+" </option>")
+             })
+
+            prevRow.find("select.llang").attr("disabled", false);
+
             $("table.lang-list").append(prevRow);
-            prevRow.find("#addrow").remove();            
+
+            if(selectedLangs.length==langs.length-1)
+                $(this).closest(".tr_clone").find("#addrow").remove();
+
+            prevRow.find("#addrow").remove();
         }
         counter++;
+    });
+
+    $("[type='submit']").click(function (e) {
+        var selecRows = $("select.llang");
+        selecRows.each( function(row){
+           $("[name='"+selecRows[row].name+"']").attr("disabled", false);
+        })
     });
 
 
@@ -32,18 +65,15 @@ $(document).ready(function ()
         counter -= 1
     });
 
-    // On-the-fly mask change
-    // $('#phone-number').mask('00000-000', options);
     
     var input = document.querySelector("#phone-number");
-    window.intlTelInput(input, {
-        onlyCountries: ["es", "gr", "it"],
-        separateDialCode: true,
-        hiddenInput: "fullNum",
-        preferredCountries: [ "es"],
-        utilsScript: "../plugins/intl-tel-input/js/utils.js?" // just for formatting/placeholders etc
-      });
-
-
+    if(input)
+        window.intlTelInput(input, {
+            onlyCountries: ["es", "gr", "it"],
+            separateDialCode: true,
+            hiddenInput: "fullNum",
+            preferredCountries: [ "es"],
+            utilsScript: "../plugins/intl-tel-input/js/utils.js?" // just for formatting/placeholders etc
+        });
 });
 

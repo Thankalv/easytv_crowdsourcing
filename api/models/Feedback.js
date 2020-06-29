@@ -16,7 +16,7 @@ module.exports = {
       // file size in bytes
       comment: {
         type: 'string',
-        required: true,
+        required: true      
       },
       // belongs to a user
       user: {
@@ -24,5 +24,5 @@ module.exports = {
         required: true
       },
     }
-  };
+};
   

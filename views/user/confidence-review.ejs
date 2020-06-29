@@ -56,7 +56,7 @@
                                                 <h3 class="timeline-header no-border">
                                                     <a href="#" data-toggle="dropdown">  <%= User.fullName( user ) %> </a>  
                                                     <%- include userInfo %>
-                                                 <br> has a confidence-level of <b> <%= levels[user.lang_source_lvl-1].description %> </b> 
+                                                 <br> has a confidence-level of <b> <%= levels[user.lang_source_lvl] %> </b> 
                                                  in the <strong> <%= langs[langsISO.indexOf(lang_source)] %> language </strong>
                                                   <div class="input-group-prepend" style="display: inline-flex;">
                                                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -64,31 +64,31 @@
                                                     </button>
                                                     <div class="dropdown-menu">
                                                       <button class="btn dropdown-item" onclick="updateConfidence('<%= session.User.userOrganisation.id %>',
-                                                        '<%= user.id %>', '<%= lang_source %>', '1', '<%= job_id %>' )"> Junior </button>
+                                                        '<%= user.id %>', '<%= lang_source %>', '0', '<%= job_id %>' )"> Suitable </button>
                                                       <button class="btn dropdown-item" onclick="updateConfidence('<%= session.User.userOrganisation.id %>', 
-                                                        '<%= user.id %>', '<%= lang_source %>', '2', '<%= job_id %>' )"> Intermediate</button>
+                                                        '<%= user.id %>', '<%= lang_source %>', '1', '<%= job_id %>' )"> Archive </button>
                                                       <button class="btn dropdown-item" onclick="updateConfidence('<%= session.User.userOrganisation.id %>', 
-                                                        '<%= user.id %>', '<%= lang_source %>', '3', '<%= job_id %>' )"> Proficiency</button>
+                                                        '<%= user.id %>', '<%= lang_source %>', '5', '<%= job_id %>' )"> Broadcast </button>
                                                       <button class="btn dropdown-item" onclick="updateConfidence('<%= session.User.userOrganisation.id %>', 
-                                                        '<%= user.id %>', '<%= lang_source %>', '4', '<%= job_id %>' )"> <div style="color:red;font-weight:500"> Block</div></button>
+                                                        '<%= user.id %>', '<%= lang_source %>', '-3', '<%= job_id %>' )"> <div style="color:red;font-weight:500"> Block</div></button>
                                                     </div>
                                                   </div>
-                                                  <br> has a confidence-level of <b> <%= levels[user.lang_target_lvl-1].description %> </b> 
+                                                  <br> has a confidence-level of <b> <%= levels[user.lang_target_lvl] %> </b> 
                                                   in the <strong> <%= langs[langsISO.indexOf(lang_target)] %> language </strong>
                                                   <div class="input-group-prepend" style="display: inline-flex;">
-                                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                                            Modify Confidence
-                                                        </button>
-                                                        <div class="dropdown-menu">
-                                                          <button class="btn dropdown-item" onclick="updateConfidence('<%= session.User.userOrganisation.id %>',
-                                                            '<%= user.id %>', '<%= lang_target %>', '1', '<%= job_id %>' )"> Junior </button>
-                                                          <button class="btn dropdown-item" onclick="updateConfidence('<%= session.User.userOrganisation.id %>', 
-                                                            '<%= user.id %>', '<%= lang_target %>', '2', '<%= job_id %>' )"> Intermediate</button>
-                                                          <button class="btn dropdown-item" onclick="updateConfidence('<%= session.User.userOrganisation.id %>', 
-                                                            '<%= user.id %>', '<%= lang_target %>', '3', '<%= job_id %>' )"> Proficiency</button>
-                                                          <button class="btn dropdown-item" onclick="updateConfidence('<%= session.User.userOrganisation.id %>', 
-                                                            '<%= user.id %>', '<%= lang_target %>', '4', '<%= job_id %>' )"> <div style="color:red;font-weight:500"> Block</div></button>
-                                                        </div>
+                                                      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                          Modify Confidence
+                                                      </button>
+                                                      <div class="dropdown-menu">
+                                                        <button class="btn dropdown-item" onclick="updateConfidence('<%= session.User.userOrganisation.id %>',
+                                                          '<%= user.id %>', '<%= lang_target %>', '0', '<%= job_id %>' )"> Suitable </button>
+                                                        <button class="btn dropdown-item" onclick="updateConfidence('<%= session.User.userOrganisation.id %>', 
+                                                          '<%= user.id %>', '<%= lang_target %>', '1', '<%= job_id %>' )"> Archive </button>
+                                                        <button class="btn dropdown-item" onclick="updateConfidence('<%= session.User.userOrganisation.id %>', 
+                                                          '<%= user.id %>', '<%= lang_target %>', '5', '<%= job_id %>' )"> Broadcast </button>
+                                                        <button class="btn dropdown-item" onclick="updateConfidence('<%= session.User.userOrganisation.id %>', 
+                                                          '<%= user.id %>', '<%= lang_target %>', '-3', '<%= job_id %>' )"> <div style="color:red;font-weight:500"> Block</div></button>
+                                                      </div>
                                                     </div>
                                                 </h3>
                                             </div>
@@ -110,27 +110,6 @@
   <!-- /.content-wrapper -->
 
 <script>
-    // user role-modification
-    function updateRole(orgid, userid, newRole) {
-         bootbox.confirm({
-           title: "User role modification",
-           message: "You are going to assign this user a new role, are you sure?",
-           buttons: {
-             confirm: { label: "<%= __('organisation.show.yestag') %>", className: 'btn-success' },
-             cancel: { label: "<%= __('organisation.show.canceltag') %>" }
-           },
-           callback: function(result) {
-             if (result) {
-               data = { id: orgid, user: userid, role: newRole  };
-               $.post("/user/role", data, function(status) {
-                 console.log(status);
-                 location.reload();
-               });
-             }
-           }
-         });
-       }
-
     // user role-modification
     function updateConfidence(orgid, userid, lang, level, job_id) {
          bootbox.confirm({

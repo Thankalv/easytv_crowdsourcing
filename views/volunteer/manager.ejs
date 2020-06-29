@@ -1,0 +1,229 @@
+<div class="content-wrapper">
+    <section class="content-header">
+        <h1> Volunteer Evaluation </h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active"><a href="/"><i class="fa fa-home"></i>Home</a></li>
+            <li class="breadcrumb-item"> <a href="/volunteer-manager"> Validation Pending </a></li>
+        </ol>
+    </section>
+
+    <section class="content">
+            <div class="col-md-6 offset-md-3">
+                <div class="card card-widget widget-user">
+                  <div class="widget-user-header bg-info" style="height: 64px;">
+                    <h5 class="widget-user-desc"> <b> <%= session.User.userOrganisation.name %> </b> <i class="fa fa-calendar-check-o" aria-hidden="true"></i> </h5>
+                  </div>
+                  <div class="card-footer" style="padding-top: 10px;">
+                    <div class="row">
+                      <div class="col-sm-3 border-right">
+                        <div class="description-block">
+                          <h5 class="description-header"> 
+                              <% if (langcode=="es")  { %>
+                              <a class="btn btn-info" style="background: #2c88c5;" href="/volunteer-manager?id=<%= session.User.userOrganisation.id %>&lang=es"> Spanish </a>
+                              <% } else { %>
+                              <a href="/volunteer-manager?id=<%= session.User.userOrganisation.id %>&lang=es"> Spanish </a>
+                              <% } %>
+                          </h5>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 border-right">
+                        <div class="description-block">
+                          <h5 class="description-header"> 
+                              <% if (langcode=="en")  { %>
+                                <a class="btn btn-info" style="background: #2c88c5;" href="/volunteer-manager?id=<%= session.User.userOrganisation.id %>&lang=en"> English </a>
+                                <% } else { %>
+                                <a href="/volunteer-manager?id=<%= session.User.userOrganisation.id %>&lang=en"> English </a>
+                                <% } %>                          
+                            </h5>
+                        </div>
+                      </div>
+                      <div class="col-sm-3 border-right">
+                        <div class="description-block">
+                          <h5 class="description-header"> 
+                              <% if (langcode=="ar")  { %>
+                                <a class="btn btn-info" style="background: #2c88c5;" href="/volunteer-manager?id=<%= session.User.userOrganisation.id %>&lang=ar"> Arabic </a>
+                                <% } else { %>
+                                <a href="/volunteer-manager?id=<%= session.User.userOrganisation.id %>&lang=ar"> Arabic </a>
+                                <% } %>                          
+                            </h5>
+                        </div>
+                      </div>
+                      <div class="col-sm-3">
+                          <div class="description-block">
+                            <h5 class="description-header"> 
+                                <% if (langcode=="bb")  { %>
+                                <a class="btn btn-info" style="background: #2c88c5;" href="/volunteer-manager?id=<%= session.User.userOrganisation.id %>&lang=bb"> Berber </a>
+                                <% } else { %>
+                                <a href="/volunteer-manager?id=<%= session.User.userOrganisation.id %>&lang=bb"> Berber </a>
+                                <% } %>
+                            </h5>
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            <div class="row">
+                    <div class="col-md-10 offset-md-1">
+                    <div class="card">
+                      <div class="card-header border-transparent" style="background-color: #7cb4be">
+                        <h3 class="card-title">  <b>Volunteer Recruitment Workflow</b></h3>
+                      </div>
+                      <!-- /.card-header -->
+                      <div class="card-body p-0" style="padding: 15px!important">
+                        <div class="tab-pane" id="timeline">
+                                <ul class="timeline timeline-inverse">
+                                 <br>
+                                    <li class="time-label">
+                                      <span class="bg-info"> Validation Pending  </span>
+                                    </li>
+                                      <% _.each(pendUsers, function(user) { %>
+                                      <li>
+                                        <i class="fa fa-hourglass-2 bg-info"></i>
+                                        <div class="timeline-item" >
+                                            <h3 class="timeline-header no-border">
+                                                <a href="#" data-toggle="dropdown">  <%= User.fullName( user ) %> </a> is waiting for testing phase
+                                                <%- include userInfoLess %>
+                                                
+                                                <button class="time badge badge-success" style="margin-top: 6px;color: darkblue" 
+                                                        onclick="allowTester('<%= session.User.userOrganisation.id %>', '<%= user.id %>',  '<%= langcode %>')">
+                                                    <i class="fa fa-thumbs-up" aria-hidden="true"></i> ALLOW 
+                                                </button>  
+                                              </h3>
+                                        </div>
+                                      </li>
+                                    <% }) %>
+                                 </ul>
+                         </div>
+                      </div>
+                      <div class="card-body p-0" style="padding: 15px!important">
+                            <div class="tab-pane" id="timeline">
+                                      <!-- reviewer users list -->
+                                    <ul class="timeline timeline-inverse" id="accordion">
+                                     <br>
+                                        <li class="time-label">
+                                            <span class="bg-primary"> Testing Phase </span>
+                                        </li>
+                                          <% _.each(testUsers, function(user) { %>
+                                            <li>
+                                              <i class="fa fa-graduation-cap bg-primary"></i>
+                                              <div class="timeline-item" >
+                                                  <h3 class="timeline-header no-border">
+                                                    <a href="#" data-toggle="dropdown">  <%= User.fullName( user ) %> </a> is on evaluation testing
+                                                    <%- include userInfoLess %>
+                
+                                                    <button class="time badge badge-warning" style="margin-top: 6px;color: darkblue" 
+                                                            onclick="infoTester( '<%= user.email %>' )">
+                                                        <i class="fa fa-eye" aria-hidden="true"></i> CHECK 
+                                                    </button>  
+                                                    </h3>
+                                              </div>
+                                            </li>
+                                            <% }) %>
+                                        <!-- / user item -->
+                                     </ul>
+                             </div>
+                        </div>
+
+                        <div class="card-body p-0" style="padding: 15px!important">
+                            <div class="tab-pane" id="timeline">
+                                      <!-- reviewer users list -->
+                                    <ul class="timeline timeline-inverse" id="accordion">
+                                     <br>
+                                        <li class="time-label">
+                                            <span class="bg-success"> Evaluated as Suitable </span>
+                                        </li>
+                                          <% _.each(suitableUsers, function(user) { %>
+                                            <li>
+                                              <i class="fa fa-check-circle bg-success"></i>
+                                              <div class="timeline-item" >
+                                                  <h3 class="timeline-header no-border">
+                                                    <a href="#" data-toggle="dropdown">  <%= User.fullName( user ) %> </a> has <b>completed</b> the evaluation testing
+                                                    <%- include userInfoLess %>
+                
+                                                    <button class="time badge badge-success" style="margin-top: 6px;color: darkblue" 
+                                                            onclick="archiveContent( '<%= session.User.userOrganisation.id %>', '<%= user.id %>',  '<%= langcode %>' )">
+                                                        <i class="fa fa-briefcase" aria-hidden="true"></i> Collaborate 
+                                                    </button>  
+                                                    </h3>
+                                              </div>
+                                            </li>
+                                            <% }) %>
+                                        <!-- / user item -->
+                                     </ul>
+                             </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+    </section>
+</div>
+
+<script>
+  // user "blocking" confirmation
+  function allowTester(orgid, userid, langCode) {
+       bootbox.confirm({
+         title: "User proceed to testing",
+         message: "The user will proceed to the validation phase for this language",
+         buttons: {
+           confirm: { label: "<%= __('organisation.show.yestag') %>", className: 'btn-success' },
+           cancel: { label: "<%= __('organisation.show.canceltag') %>" }
+         },
+         callback: function(result) {
+           if (result) {
+             data = { id: orgid, user: userid, lang:langCode };
+             $.post("/volunteer/allow", data)
+              .done(function(msg){ 
+               location.reload(); 
+              }).fail(function(xhr, status, error) {
+                location.reload()
+              });
+           }
+         }
+       });
+     }
+
+     function archiveContent(orgid, userid, langCode) {
+       bootbox.confirm({
+         title: "Archive Content",
+         message: "The user will be elevated to access 'Archive-level' content with your Broadcaster",
+         buttons: {
+           confirm: { label: "<%= __('organisation.show.yestag') %>", className: 'btn-success' },
+           cancel: { label: "<%= __('organisation.show.canceltag') %>" }
+         },
+         callback: function(result) {
+           if (result) {
+             data = { id: orgid, user: userid, lang:langCode };
+             $.post("/volunteer/archive", data)
+              .done(function(msg){ 
+               location.reload(); 
+              }).fail(function(xhr, status, error) {
+                location.reload()
+              });
+           }
+         }
+       });
+     }
+
+     function infoTester( userEmail ) {
+        bootbox.dialog({
+            title: 'User is on testing phase',
+            message: "<p>  User-mail: <b>"+ userEmail +" </b> </p> ",
+            size: 'large',
+            buttons: {
+              ok: {
+                  label: "OK",
+                  className: 'btn-info',
+                  callback: function(){
+                    console.log("Sample info for user: "+ userEmail);
+                  }
+              }
+            }
+        });
+     }
+
+</script>
+
+
+<% block('localScripts', '<script src="/plugins/bootbox.min.js"></script>') %>

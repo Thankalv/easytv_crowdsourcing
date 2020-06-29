@@ -1,0 +1,146 @@
+
+<br>
+
+<div class="offset-md-2 col-md-8">
+  <div class="card">
+    <div class="card-header d-flex p-0" style="background: #cce4f9;">
+      <h3 class="card-title p-3">Email Notifications</h3>     
+    </div>
+    <div class="card-body">
+      <div class="tab-content">
+        <div class="tab-pane active" id="eng">
+            <form role="form">
+                <br>
+                <h5> <i class="fa  fa-user-circle-o" aria-hidden="true"></i> Volunteer Manager </h5>
+                <div class="form-group has-feedback">
+                   The volunteer-manager for getting the email-copies
+                  <select class="form-control" name="voluntManager" id="voluntManager">
+                      <% if (organisation.voluntManager)  { %>
+                        <option selected value="<%= organisation.voluntManager.id %>"> <%= organisation.voluntManager.email %> </option> 
+                      <% } else { %>
+                        <option class="placeholder" selected disabled value=""> choose an admin </option> 
+                      <% } %>
+                      <% _.each(organisation.admins, function(admin) { %>
+                        <option value="<%= admin.id %>">
+                          <%= admin.email %>
+                        </option>
+                        <% }); %>
+                  </select>
+                </div>
+               
+                <br>
+                <h5> Test is finished </h5>
+                <div class="form-group">
+                    <div class="checkbox">
+                      <label >
+                        <input type="checkbox" value="testFinishedNotify" <%= organisation.testFinishedNotify ? 'checked': '' %>>
+                         Notify Evaluators when a user ends a test-level job
+                      </label>
+                    </div>
+                </div>
+                <br>
+                <h5> Job is finished </h5>
+                <div class="form-group">
+                    <div class="checkbox">
+                      <label >
+                        <input type="checkbox" value="jobFinishedNotify" <%= organisation.jobFinishedNotify ? 'checked': '' %>>
+                         Notify Evaluators when a user ends a job
+                      </label>
+                    </div>
+                </div>
+                
+
+                <br>
+                <h5> <i class="fa fa-paper-plane" aria-hidden="true"></i> EN1 </h5>
+                <div class="form-group showTextarea">
+                      Confirming and thanking for the registration
+                    <textarea id="en1" name="en1_content" class="textarea">
+                      <%- organisation.en1 %>
+                    </textarea>
+                </div>
+                <br>
+    
+                <h5> <i class="fa fa-paper-plane" aria-hidden="true"></i> EN2 </h5>
+                <div class="form-group showTextarea">
+                    Volunteer has been pre-selected
+                    <textarea id="en2" name="en2_content" class="textarea">
+                      <%- organisation.en2 %>
+                    </textarea>
+                </div>
+                <br>
+
+                <h5> <i class="fa fa-paper-plane" aria-hidden="true"></i> EN2.5 </h5>
+                <div class="form-group showTextarea">
+                    Volunteer has just finished an evaluation test
+                    <textarea id="en25" name="en25_content" class="textarea">
+                      <%- organisation.en25 %>
+                    </textarea>
+                </div>
+                <br>
+
+                <h5> <i class="fa fa-paper-plane" aria-hidden="true"></i> EN3 </h5>
+                <div class="form-group showTextarea">
+                    Volunteer is now in Suitable and pending for higher access
+                    <textarea id="en3" name="en3_content" class="textarea">
+                      <%- organisation.en3 %>
+                    </textarea>
+                </div>
+                <br>
+
+                <h5> <i class="fa fa-paper-plane" aria-hidden="true"></i> EN4 </h5>
+                <div class="form-group showTextarea">
+                    Volunteer is informed that her/his second part of registration and that soon will be able to access the platform to begin their collaboration.
+                    <textarea id="en4" name="en4_content" class="textarea">
+                      <%- organisation.en4 %>
+                    </textarea>
+                </div>
+                <br>
+
+                <h5> <i class="fa fa-paper-plane" aria-hidden="true"></i> EN5 </h5>
+                <div class="form-group showTextarea">
+                   Volunteer is informed that he has not passed the validation test and is discarded for the specific language
+                    <textarea id="en5" name="en5_content" class="textarea">
+                      <%- organisation.en5 %>
+                    </textarea>
+                </div>
+                <br>
+
+                <h5> <i class="fa fa-paper-plane" aria-hidden="true"></i> EN6 </h5>
+                <div class="form-group showTextarea">
+                    Volunteer is informed that her/his has successfully unsubscribed from the platform
+                    <textarea id="en6" name="en6_content" class="textarea">
+                      <%- organisation.en6 %>
+                    </textarea>
+                </div>
+                <br>
+
+                <h5> <i class="fa fa-paper-plane" aria-hidden="true"></i> EN7 </h5>
+                <div class="form-group showTextarea">
+                    Volunteer is informed that she/he is noew enabled to work with the broadcaster
+                    <textarea id="en7" name="en7_content" class="textarea">
+                      <%- organisation.en7 %>
+                    </textarea>
+                </div>
+                <br>
+
+                <a href="#" class="btn btn-sm btn-flat btn-primary pull-left" onclick="updateEmails()"> <%= __('organisation.show.saveemail') %> </a>
+            </form>
+        </div>
+
+      </div>
+      <!-- /.tab-content -->
+    </div><!-- /.card-body -->
+  </div>
+  <!-- ./card -->
+</div>
+
+<style>
+  .showTextarea {
+    animation: cssAnimation 0s 0.3s forwards;
+    visibility: hidden;
+  }
+  
+  @keyframes cssAnimation {
+    to   { visibility: visible; }
+  }
+  </style>

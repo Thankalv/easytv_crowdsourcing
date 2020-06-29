@@ -19,18 +19,18 @@
                         </td>
                         <td> 
                             <select class="form-control llang" disabled> 
-                                <option> <%= langs[langsISO.indexOf(userLang[Object.keys(userLang)[0]])] %> </option>
+                                <option value="<%= userLang[Object.keys(userLang)[0]] %>"> <%= langs[langsISO.indexOf(userLang[Object.keys(userLang)[0]])] %> </option>
                               </select>
                           </td>
                           <td> 
                               <select class="form-control llevel" disabled> 
-                                <option> <%= levels[userLang[Object.keys(userLang)[1]]-1].description %> </option>
+                                <option> <%= sails.config.custom.workflow_levels[userLang[Object.keys(userLang)[1]]] %> </option>
                               </select>                                   
                           </td>
                         </tr>
                       <% }); %>
 
-                    <tr class="tr_clone" >
+                      <!-- <tr class="tr_clone" >
                         <td colspan="1" style="text-align: left;">
                             <input id="addrow" type="button" class="btn btn-sm btn-block btn-success fa fa-input" style="background-color: cadetblue; font-weight: bold" value="&#xf067" />
                         </td>
@@ -52,7 +52,7 @@
                               <% }); %>
                             </select>                                   
                         </td>
-                    </tr>
+                    </tr> -->
                 </tbody>
             </table>
           </div>

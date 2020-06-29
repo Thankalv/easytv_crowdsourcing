@@ -10,7 +10,7 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1 class="m-0 text-dark"> <%= userTitle %>'s Dashboard</h1>
+          <h1 class="m-0 text-dark"> <%= userTitle %> Dashboard</h1>
         </div><!-- /.col -->
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
@@ -48,43 +48,70 @@
           <div id="assignbox"></div>
           <br>
           <%- include partials/broadcasterJobs %>
-
           <br> <br>
             <% if (session.User.settings.showOtherJobs == "yes") { %>
               <%- include partials/otherJobs %>
             <% } %>
 
           <% } else { %>
+
            <%- include partials/adminPanel %>
+
           <% } %>
       <% } %>
       
+      <br>
       <div class="row" style="margin: auto;width: 100%;">
-          <!-- Info boxes -->
-          <div class="col-md-5 offset-md-1">
-              <h5 style="display:block"> Organisation Summary <% if (session.authenticated)  { %> - <%= session.User.userOrganisation.name %>  <% } %> </h5><br>
-              <div class="col-md-8">
-                <div class="info-box">
-                  <span class="info-box-icon bg-info elevation-1"><i class="fa fa-files-o"></i></span>
-                  <div class="info-box-content">
-                    <span class="info-box-text"> Jobs Published</span>
-                    <span class="info-box-number"> <%= jobsPosted %> </span>
+        
+              <% if (session.authenticated && (session.User.access != "admin" && session.User.access != "superadmin") )  { %>
+                <div class="col-md-5 offset-md-1">
+                  <% } else { %>
+                <div class="col-md-4 offset-md-4">
+                  <% } %>
+                  <!-- Widget: user widget style -->
+                  <div class="card">
+                    <!-- Add the bg color to the header using any of the bg-* classes -->
+                    <div class="card-header border-transparent" style="background-color: #bad4ef !important" >
+                      <div class="card-title" >
+                        <h5 class="widget-user-desc" style="margin-left:3px"> <i class="fa fa-list-ul "></i> Platform Activity Overview</h5>
+                      </div>
+                      <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-widget="collapse">
+                          <i class="fa fa-minus"></i>
+                        </button>
+                      </div>
                   </div>
-                </div>
-              </div>
-  
-              <!-- fix for small devices only -->
-              <div class="clearfix hidden-md-up"></div>
-              <div class="col-md-8">
-                <div class="info-box mb-3">
-                  <span class="info-box-icon bg-warning elevation-1"><i class="fa fa-users"></i></span>
-                  <div class="info-box-content">
-                    <span class="info-box-text"> Registered Members</span>
-                    <span class="info-box-number"> <%= orgMembers %> </span>
+
+                    <div class="card-footer p-0">
+                      <ul class="nav flex-column">
+                        <li class="nav-item">
+                          <div  class="nav-link" >
+                              <% if (session.authenticated)  { %>
+                              Name <span class="float-right badge bg-primary"> <%= session.User.userOrganisation.name %>  </span>
+                              <% } else { %>
+                                <span style="color:blue;font-weight: 500;"> The EasyTV Crowdsourcing Platform </span>
+                              <% } %>
+                          </div>
+                        </li>
+                        <li class="nav-item">
+                            <div class="nav-link" >
+                                <i class="fa fa-files-o"></i>   Jobs Published <span class="float-right badge bg-info"> <%= jobsPosted %> </span>
+                            </div>
+                          </li>
+                        <li class="nav-item">
+                          <div class="nav-link" >
+                              <i class="fa fa-users"></i>  Registered Members <span class="float-right badge bg-info"> <%= orgMembers %> </span>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                </div>
-              </div>
-          </div>
+            </div>
+
+            <% if (!session.authenticated)  { %>
+              <%- include partials/signIn %>
+              <% } %>
+
             <% if (session.User) { %>
               <% if (session.User.access != "admin" && session.User.access != "superadmin") { %>
                 <%- include partials/userStats %>
@@ -177,6 +204,23 @@
        });
      }
   
+  // send un-assign request
+  function infoJob(job, jobStats) {
+       bootbox.confirm({
+         title: "Job Progress Info",
+         message: "The job is validated at about "+jobStats.validated_percent+"%",
+         buttons: {
+          confirm: { label: "<%= __('organisation.show.yestag') %>", className: 'btn-success' },
+           cancel: { label: "<%= __('organisation.show.canceltag') %>" }
+         },
+         callback: function(result) {
+           if (result) {
+             console.log(jobStats);
+           }
+         }
+       });
+     }
+
   function loaderWait(token){
      //console.log("iframe loaded!");
      // A new access-token should be generated/registered for this user automatically
@@ -192,15 +236,18 @@
      frameHeader.parentNode.removeChild(frameHeader);
      var frameFooter = document.getElementsByClassName("modal-footer")[0];
      frameFooter.parentNode.removeChild(frameFooter);
+
+    $('.modal').removeAttr("tabindex");
+      
   }
 
   // redirect iframe warning
-  function iframeProceed(editorLink, job_id, token, user) {
+  function iframeProceed(editorLink, job_id, token, user, prevWorker) {
        bootbox.confirm({
          size: 'large',
          title: "Reviewer/Evaluator Tool",
          message: "<i id='loading' style='display:block;width:100%;height:100%;color:green' class='fa fa-refresh fa-spin fa-4x fa-fw'></i>  <div class='embed-responsive embed-responsive-16by9'>\
-          <iframe class='embed-responsive-item' src='"+editorLink+'?token='+token+'&userid='+user+'&job='+job_id+"'  onload='loaderWait("+'"'+token+'"'+")' allowfullscreen></iframe>\
+          <iframe class='embed-responsive-item' src='"+editorLink+'?token='+token+'&userid='+user+'&job='+job_id+'&editorid='+prevWorker+"' onload='loaderWait("+'"'+token+'"'+")' allowfullscreen></iframe>\
            </div>",
          buttons: {
            confirm: { label: "DONE", className: 'btn-success' },
@@ -238,8 +285,10 @@
              data = { id: orgid, user: userid, reason: result };
              $.post("/user/block", data)
              .done(function(msg){ location.reload(); })
-             .fail(function(xhr, status, error) {
-                location.reload()
+             .fail(function(xhr, textStatus, errorThrown) {
+                console.log(xhr);
+                console.log(textStatus);
+                console.log(errorThrown);
               });
            }
          }
@@ -331,6 +380,7 @@
        });
      }
 </script>
+
 
 <!-- sweetalert modals -->
 <% block('localScripts', '<link href="/plugins/sweetalert/sweetalert2.min.css" rel="stylesheet" type="text/css">') %>

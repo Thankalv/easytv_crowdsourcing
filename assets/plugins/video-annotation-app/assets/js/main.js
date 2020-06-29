@@ -1,20 +1,23 @@
-
 // Setup player and plugin
 (function(){
-    var player = videojs('the_video', {
-        controlBar: {
-            volumePanel: { inline: false }
-        }
-    });
-    player.muted(true);
-    player.annotationComments({
-        annotationsObjects: demoAnnotations,
-        bindArrowKeys: true,
-        meta: {
-            user_id: 3,
-            user_name: username
-        }
-    });
+
+    setTimeout(function() {
+        var player = videojs('the_video', {
+            controlBar: {
+                volumePanel: { inline: false }
+            }
+        });
+        player.muted(true);
+        player.annotationComments({
+            annotationsObjects: demoAnnotations,
+            bindArrowKeys: true,
+            meta: {
+                user_id: 3,
+                user_name: username
+            }
+        });
+    },300);
+
 })();
 
 function sortByKey(array, key) {
@@ -40,7 +43,7 @@ function swalModal(modaltype) {
         });
 }
 
-// Intercept VAC logs and port them to console UI
+// Intercept VAC logs and display them as video-subtitles
 (function(){
     window.VAC_DEBUG = true;
     var showComment = '';
@@ -129,20 +132,15 @@ function swalModal(modaltype) {
     };
 })();
 
-
 $(".clear-console-btn").on("click", function() {
     $(".console").empty();
 });
-
 
 $("#post-notifications").on("click", function() {
     if(comments.length==0){
         swalModal("error");
         return;
     }
-    // $( "#alertbox" ).html( '<div class="alert alert-warning alert-dismissible MyFlashBox centerButton" style="width:40%">\
-    // <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button> No new annotation was found</div>' );
-    //console.log(comments);
     var vid = $("#the_video_html5_api");
     var postcomments = [];
     comments.map( annot => {
@@ -165,6 +163,10 @@ $("#post-notifications").on("click", function() {
         success: function (data) {
             console.info(data);
             swalModal("success");
+            var pn = document.getElementById("post-notifications");
+            pn.style.display = "none!important";
+            var bb = document.getElementById("next-mocap");
+            bb.style.display = "block";
         }
     });
 

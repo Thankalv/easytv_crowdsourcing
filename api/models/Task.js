@@ -21,7 +21,7 @@ module.exports = {
         status: {
             type: 'string',
             description: "the job's status according to content owner",
-            isIn: ['AwaitingForAutomaticTranslation', 'OnAutoTranslation', 'AutoTranslated', 'AwaitingForEdition', 
+            isIn: [ 'AwaitingForAutomaticTranslation', 'OnAutoTranslation', 'AutoTranslated', 'AwaitingForEdition', 
                     'OnEdition', 'Edited', 'AwaitingForRevision', 'OnRevision', 'Revised', 'CrwEndNotified', 'Finished', 'Rejected', 'CancelRequested', 'Cancelled'],
         },
      
@@ -50,7 +50,7 @@ module.exports = {
 
         confidence_level: {
             type: 'string',
-            isIn: ['low','intermediate','high']
+            isIn: ['low','intermediate','mid','high']
         },
 
         original_title: {
@@ -73,7 +73,7 @@ module.exports = {
 
         validated_percent: {
             type: 'number',
-            defaultsTo: 1,
+            defaultsTo: 0,
             description: "number in %, the progress tracked by the content owner"
         },
 

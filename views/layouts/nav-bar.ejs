@@ -26,32 +26,63 @@
           <a href="/session/new" class="nav-link">Sign In</a>
           <% } %>
       </li>
-
-      <!-- <li class="nav-item d-none d-sm-inline-block">
-        <a href="/task/work" class="nav-link">Work</a>
-      </li>-->
     </ul>
 
     <!-- SEARCH FORM -->
-    <form class="form-inline ml-3">
-      <div class="input-group input-group-sm">
-        <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-        <div class="input-group-append">
-          <button class="btn btn-navbar" type="submit">
-            <i class="fa fa-search"></i>
-          </button>
+    <% if (session.authenticated)  { %>
+      <%  if (session.User.userOrganisation.name == "Sign Language User") { %>
+      <form class="form-inline ml-3" action="/video-annotation/search" method="get">
+        <div class="input-group input-group-sm">
+          <input class="form-control form-control-navbar" type="search" id="keysearch" name="keysearch" placeholder="Search concepts with keyword" aria-label="Search concepts" required>
+          <input type="hidden"  name="clang" value="<%- session.User.firstLangISO %>">
+          <div class="input-group-append">
+            <button class="btn btn-navbar" type="submit">
+              <i class="fa fa-search" style="color:rgb(83, 120, 240)"></i>
+            </button>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+     <% } else { %>
+      <form class="form-inline ml-3">
+        <div class="input-group input-group-sm">
+          <input class="form-control form-control-navbar" type="search" placeholder="Search job" aria-label="Search jobs">
+          <div class="input-group-append">
+            <button class="btn btn-navbar" type="submit">
+              <i class="fa fa-search" style="color:rgb(83, 120, 240)"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+      <% } %>
+    <% } %>
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
+
+      <!-- HELP SECTION for Reviewers -->
+      <% if (session.authenticated)  { %>
+        <%  if (session.User.userOrganisation.name == "Sign Language User") { %>
+          <li class="nav-item dropdown" data-toggle="tooltip">
+            <a href="https://easytvproject.eu/form-services/Crowdsourcing_CERTH.mp4" class="nav-link" target="_blank" >
+            <i class="fa fa-question-circle" data-toggle="tooltip" style="font-size:26px; color:#03c20091" data-placement="bottom" title="User Guide in Video"></i>
+            </a>
+          </li>
+        <% } else if (session.User.access==="editor") { %>
+            <li class="nav-item dropdown" data-toggle="tooltip">
+              <a href="https://trello-attachments.s3.amazonaws.com/5d08b91dcd0d6a5d3199df59/5dfb81c87cbfc68388ab67c5/2c46ab55e2d6c9e1c3f6a7adec85a971/Guia_del_revisor.pdf" class="nav-link" target="_blank" >
+                <i class="fa fa-question-circle" data-toggle="tooltip" style="font-size:24px; color:#0066ffa6"  data-placement="bottom" title="UserGuide for REVIEWERS"></i>
+              </a>
+            </li>
+          <% } %>
+      <% } %>
+
       <!-- Notifications Dropdown Menu -->
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="fa fa-bell-o"></i>
           <span class="badge badge-warning navbar-badge">1</span>
         </a>
+        
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
           <span class="dropdown-item dropdown-header">1 Notification(s)</span>
           <div class="dropdown-divider"></div>
@@ -65,6 +96,7 @@
           <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
         </div>
       </li>
+
       <li class="nav-item">
         <% if (session.authenticated)  {%>
         <a class="nav-link"  href="/session/destroy">
@@ -75,3 +107,4 @@
       </li>
     </ul>
   </nav>
+

@@ -1,0 +1,17 @@
+<% /* Note: This is injected into `views/layouts/layout-email.ejs` */ %>
+
+<p style="margin-bottom: 25px;">Dear, Admin!</p>
+<p style="margin-bottom: 25px;">this is a forwarded message from the feedback form</p>
+
+  <div style="margin-bottom: 25px;">
+    <div style="background-color: rgba(94, 161, 224, 0.54); display: inline-block; font-size: 1.2em; color: rgb(17, 33, 100); 
+                padding: 10px 35px 10px; font-weight: 500; text-decoration: none; border-radius: 7px;">
+                
+        <div> <h4 style="text-decoration: underline;"> Feedback theme: <span> <%- theme %></h4> </span>  </div>
+          
+         <div style="text-align: left;"> <%- comment %> </div>
+         <div style="text-decoration: underline;"> sent by <%- fullName %> <br> email: <%- email %> </div>
+    </div>
+  </div>
+
+

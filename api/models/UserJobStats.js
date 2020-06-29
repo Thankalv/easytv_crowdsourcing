@@ -14,17 +14,20 @@ module.exports = {
       viewed_percent: {
         type: 'number',
       },
-     edited_percent: {
+      edited_percent: {
         type: 'number',
       },
       validated_percent: {
         type: 'number',
       },
-
       asset_duration: {
         type: 'string',
       },
-
+      confidence_level: {
+        type: 'string',
+        defaultsTo: 'low',
+        isIn: ['low','intermediate','mid','high']
+      },
       status: {
         type: 'string',
         required: true
@@ -50,7 +53,9 @@ module.exports = {
      // customToJSON() method called before any data gets back to the client
       customToJSON: function() {
         var obj = this;
-        delete obj.worker;
+        // sails.log(obj.worker);
+        delete obj.worker; // = worker.email;
+        delete obj.updatedAt;
         return obj;
     },
   

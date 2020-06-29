@@ -15,7 +15,7 @@
   
             <div class="card">
               <div class="card-header" style="background: #74acdd;">
-                <h3 class="card-title" style="font-weight:500">  <%= __('feedback.provide') %> </h3>
+                <h3 class="card-title" style="font-weight:500"> <i class="fa fa-commenting" aria-hidden="true"></i>  <%= __('feedback.provide') %> </h3>
               </div>
         
               <div class="card-body">
@@ -42,6 +42,6 @@
     </section>
 </div>
 
-<% block('localScripts', '<link href="/plugins/summernote/summernote.css" rel="stylesheet"><link>') %>
-<% block('localScripts', '<script src="/plugins/summernote/summernote.min.js"></script>') %>
+<% block('localScripts', '<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.css" rel="stylesheet"><link>') %>
+<% block('localScripts', '<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote.js"></script>') %>
 <% block('localScripts', '<script src="/plugins/wysihtml5.js"></script>') %>

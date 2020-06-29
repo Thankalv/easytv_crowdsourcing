@@ -34,15 +34,41 @@
             </a>
           </li>
 
+          <% if (session.User.userOrganisation.name=='Sign Language User') { %>
           <li class="nav-item">
             <% if (session.activeTag=='videolang') { %> <a href="/video-annotation"  class="nav-link active">  <% }else{  %>  <a href="/video-annotation"  class="nav-link"> <% } %>
                <i class="nav-icon fa fa-sign-language"></i>
                <p>
-                 VideosSL
+                 Videos SL
                  <span class="right badge badge-warning">New</span>
                </p>
              </a>
            </li>
+           <% } %>
+
+           <% if (session.User.access=='admin') { %>
+            <li class="nav-item">
+              <% if (session.activeTag=='volunteer') { %> <a href="/volunteer-manager?id=<%= session.User.userOrganisation.id %>"  class="nav-link active"> 
+                  <% }else{  %>  <a href="/volunteer-manager?id=<%= session.User.userOrganisation.id %>"  class="nav-link"> <% } %>
+                <i class="fa fa-user-plus" aria-hidden="true"></i>
+                 <p>
+                   Volunteer Manager
+                 </p>
+               </a>
+             </li>
+            <% } %>
+
+            <% if (session.User.access=='reviewer' && session.User.userOrganisation.name!='Sign Language User') { %>
+              <li class="nav-item">
+                <% if (session.activeTag=='volunteer') { %> <a href="/volunteer/evaluation"  class="nav-link active"> 
+                    <% }else{  %>  <a href="/volunteer/evaluation"  class="nav-link"> <% } %>
+                  <i class="fa fa-user-plus" aria-hidden="true"></i>
+                   <p>
+                     Volunteer Workflow
+                   </p>
+                 </a>
+               </li>
+              <% } %>
 
           <!-- Organization's variable config, exposed only to org-admins and the master admin -->
           <% if ( session.User.access!='superadmin' && session.User.access != 'admin') { %>
@@ -54,32 +80,42 @@
               </li>
           <% } %>
 
+          <% if ( session.User.access!='superadmin' && session.User.access != 'admin') { %>
           <li class="nav-item">
            <% if (session.activeTag=='feedback') { %> <a href="/feedback"  class="nav-link active">  <% }else{  %>  <a href="/feedback"  class="nav-link"> <% } %>
-              <i class="nav-icon fa fa-edit"></i>
+              <i class="nav-icon fa fa-paper-plane"></i>
               <p> Feedback </p>
             </a>
           </li>
+          <% } %>
 
           <li class="nav-item">
             <% if (session.activeTag=='log') { %> <a href="/log"  class="nav-link active">  <% }else{  %>  <a href="/log"  class="nav-link"> <% } %>
               <i class="nav-icon fa fa-table"></i>
-              <p> Logs </p>
+              <p> Logs 
+                <% if (session.User.unreadLogs==true) { %>
+                  <span class="right badge badge-warning">Unread</span>
+                <% } %>
+              </p>
             </a>
           </li>
 
           <li class="nav-item">
-              <% if (session.activeTag=='users') { %> <a href="/user"  class="nav-link active">  <% }else{  %>  <a href="/user"  class="nav-link"> <% } %>
+              <% if (session.activeTag=='users') { %> <a href="/users"  class="nav-link active">  <% }else{  %>  <a href="/users"  class="nav-link"> <% } %>
                 <i class="nav-icon fa fa-users"></i>
-                <p> Users </p>
+                <% if ( session.User.access=='superadmin' || session.User.access=='admin') { %>
+                  <p> Users </p>
+                <% } else { %>
+                  <p> Profile </p>
+                <% } %>
               </a>
             </li>
 
-            <!-- Organization's variable config, exposed only to org-admins and the master admin -->
+         <!-- Organization's variable config, exposed only to org-admins and the master admin -->
           <% if ( session.User.access=='superadmin' || session.User.access=='admin') { %>
           <li class="nav-item">
                 <% if (session.activeTag=='org') { %> <a href="/organisation/show?id=<%= session.User.userOrganisation.id %>"  class="nav-link active">  <% }else{  %>  <a href="/organisation/show?id=<%= session.User.userOrganisation.id %>"  class="nav-link"> <% } %>
-                  <i class="nav-icon fa fa-institution"></i>
+                  <i class="nav-icon fa fa-building-o"></i>
                   <p> Organisation </p>
                 </a>
               </li>

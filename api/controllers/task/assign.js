@@ -1,9 +1,6 @@
-
-
 module.exports = {
 
     friendlyName: "Assign user to job",
-  
     description:  "API POST request to assign a user to an active job",
   
     inputs: {
@@ -18,7 +15,6 @@ module.exports = {
             description: "The id of the user to be assigned"
         },
     },
-
     exits: {
         success: {
           statusCode : 200,
@@ -40,9 +36,8 @@ module.exports = {
 
     fn: async function (inputs, exits) 
     {
+        //sails.log(inputs.job);
         inputs.job = JSON.parse(inputs.job);
-        //sails.log(inputs);
-
         var existingJob = await Accesslink.findOne({job_id: inputs.job.job_id});
         if(existingJob){
           FlashService.error(this.req, 'The requested job is already assigned!');
@@ -56,22 +51,39 @@ module.exports = {
           return exits.blockedUser({description:"You have been blocked!"});
         }
 
-        var creds = { user:  inputs.userid, job_id: inputs.job.job_id, token: UtilService.uid(12)}
+        var creds = { user:  inputs.userid, job_id: inputs.job.job_id, token: await UtilService.uid(12)}
+        sails.log(creds);
         var newAssignment = await TaskService.assignUserAJob(usersOrg, creds);
         sails.log(newAssignment);
-        if(newAssignment.code == 200){
+        if(newAssignment.code == 200)
+        {
           // create a DB record about the access triplet "user_id-job_id-token"
-          var acclink = await Accesslink.create(creds)
-              .intercept( (err)=>{  return exits.errorInAttributes({code:-13, description: err.details}); }).fetch();
-          
+          var accesslink = await Accesslink.create(creds)
+                                  .intercept( (err)=>{  return exits.errorInAttributes({code:-13, description: err.details}); })
+                                  .fetch();
+          delete inputs.job.video_path; // status: { '!=' : 'Rejected'}
+          var existingOrg = await Organisation.find({token: inputs.job.content_owner.toUpperCase()});
+          inputs.job.content_owner = existingOrg[0].id;
+          inputs.job.original_title = inputs.job.asset_name;
+          if (this.req.session.User.access == "editor"){  
+            inputs.job.action = 'edition';
+            inputs.job.validated_percent = inputs.job.validated_percent_editor;
+          }
+          else{  
+            inputs.job.action = 'review';
+            inputs.job.validated_percent = inputs.job.validated_percent_reviewer;
+          }
+          var existingTask = await Task.findOne({job_id:inputs.job.job_id, content_owner:inputs.job.content_owner});
+          if(!existingTask)
+            await Task.create(inputs.job).intercept( (err)=>{  sails.log(err.details); })
+
           // create a new DB record about the statistics of this user on this job
           var jobStatsRecord = await TaskService.saveUserStatistics(inputs.job, inputs.userid, this.req.session.User.access);
-          // sails.log(jobStatsRecord);
-          return exits.success({code:200, description: 'Job with id:'+acclink.job_id+' was assigned'});
+
+          return exits.success({code:200, description: 'Job with id:'+accesslink.job_id+' was assigned'});
         }
         else
             return exits.notFound();
-    }
-  
-  };
+    }  
+};
   

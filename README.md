@@ -1,6 +1,11 @@
-# easytv crowdsourcing - docker deployment version
+# EasyTV project platform
+## Crowdsourcing Platforms repo for backend/frontend final version - docker deployment version
 
-# a SailsJS-project
+hosted online running version for the EasyTV project [https://cp.easytv.eng.it/]
+
+
+
+# based on the SailsJS-project
 
 a [Sails v1](https://sailsjs.com) application
 

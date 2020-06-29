@@ -11,7 +11,11 @@ module.exports = {
         type: 'number',
         required: true
       },
-
+      content_owner:{
+        description: "The content_owner's token",
+        type: 'string',
+        required: true
+      }
     },
   
     exits: {
@@ -31,14 +35,17 @@ module.exports = {
     fn: async function (inputs, exits) 
     {
       // Cancel an existing job
-      var existTask = await Task.findOne({ job_id: inputs.job_id, status: "Cancelled" })
+      inputs.content_owner = inputs.content_owner.toUpperCase();
+      var existingOrg = await Organisation.findOne({token: inputs.content_owner}); 
+      if (!existingOrg)
+        return exits.notFound({code:404,  description: 'Org with token:'+inputs.content_owner+' was not found'});
+
+      var existTask = await Task.findOne({ job_id: inputs.job_id, content_owner: existingOrg.id, status: "Cancelled" })
       if(existTask)
         return exits.alreadyDone({ description: 'Job with id:'+existTask.job_id+' has been already cancelled'});
 
-      var updTask = await Task.updateOne({ job_id: inputs.job_id })
-        .set({
-          status: "Cancelled"
-        });
+      var updTask = await Task.updateOne({ job_id: inputs.job_id, content_owner: existingOrg.id, })
+                              .set({ status: "Cancelled"});
     
       if(updTask)
         return exits.success({code:200, description: 'Job with id:'+updTask.job_id+' was cancelled'});

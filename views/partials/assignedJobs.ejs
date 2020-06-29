@@ -2,9 +2,9 @@
   <div class="col-md-10 offset-md-1">
     <div class="card">
       <div class="card-header border-transparent" style="background-color: #25bf28d4">
-        <h3 class="card-title"><b>Jobs assigned to you 
-          <i class="material-icons" style='vertical-align: middle !important; font-size: 28px' href='#' data-toggle="tooltip" title="access only to you"> lock_outline  </i> </b> </h3>
-          continue working on them 
+        <h3 class="card-title"><b>  <% if (session.User.access == "reviewer") { %> Jobs under evaluation by you <% } else { %> Jobs assigned to you <% } %>
+          <i class="fa fa-lock" style='vertical-align: middle !important; font-size: 28px;color:#6d9026' href='#' data-toggle="tooltip" title="access only to you">  </i> </b> </h3>
+          <% if (session.User.access == "editor") { %> continue working on them <% } %>
         <div class="card-tools">
           <button type="button" class="btn btn-tool" data-widget="collapse">
             <i class="fa fa-minus"></i>
@@ -40,17 +40,20 @@
                     <td class="w-20">
                       <div class="row centerAction">
                       <% if (["OnEdition","AwaitingForEdition", "OnEditionSaved"].indexOf(job.status)>-1) { %> 
-                        <i class="btn btn-success bg-success material-icons" style='vertical-align: middle !important;font-size: 18px'
-                           onclick="iframeProceed('<%= job.edit_link_editor %>','<%= job.job_id %>','<%= job.accesslink.token %>','<%= job.accesslink.user %>')"> input  </i> 
+                        <i class="btn btn-success bg-success material-icons" 
+                            style='vertical-align: middle !important;font-size: 18px;color: #6d9026!important;background: #25bf289e!important;font-weight: 800; border-width: 2px;'
+                           onclick="iframeProceed('<%= job.edit_link_editor %>','<%= job.job_id %>','<%= job.accesslink.token %>','<%= job.accesslink.user %>', 'none')"> input  </i> 
                            <% } else { %> 
-                          <i class="btn btn-success bg-success material-icons" style='vertical-align: middle !important;font-size: 18px'
-                           onclick="iframeProceed('<%= job.edit_link_reviewer %>','<%= job.job_id %>','<%= job.accesslink.token %>','<%= job.accesslink.user %>')"> input  </i>                      
+                          <i class="btn btn-success bg-success material-icons" 
+                            style='vertical-align: middle !important;font-size: 18px;color: #6d9026!important;background: #25bf289e!important;font-weight: 800; border-width: 2px;'
+                           onclick="iframeProceed('<%= job.edit_link_reviewer %>','<%= job.job_id %>','<%= job.accesslink.token %>','<%= job.accesslink.user %>', '<%= job.prevWorker %>')"> input  </i>                      
                          <% } %>
-                         <i id='taskIcon<%= job.job_id %>' class="btn btn-warning bg-warning material-icons" style='vertical-align: middle !important; font-size: 18px' 
-                            href='#' onclick="withdrawJob('<%= JSON.stringify(job) %>', '<%= session.User.id %>' )" > 
+                         <i id='taskIcon<%= job.job_id %>' class="btn btn-warning bg-warning material-icons" style='vertical-align: middle !important; font-size: 18px; border-width: 2px;border-color: orange;' 
+                            href='#' onclick="withdrawJob('<%= JSON.stringify(job.clJob) %>', '<%= session.User.id %>' )" > 
                             clear
                         </i> 
                       </div>
+
                     </td>
                     <td class="w-9">
                        <b><%= job.language_source %> </b> / <b > <%= job.language_target %> </b>

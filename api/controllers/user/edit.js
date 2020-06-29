@@ -1,42 +1,36 @@
-
 var ISO6391 = require('iso-639-1');
 
 module.exports = {
 
-    friendlyName: 'Edit a user',
-    
-    inputs: {
-      id: {
-        description: 'The id of the user to delete',
-        type: 'string',
+  friendlyName: 'Edit a user',
+  inputs: {
+    id: {
+      description: 'The id of the user to delete',
+      type: 'string',
+    },
+  },
+  exits: {
+      success: {
+        statusCode: 200,
+        description: 'show the user/edit page.',
+        viewTemplatePath: 'user/edit'
       },
     },
-  
-    exits: {
-        success: {
-          statusCode: 200,
-          description: 'show the user/edit page.',
-          viewTemplatePath: 'user/edit'
-        },
-    
-      },
-
-    fn: async function (inputs, exits) 
-    {
-        var userId = inputs.id;
-        var referer = this.req.header('Referer') || '/';
-        // sails.log(referer);
-        if (!userId) {
-          FlashService.error(this.req, 'UserId parameter not found.');
-          return this.res.redirect('/');
-        }
-        else {
-          var user = await User.findOne(userId).populate('userOrganisation');
-          sails.log("Editing user: "+ user.email);
-          if (!user) {
-            return this.res.notFound('User not found.');
-          } 
-
+  fn: async function (inputs, exits) 
+  {
+      var userId = inputs.id;
+      var referer = this.req.header('Referer') || '/';
+      // sails.log(referer);
+      if (!userId) {
+        FlashService.error(this.req, 'UserId parameter not found.');
+        return this.res.redirect('/');
+      }
+      else {
+        var user = await User.findOne(userId).populate('userOrganisation');
+        sails.log("Editing user: "+ user.email);
+        if (!user)
+          return this.res.notFound('User not found.');
+        else{
           var organisations = await Organisation.find();
           if (organisations.length == 0) {
             return this.res.notFound('No organisations are registered in the platform!');
@@ -51,11 +45,11 @@ module.exports = {
             langs: sails.config.custom.langs,
             langsISO: sails.config.custom.langsISO,
             levels: [ { num: 1, description: 'Junior'},
-                      { num: 2, description: 'Intermediate'},
-                      { num: 3, description: 'Proficiency'}],
+                    { num: 2, description: 'Intermediate'},
+                    { num: 3, description: 'Proficiency'}]
           });
         }
-    }
-  
-  };
+      }
+  }  
+};
   

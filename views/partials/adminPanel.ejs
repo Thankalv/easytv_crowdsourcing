@@ -27,7 +27,7 @@
                       <% _.each(editorUsers, function(user) { %>
                       <!-- user item -->
                       <li>
-                        <i class="fa fa-users bg-info"></i>
+                        <i class="fa far fa-user-circle bg-info"></i>
                         <div class="timeline-item" >
                             <button href="#" data-toggle="dropdown" class="time badge badge-warning" style="background:#ff6007; margin-top: 6px; color: black">
                               <i class="fa fa-language" aria-hidden="true"></i> PerLang 
@@ -38,11 +38,11 @@
                               <i class="fa fa-hand-paper-o" aria-hidden="true"></i> block 
                             </button>       
                             <h3 class="timeline-header no-border">
-                                <a href="#" data-toggle="dropdown">  <%= User.fullName( user ) %> </a> has been assigned : X tasks
+                                <a href="#" data-toggle="dropdown">  <%= User.fullName( user ) %> </a> is registered with <b> <%= user.userOrganisation.name %> </b>
                                 <%- include userInfo %>
                                 
                               <div class="input-group-prepend" style="display: inline-flex;">
-                                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="background:#e5f2ff">
                                     Modify Role 
                                   </button>
                                   <div class="dropdown-menu">
@@ -73,7 +73,7 @@
                           <% _.each(reviewerUsers, function(user) { %>
                             <!-- user item -->
                             <li>
-                              <i class="fa fa-users bg-primary"></i>
+                              <i class="fa fas fa-user-graduate bg-primary"></i>
                               <div class="timeline-item" >
                                 <button href="#" data-toggle="dropdown" class="time badge badge-warning" style="background:#ff6007; margin-top: 6px; color: black">
                                    <i class="fa fa-language" aria-hidden="true"></i> PerLang 
@@ -84,11 +84,11 @@
                                     <i class="fa fa-hand-paper-o" aria-hidden="true"></i> block 
                                   </button>
                                   <h3 class="timeline-header no-border">
-                                    <a href="#" data-toggle="dropdown">  <%= User.fullName( user ) %> </a> has been assigned : X tasks
+                                    <a href="#" data-toggle="dropdown">  <%= User.fullName( user ) %> </a> is registered with <b> <%= user.userOrganisation.name %> </b>
                                     <%- include userInfo %>
 
                                     <div class="input-group-prepend" style="display: inline-flex;">
-                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="background:#e5f2ff">
                                           Modify Role
                                         </button>
                                         <div class="dropdown-menu">
@@ -119,7 +119,7 @@
                             <% _.each(blockedUsers, function(user) { %>
                               <!-- user item -->
                               <li>
-                                <i class="fa fa-user bg-info"></i>
+                                <i class="fa fas fa-ban" style="background: #dc3545"></i>
                                 <div class="timeline-item" >
                                     <button class="time badge badge-info" style="color:blue" onclick="unblockUser('<%= session.User.userOrganisation.id %>', '<%= user.id %>' )">
                                       <i class="fa fa-thumbs-up" aria-hidden="true"></i> unblock 
@@ -133,19 +133,23 @@
                        </ul>
                </div>
             </div>
-
     </div>
   </div>
 </div>
 
+<% if(sails.config.custom.confLevel=="YES") { %>
 <br>
+<a id='confidenceLevels' class="col-md-10 offset-md-1 btn btn-warning" href="/user/confidence-level?id=<%= session.User.userOrganisation.id %>" style="font-weight:bolder;display:initial"> 
+  <i class="fa fas fa-sort-amount-up"></i>  Manage Users Confidence-Level  <i class="fa fas fa-sort-amount-down"></i>  </a> 
+<% } %>
+<br><br>
 
 <div class="row">
   <div class="col-md-10 offset-md-1">
     <div class="card">
-      <div class="card-header border-transparent" style="background-color: #25bf28d4">
+      <div class="card-header border-transparent" style="background-color: #25bf28a1">
         <h3 class="card-title"><b>List of currently assigned jobs
-          <i class="material-icons" style='vertical-align: middle !important; font-size: 28px' href='#'> lock_outline  </i> </b> from your organization </h3>
+          <i class="fa fa-lock" style='vertical-align: middle !important; font-size: 28px; color:#6d9026' href='#'>  </i> </b> from your organization </h3>
         <div class="card-tools">
           <button type="button" class="btn btn-tool" data-widget="collapse">
             <i class="fa fa-minus"></i>
@@ -175,9 +179,11 @@
                     <td class="w-10">
                       <div class="row centerAction">
                          <i id='taskIcon<%= job.job_id %>' class="btn btn-warning bg-warning fa fa-unlock-alt" style='vertical-align: middle !important; font-size: 18px' 
-                            href='#' onclick="withdrawJob('<%= JSON.stringify(job) %>', '<%= job.user %>' )" > 
-                            
+                            href='#' onclick="withdrawJob('<%= JSON.stringify(job.clJob) %>', '<%= job.worker %>' )" > 
                         </i> 
+                        <i id='infoIcon<%= job.job_id %>' class="btn bg-info fa fa-history" style='vertical-align: middle !important; font-size: 18px' 
+                            href='#' data-toggle="modal" data-target="#modal-lg<%= job.job_id %>"> </i> 
+                            <%- include progressCard %>
                       </div>
                     </td>
                     <td class="w-9">
@@ -193,19 +199,19 @@
                         <% if (["OnEdition","AwaitingForEdition", "OnEditionSaved"].indexOf(job.status)>-1) { %> 
                           <b><%= job.validated_percent_editor %></b>%
                           <div class="progress progress-sm">
-                            <div class="progress-bar bg-primary" style="width: <%= job.validated_percent_editor %>%"></div>
+                            <div class="progress-bar bg-info" style="width: <%= job.validated_percent_editor %>%"></div>
                           </div>
                           <% } else { %>
                             <b><%= job.validated_percent_reviewer %></b>% 
                             <div class="progress progress-sm">
-                              <div class="progress-bar bg-primary" style="width: <%= job.validated_percent_reviewer %>%"></div>
+                              <div class="progress-bar bg-info" style="width: <%= job.validated_percent_reviewer %>%"></div>
                             </div>
                             <% } %>
                         </div>
                       </td>                            
                       <td>  
                         <b> <span style="font-size:12.5px;font-weight: 700"> <%= UtilService.to_hhmmss_ddmmyyyy(job.publication_date*1000) %> </span> </b> / <br>
-                        <span style="font-size:12px"> <%= UtilService.to_hhmmss_ddmmyyyy(job.expiration_date*1000) %> </span> 
+                            <span style="font-size:12px"> <%= UtilService.to_hhmmss_ddmmyyyy(job.expiration_date*1000) %> </span> 
                       </td>
                     <td class="w-40"> 
                        <%= job.asset_name.replace("'", "") %> 
@@ -221,3 +227,4 @@
 </div>
 
 
+<% block('localScripts', '<script src="/js/fontawesomeV5.js"></script>') %>

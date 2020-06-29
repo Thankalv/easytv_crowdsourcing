@@ -1,0 +1,127 @@
+  
+<div class="content-wrapper">
+        <section class="content-header">
+            <h1> Sign Language Multilingual Database </h1>
+            <ol class="breadcrumb">
+               <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i>Home</a></li>
+                <li class="breadcrumb-item active"> Pending Tasks - Concept Video </li>
+            </ol>
+        </section>
+        <section class="content">
+            <% if (session.User.usertype == "Worker") { %>
+              <button id="subscribe" class="btn btn-success offset-md-3" onClick="subscribe('<%= session.User.firstLangISO %>')"> <i class="glyphicon glyphicon-upload"></i> Get updates for new tasks</button>
+            <% } %>
+              <br><br>
+                    <div class="col-md-6 card  offset-md-3" style="background:aliceblue ;">
+                         <div class="card-header border-transparent" style="background: #17a2b8b3">
+                              <% if (session.User.usertype == "Evaluator") { %>
+                              <h3 class="card-title"> <b> Manage existing tasks for <%- session.User.firstLang  %>  concepts: </b> </h3>
+                              <% } else { %>
+                              <h3 class="card-title"> <b> Tasks pending for <%- session.User.firstLang  %>  concepts: </b> </h3>
+                              <% } %>
+                              <div class="card-tools">
+                              <button type="button" class="btn btn-tool" data-widget="collapse">
+                                  <i class="fa fa-minus"></i>
+                              </button>
+                              </div>
+                          </div>
+
+                          <div class="card-body">
+
+                              <% if (session.User.usertype == "Evaluator") { %>
+                              <div class="col-md-8 offset-md-2">
+                                <div class="small-box bg-info">
+                                    <div class="inner">
+                                      <h4> Create new Task</h4>
+                                    </div>
+                                    <div class="icon"> <i class="fa fa-pencil-square-o" aria-hidden="true"></i> </div>
+                                    <a href="#" class="small-box-footer" style="height: 35px" data-toggle="modal" data-target="#modal-new-task">
+                                       <i class="fa fa-arrow-circle-right"></i> Request a missing concept
+                                      </a>
+                                  </div>
+                                  <%- include ../partials/taskCard %>
+                              </div>
+                              <% } %>
+
+                              <div class="row" style="margin: auto;">
+                                  <% _.each(pTasks, function(task) { %>
+                                      <div class="col-md-10 offset-md-1" id="<%= task.id %>">
+                                        <div class="info-box">
+                                          <span class="info-box-icon bg-info elevation-1" style="width: 125px;height: auto;">
+                                              <video controls preload="metadata" width="90%" height="90%" >
+                                                 <source src="<%= task.videoURL %>" type='video/mp4'>
+                                              </video>
+                                          </span>
+                                          <div class="info-box-content">
+                                            <span class="info-box-text"> # <%= task.wle %> <b>  </b></span> 
+                                            <% if(!task.videoURL)  { %>
+                                              <a href="/video-annotation/concept-new?lang=<%= task.lang %>&concept=<%= task.wle %>&id=<%= task.id %>"><i class="fa fa-add"></i> <strong> Add Video </strong></a>
+                                            <% } else { %>
+                                              <a href="/video-annotation/annotate-new?id=<%= task.id %>"><i class="fa fa-add"></i> <strong> Add Annotation </strong></a>
+                                              <% }  %>
+                                          </div>
+                                          <% if (session.User.usertype == "Evaluator") { %>
+                                          <div class="tools">
+                                              <i class="fa fa-trash-o" class="btn" onClick="deleteTask('<%= task.id %>')" style="font-size: 18px;color:red"></i>
+                                            </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                  <% }) %>
+                              </div>
+                          </div>
+                     </div>
+        </section>
+</div>
+
+<script>
+  
+    function deleteTask(task_id) 
+    {
+      bootbox.confirm({
+        title: "Delete action",
+        message: "Remove this pending task?",
+        buttons: {
+          confirm: { label: "<%= __('user.index.deletetag') %>", className: 'btn-flat btn-danger' },
+          cancel: { label: "<%= __('user.index.canceltag') %>", className: 'btn-flat'}
+        },
+        callback: function(result) {
+          if (result) {
+            // add CSRF, check if used in judgements/tasks
+            $.ajax({
+                url: "/pendingtask/"+task_id,
+                type: 'DELETE',
+                success: function(response) {
+                  var elem = document.getElementById(task_id);
+                  elem.parentNode.removeChild(elem);                  
+                }
+              });
+            }
+          }
+        });
+    }
+
+
+    function subscribe(clang) 
+    {
+
+      $.ajax({
+          url: "/user/subscribe/",
+          type: 'POST',
+          data: {lang: clang},
+          success: function(response) {
+            var elem = document.getElementById("subscribe");
+            elem.parentNode.removeChild(elem);                  
+          }
+        });
+    }
+    
+  </script>
+
+<!-- load extra .css assets only for this view-app -->
+<% block('localScripts', '<link href="/plugins/sweetalert/sweetalert2.min.css" rel="stylesheet" type="text/css">') %>
+<% block('localScripts', '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">') %>
+
+<!-- load extra .js assets only for this view-app -->
+<% block('localScripts', '<script src="/plugins/sweetalert/sweetalert2.min.js"></script>') %>
+<% block('localScripts', '<script src="/plugins/bootbox.min.js"></script>') %>

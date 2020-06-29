@@ -6,7 +6,7 @@
     "description": "Integration API for SPM-Crowdsourcing EasyTV Platform",
     "contact": {
             "name": "Thanassis Kalv",
-            "url": "http://easytvproject.eu",
+            "url": "https://easytvproject.eu",
             "email": "tkalv@iti.gr"
         }
   },
@@ -16,14 +16,21 @@
       "name": "subtitles",
       "description": "Subtitles-jobs testing"
     },
+    {
+      "name": "user",
+      "description": "User update"
+    },
+    {
+      "name": "mocap",
+      "description": "Mocap-concepts database"
+    },
      {
       "name": "Version",
       "description": "query the current api-version"
     }
   ],
   "schemes": [
-    "http",
-    "https",
+    "https"
   ],
   "consumes": [
     "application/json"
@@ -67,14 +74,14 @@
         ],
         "responses": {
           "200": {
-            "description": "Latest status update related to this job",
+            "description": "Latest status update related to this job"
           },
           "400": {
             "description": "A Bad request"
           },
           "404": {
             "description": "Job_id not found in database"
-          },
+          }
         },
         "security": [
           {
@@ -94,24 +101,74 @@
         ],
         "parameters": [
           {
-          "name": "job_id",
-          "in": "query",
-          "description": "Job id",
-          "required": true
+           "name": "job_id",
+           "in": "query",
+           "description": "Job id",
+           "required": true
+          },
+          {
+            "name": "content_owner",
+            "in": "query",
+            "description": "The content owner's token",
+            "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "Job with job_id is cancelled",
+            "description": "Job with job_id is cancelled"
           },
           "208": {
-            "description": "Job with job_id has been already cancelled",
+            "description": "Job with job_id has been already cancelled"
           },
           "400": {
             "description": "Bad request"
           },
           "404": {
             "description": "Job_id not found in database"
+          },
+          "500": {
+            "description": "A server-error occurred"
+          }
+        },
+        "security": [
+          {
+            "apikey": []
+          }
+        ]
+      }
+    },
+    "/motion/concept": {
+      "get": {
+        "tags": [
+          "mocap"
+        ],
+        "summary": "Match a concept to a motion-file and download the fbx",
+        "produces": [
+           "application/json"
+        ],
+        "parameters": [
+          {
+          "name": "lang",
+          "in": "query",
+          "description": "the language of the concept",
+          "required": true
+          },
+          {
+            "name": "concept",
+            "in": "query",
+            "description": "the concept to search in Database",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Motion-file is returned for requested concept"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "No motion file was found for your request"
           },
           "500": {
             "description": "A server-error occurred"
@@ -139,14 +196,20 @@
           "in": "query",
           "description": "Job id",
           "required": true
+          },
+          {
+            "name": "content_owner",
+            "in": "query",
+            "description": "The content owner's token",
+            "required": true
           }
         ],
         "responses": {
           "200": {
-            "description": "Job with job_id is finished",
+            "description": "Job with job_id is finished"
           },
           "208": {
-            "description": "Job with job_id has been already been set as finished",
+            "description": "Job with job_id has been already been set as finished"
           },
           "400": {
             "description": "Bad request"
@@ -171,46 +234,46 @@
                     "subtitles"
                 ],
                 "summary": "Content owner registers a new job on the crowdsourcing, indicating the editor or review action associated",
-		 "consumes": [
-		   "application/json"
-		 ],
-		 "produces": [
-		   "application/json"
-		 ],
-                "parameters": [
-                    {
-                        "name": "data",
-                        "in": "body",
-                        "description": "PostJobData object",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/PostJobData"
-                        }
+            "consumes": [
+              "application/json"
+            ],
+            "produces": [
+              "application/json"
+            ],
+            "parameters": [
+                {
+                    "name": "data",
+                    "in": "body",
+                    "description": "PostJobData object",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/PostJobData"
                     }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The job was registered successfully"
-                    },
-                    "400": {
-                        "description": "Input parameter count name or type is incorrect"
-                    },
-                    "401": {
-                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key"
-                    },
-                    "409": {
-                        "description": "The provided job_id is already in use"
-                    },
-                    "500": {
-                        "description": "Details of an Internal Server Error"
-                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "The job was registered successfully"
                 },
-                "security": [
-                    {
-                        "apikey": []
-                    }
-                ]
-            }
+                "400": {
+                    "description": "Input parameter count name or type is incorrect"
+                },
+                "401": {
+                    "description": "Unauthorized. Invalid API Key header X-EasyTV-Key"
+                },
+                "409": {
+                    "description": "The provided job_id is already in use"
+                },
+                "500": {
+                    "description": "Details of an Internal Server Error"
+                }
+            },
+            "security": [
+                {
+                    "apikey": []
+                }
+            ]
+        }
         },
     "/reject/subt": {
       "post": {
@@ -220,11 +283,98 @@
         "summary": "Reject a user progress on a subtitle job",
         "parameters": [
           {
-            "name": "user",
+            "name": "reject_data",
             "in": "body",
-            "description": "User that we want to create",
+            "description": "Parameters needed to reject a job",
             "schema": {
               "$ref": "#/definitions/RejectData"
+            }
+           }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "The job/task status was changed to rejected in CP's database"
+          },
+          "401" :{
+              "description": "Unauthorized. Invalid API Key header X-EasyTV-Key"
+          },
+          "404": {
+            "description": "No job with given job_id was found"
+            },
+	         "500": {
+            "description": "Details of an Internal Server Error."
+            }
+        },
+        "security": [
+           {
+              "apikey": []
+            }
+        ]
+      }
+    },
+    "/reset/subt": {
+      "post": {
+        "tags": [
+          "subtitles"
+        ],
+        "summary": "Reset a 'test-job' assignment and statistics",
+        "parameters": [
+          {
+            "name": "reset_data",
+            "in": "body",
+            "description": "Parameters needed to reset a job",
+            "schema": {
+              "$ref": "#/definitions/ResetData"
+            }
+           }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "The test-job was reset successfully"
+          },
+          "401" :{
+              "description": "Unauthorized. Invalid API Key header X-EasyTV-Key"
+          },
+          "404": {
+            "description": "No job with given job_id was found"
+            },
+	        "500": {
+            "description": "Details of an Internal Server Error."
+            }
+        },
+        "security": [
+           {
+              "apikey": []
+            }
+        ]
+      }
+    },
+    "/modify-status/user": {
+      "put": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Modify a user-status per language",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "description": "ChangeStatusData object",
+            "required": true,
+            "schema": {
+                "$ref": "#/definitions/ChangeStatusData"
             }
           }
         ],
@@ -236,17 +386,16 @@
         ],
         "responses": {
           "200": {
-            "description": "The job/task status was changed to rejected in CP's database",
+            "description": "User's level was updated successfully"
           },
-	   "401" :{
-	      "description": "Unauthorized. Invalid API Key header X-EasyTV-Key",
-	   },
+          "401" :{
+              "description": "Unauthorized. Invalid API Key header X-EasyTV-Key"
+          },
           "404": {
-            "description": "No job with given job_id was found",
+            "description": "The user id was not found in DB"
             },
-	   "500": {
-            "description": "Details of an Internal Server Error.",
-
+	        "500": {
+            "description": "Details of an Internal Server Error."
             }
         },
         "security": [
@@ -280,22 +429,21 @@
         ],
         "responses": {
           "200": {
-            "description": "The user/job editor-stats was recorded",
+            "description": "The user/job editor-stats was recorded"
           },
-	   "401" :{
-	      "description": "Unauthorized. Invalid API Key header X-EasyTV-Key",
-	   },
+        "401" :{
+            "description": "Unauthorized. Invalid API Key header X-EasyTV-Key"
+        },
           "400": {
-            "description": "Error detected in parameters",
+            "description": "Error detected in parameters"
             },
           "404": {
-            "description": "The job_id is not under edition (no stats record found)",
+            "description": "The job_id is not under edition (no stats record found)"
             },
-	   "500": {
-            "description": "Details of an Internal Server Error.",
-
-            }
-        },
+        "500": {
+                "description": "Details of an Internal Server Error."
+                }
+            },
         "security": [
            {
               "apikey": []
@@ -327,20 +475,19 @@
         ],
         "responses": {
           "200": {
-            "description": "The user/job editor-stats was recorded",
+            "description": "The user/job editor-stats was recorded"
           },
-	   "401" :{
-	      "description": "Unauthorized. Invalid API Key header X-EasyTV-Key",
-	   },
-          "400": {
-            "description": "Error detected in parameters",
+        "401" :{
+          "description": "Unauthorized. Invalid API Key header X-EasyTV-Key"
+	      },
+        "400": {
+             "description": "Error detected in parameters"
+           },
+           "404": {
+            "description": "The job_id is not under edition (no stats record found)"
             },
-          "404": {
-            "description": "The job_id is not under edition (no stats record found)",
-            },
-	   "500": {
-            "description": "Details of an Internal Server Error.",
-
+	          "500": {
+              "description": "Details of an Internal Server Error."
             }
         },
         "security": [
@@ -351,52 +498,52 @@
       }
     },
      "/update/subt": {
-          "put": {
-               "tags": [
-                    "subtitles"
-                ],
-                "summary": "Content owner updates an existing job's data attributes",
-		 "consumes": [
-		   "application/json"
-		 ],
-		 "produces": [
-		   "application/json"
-		 ],
-                "parameters": [
-                    {
-                        "name": "data",
-                        "in": "body",
-                        "description": "UpdateJobData object",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/UpdateJobData"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The job was updated successfully"
-                    },
-                    "400": {
-                        "description": "Input parameter count name or type is incorrect"
-                    },
-                    "401": {
-                        "description": "Unauthorized. Invalid API Key header X-EasyTV-Key"
-                    },
-                    "404": {
-                        "description": "Νο job with given job_id was found",
-                    },
-                    "500": {
-                        "description": "Details of an Internal Server Error"
-                    }
-                },
-                "security": [
-                    {
-                        "apikey": []
-                    }
-                ]
-            }
-        },
+      "put": {
+        "tags": [
+                  "subtitles"
+              ],
+          "summary": "Content owner updates an existing job's data attributes",
+          "consumes": [
+            "application/json"
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+              {
+                  "name": "data",
+                  "in": "body",
+                  "description": "UpdateJobData object",
+                  "required": true,
+                  "schema": {
+                      "$ref": "#/definitions/UpdateJobData"
+                  }
+              }
+          ],
+          "responses": {
+              "200": {
+                  "description": "The job was updated successfully"
+              },
+              "400": {
+                  "description": "Input parameter count name or type is incorrect"
+              },
+              "401": {
+                  "description": "Unauthorized. Invalid API Key header X-EasyTV-Key"
+              },
+              "404": {
+                  "description": "Νο job with given job_id was found"
+              },
+              "500": {
+                  "description": "Details of an Internal Server Error"
+              }
+          },
+          "security": [
+              {
+                  "apikey": []
+              }
+          ]
+      }
+    }
   },
   "definitions": {
     "ApiVersion": {
@@ -407,10 +554,10 @@
       ],
       "properties": {
         "version": {
-          "type": "string",
+          "type": "string"
         },
         "date": {
-          "type": "string",
+          "type": "string"
         }
       }
     },
@@ -529,7 +676,7 @@
                     "type": "string",
 		      "enum": [
                               "low",
-                              "intermediate",
+                              "mid",
                               "high"
 				 ]
                 },
@@ -588,24 +735,28 @@
                     "description": "When on edition status, the percent of text lines validated",
                     "type": "number"
                 },
+                "content_owner": {
+                  "description": "Identifier for the job's content owner",
+                  "type": "string"
+                }
             }
         },
         "ReviewerStatsData": {
             "description": "Reviewer-stats data fields",
             "required": [
                 "job_id",
-		  "asset_duration",
+		            "asset_duration",
                 "viewed_percent_reviewer",
-		  "edited_percent_reviewer",
-		  "validated_percent_reviewer"
+		           "edited_percent_reviewer",
+		            "validated_percent_reviewer"
             ],
             "type": "object",
             "properties": {
-		  "job_id": {
+		          "job_id": {
                     "description": "Identifier for the job's content owner",
                     "type": "integer"
                 },
-		  "asset_duration": {
+		          "asset_duration": {
                     "description": "Asset duration in hh:mm:ss",
                     "type": "string"
                 },
@@ -624,12 +775,16 @@
                     "description": "When on review status, the percent of text lines validated",
                     "type": "number"
                 },
+                "content_owner": {
+                  "description": "Identifier for the job's content owner",
+                  "type": "string"
+                }
             }
         },
     "RejectData": {
          "description": "Describes the reason for rejecting a job",
          "required": [
-                "job_id"
+             "job_id"
           ],
           "type": "object",
           "properties": {
@@ -640,6 +795,50 @@
            "reason": {
               "description": "Reason why the job is rejected",
               "type": "string"
+             },
+            "content_owner": {
+              "description": "Identifier for the job's content owner",
+              "type": "string"
+            }
+          }
+     },
+     "ResetData": {
+      "description": "Payload needed to reset a job",
+      "required": [
+          "job_id"
+       ],
+       "type": "object",
+       "properties": {
+        "job_id": {
+         "description": "Job identificator",
+         "type": "integer"
+        },
+         "content_owner": {
+           "description": "Identifier for the job's content owner",
+           "type": "string"
+         }
+       }
+  },
+     "ChangeStatusData": {
+         "description": "Modify user status",
+         "required": [
+            "id",
+            "langCode",
+            "trustlevel"
+          ],
+          "type": "object",
+          "properties": {
+           "id": {
+            "description": "User identificator",
+            "type": "string"
+           },
+           "langCode": {
+              "description": "The language code to modify",
+              "type": "string"
+             },
+            "trustlevel": {
+              "description": "a number indicating the new level of the user",
+              "type": "number"
              }
            }
      }
@@ -649,7 +848,7 @@
             "name": "X-EasyTV-Key",
             "in": "header",
             "type": "apiKey",
-            "description": "Api key needed to acces protected endpoints"
+            "description": "Api key needed to access protected endpoints"
         }
     }
 }

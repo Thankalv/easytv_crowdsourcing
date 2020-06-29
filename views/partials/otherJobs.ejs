@@ -30,9 +30,9 @@
                 <tr data-id="<%= sub.id %>" data-model="sub">
                   <td>
                       <button class="bg-danger"> 
-                          <i id='taskIcon<%= sub.job_id %>' class="material-icons" style='vertical-align: middle !important;' 
-                            href='#' onclick="requestJob('<%= JSON.stringify(sub) %>', '<%= session.User.id %>' )"> 
-                            <% if (session.User.jobList.indexOf(sub.job_id)>-1) { %> lock_outline  <% }else{ %>  launch  <% } %>  
+                          <i id='taskIcon<%= sub.job_id %>' class="material-icons" style='vertical-align: middle!important;color:orangered;background: #f09935b3!important;' 
+                            href='#' onclick="requestJob('<%= JSON.stringify(sub.clJob) %>', '<%= session.User.id %>' )"> 
+                            <% if (session.User.jobList.indexOf(sub.job_id)>-1) { %> lock_outline  <% }else{ %>  assignment_turned_in  <% } %>  
                           </i> 
                       </button>
                    </td>
@@ -46,17 +46,25 @@
                   </td>
                   <td>      
                       <div class="progress-group">
-                          <b><%= sub.validated_percent %></b>%
-                          <div class="progress progress-sm">
-                            <div class="progress-bar bg-primary" style="width: <%= sub.validated_percent_editor %>%"></div>
-                          </div>
+                          <% if (["OnEdition","AwaitingForEdition", "OnEditionSaved"].indexOf(sub.status)>-1) { %> 
+                            <b><%= sub.validated_percent_editor %></b>%
+                            <div class="progress progress-sm">
+                              <div class="progress-bar bg-primary" style="width: <%= sub.validated_percent_editor %>%"></div>
+                            </div>
+                            <% } else { %>
+                              <b><%= sub.validated_percent_reviewer %></b>% 
+                              <div class="progress progress-sm">
+                                <div class="progress-bar bg-primary" style="width: <%= sub.validated_percent_reviewer %>%"></div>
+                              </div>
+                              <% } %>
                         </div>
                     </td>                            
                     <td> <span style="font-size:12px"> <%= UtilService.to_hhmmss_ddmmyyyy(sub.publication_date*1000) %> </span> / <br>
                       <span style="font-size:12px"> <%= UtilService.to_hhmmss_ddmmyyyy(sub.expiration_date*1000) %> </span> 
                     </td>
                   <td>  
-                     <%= sub.original_title %> 
+                     <!-- <%= sub.original_title %> -->
+                     <%- UtilService.truncStripTags( sub.asset_name.replace("'", "") , 60) %>
                   </td>
                 </tr>
               <% }) %>

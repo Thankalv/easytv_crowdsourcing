@@ -11,7 +11,7 @@
             <h1> Video Annotation </h1>
             <ol class="breadcrumb">
                <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i>Home</a></li>
-                <li class="breadcrumb-item active"> annotation-app </li>
+                <li class="breadcrumb-item active"> Annotate the Video </li>
             </ol>
         </section>
     
@@ -30,16 +30,29 @@
                           </video>
                         </div>
                   
-                        <small style="color:grey">**the first annotation of each segment is in <strong>Sign-Language order</strong>, the second is in <strong>Natural-Language Order</strong></small>
+                        <small style="color:rgb(81, 95, 110)">*the first annotation of each segment should be in <strong>Sign-Language order</strong>, the second should be in <strong>Natural-Language Order</strong></small>
                   
                         <br><br>
                         <button id="post-notifications" class="btn centerButton post-button" style="color:midnightblue; border-color: blue; background: #00a6c2cf; font-weight: 500;"> 
                           <i class="material-icons" style="display: inline-flex; vertical-align: middle;">send</i>  Submit annotations
-                        </button> <br>
-                        <a href="/video-annotation/get-translation?targetLang=en&videoURI=<%= videoAnnot.video %>&id=<%- videoAnnot.id %>" class="btn centerButton post-button" 
-                          style="color:midnightblue; border-color: blue; background: #00c297cf; font-weight: 500;"> Retrieve Translations
-                        </a>
+                        </button> 
+                        <br>
 
+                       <!--  <a href="/video-annotation/get-translation?targetLang=en&videoURI=<%= videoAnnot.video %>&id=<%- videoAnnot.id %>" class="btn centerButton post-button" 
+                          style="color:midnightblue; border-color: blue; background: #00c297cf; font-weight: 500;"> Retrieve Translations
+                        </a> -->
+
+                        <div class="input-group-prepend" >
+                          <button type="button" class="btn centerButton post-button dropdown-toggle" data-toggle="dropdown">
+                            Retrieve Translations
+                          </button>
+                          <div class="dropdown-menu">
+                              <% _.each(otherLangs, function(lang) { %>
+                              <a style="color: black" class="btn dropdown-item" href="/video-annotation/get-translation?targetLang=<%= lang[1] %>&videoURI=<%= videoAnnot.video %>&id=<%- videoAnnot.id %>"> <%- lang[0] %> </a>
+                              <!-- <a style="color: black" class="btn dropdown-item" href="/video-annotation/get-translation?targetLang=it&videoURI=<%= videoAnnot.video %>&id=<%- videoAnnot.id %>"> Italian</a> -->
+                              <% });  %>
+                          </div>
+                        </div>
 
                         <div id="alertbox"></div>
 

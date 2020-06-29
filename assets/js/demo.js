@@ -234,7 +234,7 @@ $(function () {
    */
   var wrapper_css = {
     'padding'    : '20px 30px',
-    'background' : '#f39c12',
+    'background' : '#6c81e9',
     'display'    : 'none',
     'z-index'    : '999999',
     'font-size'  : '16px',
@@ -257,7 +257,7 @@ $(function () {
     'margin-top' : '-5px',
     'border'     : '0',
     'box-shadow' : 'none',
-    'color'      : '#f39c12',
+    'color'      : '#6c81e9',
     'font-weight': '600',
     'background' : '#fff'
   }

@@ -51,14 +51,14 @@ module.exports = {
           // delete userObj.confirmation;
           // console.log(req.param('id'));
           var updUser = await User.updateOne(userId)
-            .intercept( ()=>{ return exits.notFound(); })
-            .set(user2block);
+                                .intercept( ()=>{ return exits.notFound(); })
+                                .set(user2block);
 
-          var blockLog = await BlockEvent.create({  blockType: "per-language block", 
-                                                    description: "Blocking in language: '"+inputs.langCode+"'", 
-                                                    occurredTo: updUser.id,
-                                                    adminBy: this.req.session.User.id })
-                                                    .fetch();
+          await BlockEvent.create({  blockType: "per-language block", 
+                                      description: "Blocking in language: '"+inputs.langCode+"'", 
+                                      occurredTo: updUser.id,
+                                      adminBy: this.req.session.User.id })
+                                      .fetch();
           // sails.log(blockLog);
           return exits.success();
       }

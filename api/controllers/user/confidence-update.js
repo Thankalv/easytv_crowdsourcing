@@ -29,7 +29,6 @@ module.exports = {
         required: true,
       }
     },
-  
     exits: {
         success: {
           statusCode: 200,
@@ -52,18 +51,14 @@ module.exports = {
       if(this.req.session.User.access=="reviewer" && isJobUnderReview)
       {
         var user2update = await User.findOne(inputs.user_id);
+
         // find the lang-code and update the level
-        var counter = 0;
-        await _.each(user2update.lang_info.langs, function(userLang) {
-            if( userLang['lang'+counter] == inputs.lang)
-              userLang['level'+counter] = inputs.level;
-            counter++;
-        });
-
+        var lang_info = await UserService.updateLangLevel(user2update, inputs.lang, inputs.level);
         await User.updateOne(inputs.user_id)
-          .intercept( ()=>{ return exits.notFound(); })
-          .set(user2update);
+              .set({lang_info: lang_info })
+              .intercept( ()=>{ return exits.notFound(); })
 
+        await Log.create({user: this.req.session.User.id , activity:"Evaluator has updated the lang-level of "+user2update.email + " to " + inputs.level + " for job-"+inputs.job_id });
         return exits.success({code:200, description:"Successful user-confidence update"});
       }
       else

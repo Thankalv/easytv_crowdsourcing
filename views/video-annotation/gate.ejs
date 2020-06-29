@@ -1,0 +1,100 @@
+<script type="text/javascript">
+  
+  </script>
+    
+  <div class="content-wrapper">
+          <section class="content-header">
+              <h1> Sign Language Multilingual Database </h1>
+              <ol class="breadcrumb">
+                 <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i>Home</a></li>
+                  <li class="breadcrumb-item active"> index </li>
+              </ol>
+          </section>
+      
+          <section class="content">
+                  <section class="main-content" style="border-style: groove; background: #f0f5ff;">
+                    <h4>  Please choose how to continue </a> as <b><%- session.User.usertype  %></b> </h4> 
+                   Primary language is <b> <%- session.User.firstLang  %> </b>  
+
+                      <select class="form-control" style="display: inline-flex; width:unset;background: #eaf5ff;color:black" name="selectLang" id="selectLang" onChange="langChanged()">
+                        <option class="placeholder" selected disabled value=""> Choose Language </option> 
+                        <% _.each(availableLangs, function(lang) { %>
+                          <option style="color:black" value="<%=lang[1] %>">
+                            <%- lang[0] %>
+                          </option>
+                          <% }); %>
+                      </select>
+                    
+                        <br><br>
+                          <a href="/video-annotation/pending" class="btn centerButton post-button" 
+                          style="color:midnightblue; border-color: blue; background: #03c20091; font-weight: 500;  width: 40%;margin-left: auto;"> 
+                          Pending Sign-Language tasks 
+                          </a> 
+
+                          <br><br>
+                          <a href="/video-annotation/concept-new" class="btn centerButton post-button" 
+                          style="color:midnightblue; border-color: blue; background: #31f02dcf; font-weight: 500;  width: 40%;margin-left: auto;"> 
+                          <i class="fa fa-plus-circle" style="font-size:20px"></i> Add a new concept
+                          </a> 
+
+                          <a href="/video-annotation/new-pair-info" class="btn centerButton post-button" 
+                            style="color:midnightblue; border-color: blue; background: #31f02dcf; font-weight: 500;  width: 40%;margin-left: auto;"> 
+                            <i class="fa fa-language" style="font-size:20px"></i> New translation pair
+                          </a> 
+
+                          <br><br>
+                          <% if (session.User.usertype == "Evaluator") { %>
+                            <a href="/video-annotation/show-submissions" class="btn centerButton post-button"
+                            style="color:midnightblue; border-color: orangered; background: #ffa500a1; font-weight: 500;  width: 40%;margin-left: auto;">
+                            Evaluate New Submissions
+                          <% } %>
+
+                          <a href="/video-annotation/show-translations" class="btn centerButton post-button" 
+                          <% if (session.User.usertype == "Evaluator") { %>
+                            style="color:midnightblue; border-color: orangered; background: #ffa500a1; font-weight: 500;  width: 40%;margin-left: auto;"> 
+                            Evaluate Suggested Translations 
+                          <% } else { %>
+                            style="color:midnightblue; border-color: blue; background: #03c20091; font-weight: 500;  width: 40%;margin-left: auto;"> 
+                            Show Suggested Translations 
+                          <% } %>
+                          </a> 
+
+
+                          <br><br>
+                          <a href="/video-annotation/list?clang=<%- session.User.firstLangISO %>" class="btn centerButton post-button" 
+                            style="color:midnightblue; border-color: blue; background: #00a6c2cf; font-weight: 500; width: 40%;margin-left: auto;"> 
+                             Access all annotated videos
+                          </a> 
+
+                          <a href="/video-annotation/list-not?clang=<%-session.User.firstLangISO %>" class="btn centerButton post-button" 
+                            style="color:midnightblue; border-color: blue; background: #00a6c2cf; font-weight: 500;  width: 40%;margin-left: auto;"> 
+                             Access all not-annotated videos
+                          </a> 
+                          <br>
+          </section>
+  </div>
+  
+  <script>
+    function langChanged() {
+      var data = {lang: $("#selectLang").val()}
+      $.post("/user/primary-lang", data)
+        .done(function(msg){  
+          console.log(msg); 
+          location.reload(); 
+        })
+        .fail(function(xhr, status, error) { 
+          console.log(error); 
+        });
+    }
+  </script>
+  
+  
+  <!-- load extra .css assets only for this view-app -->
+  <% block('localScripts', '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">') %>
+  <% block('localScripts', '<link href="/plugins/video-annotation-app/style.css" rel="stylesheet" type="text/css">') %>
+
+  
+  <!-- load extra .js assets only for this view-app -->
+  <% block('localScripts', '<script src="/plugins/sweetalert/sweetalert2.min.js"></script>') %>
+
+  

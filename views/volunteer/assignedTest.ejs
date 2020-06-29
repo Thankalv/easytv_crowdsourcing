@@ -1,0 +1,80 @@
+<div class="row">
+  <div class="col-md-8 offset-md-2">
+    <div class="card">
+      <div class="card-header border-transparent" style="background-color: #25bf28d4">
+        <h3 class="card-title"><b>Evaluation Test under progress
+          <i class="fa fa-lock" style='vertical-align:middle!important; font-size:28px; color:#6d9026' href='#' data-toggle="tooltip" title="access only to you">  </i> </b> </h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table w-auto" data-toggle="table" data-pagination="true" data-page-size="10" data-page-list="[2,10,25,50]"
+                data-filter-control="true" data-filter-show-clear="false">
+            <thead>
+            <tr>
+              <th> ID </th>
+              <th class="w-10"> Action</th>
+              <th class="w-20"> Duration</th>
+              <th class="w-20"> Progress%</th>
+              <th data-field="title" data-sortable="true" data-filter-control="input" class="w-40"> Original Title</th>
+            </tr>
+            </thead>
+            <tbody>
+                <% { %>
+                  <tr data-id="<%= job.id %>" data-model="job">
+                    <td> 
+                      <% if (session.User.access == "reviewer") { %>
+                       <a href="user/confidence-review?job_id=<%= job.job_id %>&lang_source=<%= job.language_source %>&lang_target=<%= job.language_target %>"> <strong> <%= job.job_id %> </strong> </a>
+                      <% } else { %>
+                        <strong> <%= job.job_id %> </strong>
+                      <% } %>
+                    </td>
+                    <td class="w-20">
+                      <div class="row centerAction">
+                      <% if (["OnEdition","AwaitingForEdition", "OnEditionSaved"].indexOf(job.status)>-1) { %> 
+                        <i class="btn btn-success bg-success material-icons" 
+                            style='vertical-align: middle !important;font-size: 18px;color: #6d9026!important;background: #25bf289e!important;font-weight: 800; border-width: 2px;'
+                           onclick="iframeProceed('<%= job.edit_link_editor %>','<%= job.job_id %>','<%= job.accesslink.token %>','<%= job.accesslink.user %>', 'none')"> input  </i> 
+                           <% } else { %> 
+                          <i class="btn btn-success bg-success material-icons"
+                            style='vertical-align: middle !important;font-size: 18px;color: #6d9026!important;background: #25bf289e!important;font-weight: 800; border-width: 2px;'
+                           onclick="iframeProceed('<%= job.edit_link_reviewer %>','<%= job.job_id %>','<%= job.accesslink.token %>','<%= job.accesslink.user %>', '<%= job.prevWorker %>')"> input  </i>                      
+                         <% } %>
+                         <i id='taskIcon<%= job.job_id %>' class="btn btn-warning bg-warning fa fa-times" style='vertical-align: middle !important; font-size: 18px;color:orangered!important' 
+                            href='#' onclick="withdrawJob('<%= JSON.stringify(job.clJob) %>', '<%= session.User.id %>' )" > 
+                        </i> 
+                      </div>
+                    </td>
+                    <td class="w-10">
+                      <span class="badge badge-success" style="font-size: 15px;" >
+                          <%= job.asset_duration %>
+                      </span> 
+                    </td>
+                    <td>      
+                        <div class="progress-group">
+                            <% if (["OnEdition","AwaitingForEdition", "OnEditionSaved"].indexOf(job.status)>-1) { %> 
+                              <b><%= job.validated_percent_editor %></b>%
+                              <div class="progress progress-sm">
+                                <div class="progress-bar bg-primary" style="width: <%= job.validated_percent_editor %>%"></div>
+                              </div>
+                              <% } else { %>
+                                <b><%= job.validated_percent_reviewer %></b>% 
+                                <div class="progress progress-sm">
+                                  <div class="progress-bar bg-primary" style="width: <%= job.validated_percent_reviewer %>%"></div>
+                                </div>
+                                <% } %>
+                            </div>
+                      </td>                            
+                    <td class="w-40"> 
+                       <%= job.asset_name.replace("'", "") %> 
+                    </td>
+                  </tr>
+                <% }%>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

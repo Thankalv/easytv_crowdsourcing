@@ -59,13 +59,17 @@ module.exports = {
       collection: 'accesslink',
       via: 'user'
     },
+    subscriptions: {
+      collection: 'subscribed',
+      via: 'createdBy'
+    },
 
     /**
      * Confidence level 1-10
      */
     trustLevel: {
       type: 'number',
-      defaultsTo: 1.00
+      defaultsTo: -2.00
     },
     points: {
       type: 'number',
@@ -110,10 +114,32 @@ module.exports = {
     emailStatus: {
       type: 'string',
       isIn: ['unconfirmed', 'change-requested', 'confirmed'],
-      defaultsTo: 'confirmed',
+      defaultsTo: 'unconfirmed',
       description: 'The confirmation status of the user\'s email address.'
     },
 
+    registStatus: {
+      type:"boolean"
+    },
+
+    registStatus: {
+      type: 'string',
+      isIn: ['pending', 'submitted', 'completed'],
+      defaultsTo: 'pending',
+      description: 'The register process status'
+    },
+    regComplete: {
+      type: 'json',
+      description: 'The user submitted data from the 2nd register-form'
+    },
+    reg2_token:{
+      type: "string",
+      defaultsTo: ""
+    },
+    unreadLogs:{
+      type:"boolean",
+      defaultsTo: false
+    }
   },
 
 
@@ -133,7 +159,8 @@ module.exports = {
   */
   fullName: function(user) {
     return user.firstName + " " + user.lastName;
- },
+  },
+
 
   /**
    * Lifecycle callbacks
@@ -147,10 +174,8 @@ module.exports = {
    * @param  {Function} cb     [description]
    * @return {[type]}          [description]
    */
-  beforeCreate: function(values, cb) 
-  {
+  beforeCreate: function(values, cb) {
     //sails.log(values);
-
     // Gravatar image url
     values.gravatarImage = gravatar.url(values.email, {
           s: 128,
@@ -159,19 +184,22 @@ module.exports = {
       }, true);
       
     // encrypt password
-    bcrypt.genSalt(10, function(err, salt) 
-    {
-      if (err) return cb(err); // check if needed || remove
-      bcrypt.hash(values.password, salt, function(err, hash) 
+    if(!values.encryptedPassword)
+      bcrypt.genSalt(10, function(err, salt) 
       {
-        if (err) return cb(err);
-        values.encryptedPassword = hash;
-        // delete password
-        delete values.password
-        delete values.confirmation;
-        cb();
+        if (err) return cb(err); // check if needed || remove
+        bcrypt.hash(values.password, salt, function(err, hash) 
+        {
+          if (err) return cb(err);
+          values.encryptedPassword = hash;
+          // delete password
+          delete values.password
+          delete values.confirmation;
+          cb();
+        });
       });
-    });
+    else
+      cb();
   },
 
   /**
@@ -182,8 +210,13 @@ module.exports = {
    */
   beforeUpdate: function(values, cb) 
   {
-    sails.log(values.email);
-    sails.log(values.lang_info);
+    if(values.email)
+      sails.log(values.email);
+    if(values.lang_info)
+      sails.log(values.lang_info);
+    if(values.email)
+      values.gravatarImage = gravatar.url(values.email, { s: 128,r: "pg",d: "mm"}, true);
+
     // do not change password if it is empty
     if (values.password && values.confirmation) 
     {
@@ -204,6 +237,22 @@ module.exports = {
       // new password not provided, do not change
       cb();
     }
+  },
+
+    /**
+   * [beforeUpdate description]
+   * @param  {[type]}   values [description]
+   * @param  {Function} cb     [description]
+   * @return {[type]}          [description]
+   */
+  afterDestroy: async function(values, cb) 
+  {
+    sails.log(values.lastLogged);
+    values.userOrganisation = await Organisation.findOne(values.userOrganisation);
+    if(values.emailStatus=="confirmed")
+      await ENService.sendEN(values, 6, "");
+    // new password not provided, do not change
+    cb();
   }
 
 };

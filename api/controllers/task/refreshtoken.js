@@ -36,7 +36,7 @@ module.exports = {
         }
         // POST request to the broadcaster API  -->  sails.log the broadcaster's response message
         var usersOrg = this.req.session.User.userOrganisation;
-        var creds = { user:  existingJob.user, job_id: existingJob.job_id, token: UtilService.uid(12)}
+        var creds = { user:  existingJob.user, job_id: existingJob.job_id, token: await UtilService.uid(12)}
         var newAssignment = await TaskService.assignUserAJob(usersOrg, creds);
         sails.log(newAssignment);
 

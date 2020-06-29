@@ -12,7 +12,17 @@
 module.exports = function(grunt) {
 
   grunt.config.set('clean', {
-    dev: ['.tmp/public/**'],
+      dev: [
+        getFolderPath('fonts/**'),
+        getFolderPath('images/**'),
+        getFolderPath('dependencies/**'),
+		    getFolderPath('icons/**'),
+        getFolderPath('plugins/**'),
+		    getFolderPath('min/**'),
+        getFolderPath('js/**'),
+        getFolderPath('styles/**'),
+        getFolderPath('*.*')
+      ],
     build: ['www'],
     afterBuildProd: [
       'www/concat',
@@ -24,7 +34,10 @@ module.exports = function(grunt) {
       'www/dependencies'
     ]
   });
-
+  
+	function getFolderPath(folderName){
+	  return '.tmp/public/' + folderName;
+	}
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // This Grunt plugin is part of the default asset pipeline in Sails,
   // so it's already been automatically loaded for you at this point.

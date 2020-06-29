@@ -24,20 +24,22 @@
 
                     <!-- checkbox -->
                     <div class="form-group">
-                    <label>
-                        <input id="emailNewJob" type="checkbox" class="minimal" name="emailNewJob" value="yes"  <% if (user.settings.emailNewJob =='yes') { %> checked <% } %> >
-                        <input id="emailNewJobHidden" type='hidden' value='no' name='emailNewJob' >
-                    </label>
-                    <label> Receive email notification when new job is posted </label>
+                        <label>
+                            <input id="emailNewJob" type="checkbox" class="minimal" name="emailNewJob" value="yes"  <% if (user.settings.emailNewJob =='yes') { %> checked <% } %> >
+                            <input id="emailNewJobHidden" type='hidden' value='no' name='emailNewJob' >
+                        </label>
+                        <label> Receive email notification when new job is posted </label>
                     </div>
 
-                    <div class="form-group">
-                    <label>
-                        <input id="emailRejectJob" type="checkbox" class="minimal" name="emailRejectJob" value="yes"  <% if (user.settings.emailRejectJob =='yes') { %> checked <% } %>  >
-                        <input id="emailRejectJobHidden" type='hidden' value='no' name='emailRejectJob'>
-                    </label>
-                    <label> Receive email notification when your progress is rejected </label>
-                    </div>
+                     <!--
+                        <div class="form-group">
+                            <label>
+                                <input id="emailRejectJob" type="checkbox" class="minimal" name="emailRejectJob" value="yes"  <% if (user.settings.emailRejectJob =='yes') { %> checked <% } %>  >
+                                <input id="emailRejectJobHidden" type='hidden' value='no' name='emailRejectJob'>
+                            </label>
+                            <label> Receive email notification when your progress is rejected </label>
+                        </div>
+                    -->
                 </div>
                 <!-- /.card-body -->
                 <div class="card-footer">

@@ -1,7 +1,6 @@
 {
 	"Welcome": "Welcome",
 	"A brand new app.": "A brand new app.",
-	
 		"flash-err.close": "Close",
 		"oauth.dialog.accessrq": "is requesting <b>access</b> to your account.",
 		"task.edit.displaymsg": "\"Press OK to continue...\" dialog after each micro-task submission",
@@ -33,12 +32,12 @@
 		"task.judge_bb_intro.instructionsMsg4": "Additional information will be entered by the administrator user.",
 		"task.judge_person_intro.msg4": "Additional information will be entered by the administrator user.",
 		"user.edit.admin": "Admin",
-	
+
 		"user.show.adminProfile": "Admin Profile",
 		"user.show.recentActivity": "Recent Activity",
 		"user.show.contributions": "Project contributions",
 		"user.show.profil": "Profile",
-	
+
 		"nav_bar.administration": "Administration",
 		"nav_bar.contibutor": "Producer's menu",
 		"nav_bar.administrator": "Administrator",
@@ -81,7 +80,8 @@
 		"homepage.docs.appstruct": "App Structure",
 		"task.index.warningMsgResponse": "Are you sure you want to delete your response ?",
 		"task.show_bb.warningMsg": "Are you sure you want to Re-calculate all user Judgements ?",
-		"organisation.show.warningmsg": "Are you sure you want to Refresh the Security Token ?<br><br>A new token will be generated and all new users registering for this organisation will have to provide the new Security Token.",
+		"organisation.show.warningmsg1": "Are you sure you want to Refresh the Security Token ?",
+		"organisation.show.warningmsg2": "A new token will be generated and all new users registering for this organisation will have to provide the new Security Token.",
 		"actor.index.warningmsg2": "Are you sure you want to remove the selected",
 		"actor.index.warningmsg": "Are you sure you want to remove the selected image ?",
 		"task.editmicrotasks.warningmsg": "Are you sure you want to remove the selected Micro-task ?",
@@ -175,6 +175,7 @@
 		"task.statistics.confidenceHitRate": "Confidence-weighted hit rate",
 		"task.index.confirm": "CONFIRM",
 		"organisation.show.consentform": "Consent Form",
+		"organisation.show.defaultLang": "Default Language",
 		"settings.index.containedThres": "Contained Threshold",
 		"task.judge_bb_intro.CONTINUE": "CONTINUE",
 		"task.judge_face_intro.continue": "CONTINUE",
@@ -208,7 +209,8 @@
 		"organisation.new.create": "CREATE",
 		"organisation.new.title": "Register a new organisation",
 		"organisation.show.title": "Organisation's settings",
-	
+		"organisation.show.phoneUser": "Phone Number",
+
 		"project.index.create": "CREATE",
 		"project.new.create": "CREATE",
 		"project.show.create": "CREATE",
@@ -231,7 +233,7 @@
 		
 	
 		"user.index.createtag": "CREATE",
-		"user.register.createAccount": "Create an account",
+		"user.register.createAccount": "Create a new account",
 		"taskcreator.selectvideo.creationMSg1": "Create Micro-task",
 		"organisation.new.createOrg": "Create Organisation",
 		"project.new.createProject": "Create Project",
@@ -360,7 +362,6 @@
 		"task.steps.dragdrop": "Drag and drop or click to select.",
 		"task.steps.submit": "Submit all files",
 		"task.steps.description": "Description",
-		
 	
 		"project.index.editProject": "Edit Project",
 		"project.editinfo.projectInfo": "Edit Project Information",
@@ -946,6 +947,7 @@
 		"user.edit.role": "Role",
 		"organisation.show.saveprjset": "SAVE PROJECT SETTINGS",
 		"organisation.show.savesettings": "SAVE SETTINGS",
+		"organisation.show.saveemail": "UPDATE EMAILS",
 		"settings.index.secondsDif": "Seconds Difference",
 		"organisation.show.security": "Security",
 		"taskcreator.chooseactors.select": "Select",

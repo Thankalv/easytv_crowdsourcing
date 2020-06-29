@@ -1,5 +1,5 @@
 
-  <div class="col-md-8">
+  <div class="col-md-8 offset-md-1">
         <!-- Widget: user widget style -->
         <div class="card">
           <!-- Add the bg color to the header using any of the bg-* classes -->
@@ -23,9 +23,18 @@
                   </li>
                 <% _.each(session.User.lang_info.langs, function(userLang) { %>
                 <li class="nav-item">
+                  <% if ( userLang[Object.keys(userLang)[1]] != -1) { %>
                   <div  class="nav-link"  style="color: #007bff">
-                      <%= langs[langsISO.indexOf(userLang[Object.keys(userLang)[0]])]  %> <span class="float-right">  <%= levels[userLang[Object.keys(userLang)[1]]-1].description %> </span>
+                      <%= langs[langsISO.indexOf(userLang[Object.keys(userLang)[0]])]  %> <span class="float-right">  <%= levels[userLang[Object.keys(userLang)[1]]] %> </span>
                   </div>
+                  <% } else { %>
+                    <div  class="nav-link" style="color: #007bff">
+                        <%= langs[langsISO.indexOf(userLang[Object.keys(userLang)[0]])]  %> 
+                        <a href="/volunteer/testing?lang=<%=userLang[Object.keys(userLang)[0]] %>" class="float-right" style="color: #ff5e00; font-weight: 500;"> 
+                          <i class="fa fa-exclamation" aria-hidden="true"></i>  <%= levels[userLang[Object.keys(userLang)[1]]] %> </a>
+                    </div>
+
+                    <% } %>
                 </li>
                 <% }); %>
             </ul>

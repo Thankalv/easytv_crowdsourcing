@@ -61,6 +61,9 @@ module.exports.http = {
         else if(reqString.indexOf("GET /feedback") !== -1){
           req.session.activeTag = 'feedback'
         }
+        else if(reqString.indexOf("GET /volunteer") !== -1){
+          req.session.activeTag = 'volunteer'
+        }
         else if(reqString.indexOf("GET /user/settings") !== -1){
           req.session.activeTag = 'settings'
         }
@@ -69,6 +72,9 @@ module.exports.http = {
         }
         else if(reqString.indexOf("GET /organisation") !== -1){
           req.session.activeTag = 'org'
+        }
+        else if(reqString.indexOf(" /video-annotation") !== -1){
+          req.session.activeTag = 'videolang'
         }
         else{
           req.session.activeTag = 'dashboard'

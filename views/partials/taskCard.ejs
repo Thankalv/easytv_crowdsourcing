@@ -1,0 +1,34 @@
+
+<div class="modal fade" id="modal-new-task">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form action="/video-annotation/create-pending" method="POST" id="new-task-form">
+                    <div class="modal-body">
+                        <div class="card">
+                            <div class="card-header border-0">
+                                <h3 class="card-title"> New Task Form <b> in <%- session.User.firstLang %></b> Sign Language</h3>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="row col-md-8">
+                                    <div class="form-group col-md-8">
+                                        <div class="console-container" style="margin-top: 5px;">
+                                            <input type="concept" name="wle" class="form-control targetConsole" style="padding: 5px;" placeholder="Concept in Natural Language" id="concept" required>
+                                            <input type="hidden" name="lang" value="<%- session.User.firstLangISO %>">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-lg-start">
+                        <button type="button" class="btn btn-info" data-dismiss="modal">CLOSE</button>
+                        <button type="submit" class="btn btn-success"> CREATE </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+    

@@ -150,7 +150,7 @@
                     "type": "string",
                     "enum": [
 					"low",
-					"intermediate",
+					"mid",
 					"high"
 				]
 		  },
