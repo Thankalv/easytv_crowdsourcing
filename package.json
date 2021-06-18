@@ -32,7 +32,7 @@
     "sails-hook-uploads": "^0.4.3",
     "sails-mongo": "1.0.1",
     "skipper-better-s3": "^2.3.0",
-    "striptags": "^3.1.1"
+    "striptags": "^3.2.0"
   },
   "devDependencies": {
     "@sailshq/eslint": "^4.19.3",
